@@ -1,0 +1,43 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Project main file
+%
+% Assumes that LaTeX2e macros and packages defined in cg_comp.sty are
+%   available
+%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+ \documentclass[12pt]{article}
+
+ \usepackage{cg_comp}
+
+ \title{{\Huge\textbf{Classical Guitar Intonation and Compensation}}}
+
+ \author{ M.\ B.\ Anderson and R.\ G.\ Beausoleil \\
+ \textit{Rosewood Guitar} \\
+ \textit{8402 Greenwood Ave.\ N, Seattle, WA  98103}}
+
+ \date{\today}
+
+ \begin{document}
+
+ \maketitle
+
+ \begin{abstract}
+TBD.
+ \end{abstract}
+
+ \tableofcontents
+
+ \input{files/intro}
+ \input{files/model}
+ \input{files/exp}
+ \input{files/comp}
+ \input{files/conc}
+
+ \addtotoc{\refname}
+ \bibliographystyle{rgb}
+ \bibliography{music,cg_comp}
+
+ \end{document}
