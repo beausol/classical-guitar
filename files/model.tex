@@ -9,3 +9,17 @@
 
  \section{Simple Model of Guitar Intonation\label{sct:model}}
 
+Fundamental frequency of a string~\cite{ref:morse1981vas,ref:morse1981vsa}:
+ \begin{equation} \label{eqn:nu_0_def}
+\nu_0 = \frac{1}{2\, L_0}\, \sqrt{\frac{T_0}{\mu_0}}\, ,
+ \end{equation}
+where $L_0$ is the length of the free (unfretted) string from the saddle to the nut, $T_0$ is the tension in the free string, and $\mu_0 \equiv M / L_0$ is the linear mass density of a free string of mass $M$.
+
+ \begin{equation} \label{eqn:nu_0_stiff}
+\nu_0 = \frac{1}{2\, L_0}\, \sqrt{\frac{T_0}{\mu_0}} \left[ 1 + B_0 + \left(1 + \frac{\pi^2}{8}\right) B_0^2 \right]\, ,
+ \end{equation}
+where $B_0$ is a ``string stiffness parameter.'' For a uniform string with a cylindrical cross section, $B_0$ given by~\cite{ref:morse1981vsb}
+ \begin{equation} \label{eqn:b_def}
+B_0 \equiv \sqrt{\frac{\pi\, R^4 E}{T_0\, L_0^2}}\, ,
+ \end{equation}
+where $R$ is the radius of the string and $E$ is Young's modulus (or the modulus of elasticity). For a typical nylon guitar string with $E \approx 2 - 4$~GPa, $T_0 \approx 50 - 70$~N, $R \approx 0.35 - 0.51$~mm, and $L_0 \approx 650$~mm, we have $B_0 \approx 0.007 - 0.026$. 
