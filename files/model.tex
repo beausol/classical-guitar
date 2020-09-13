@@ -30,9 +30,9 @@ Throughout this work, we will use \emph{cents} to describe small differences in 
  \end{equation}
 We define $f \equiv (f_1 + f_2) / 2$ and $\Delta f \equiv f_2 - f_1$. Then
  \begin{equation} \label{eqn:cents_approx}
-\Delta \nu = 1200\, \log_2\left(\frac{f + \Delta f / 2}{f - \Delta f /2}\right) \approx \frac{1200}{\ln 2}\, \frac{\Delta f}{f} .
+\Delta \nu = 1200\, \log_2\left(\frac{f + \Delta f / 2}{f - \Delta f /2}\right) \approx \frac{1200}{\ln 2}\, \frac{\Delta f}{f}\, ,
  \end{equation}
-An experienced guitar player can distinguish beat notes with a difference frequency of $\Delta f \approx 1$~Hz, which corresponds to 8~cents at $A_2$ ($f = 220$~Hz) or 5~cents at $E_4$ ($f = 329.63$~Hz).
+where the last approximation applies when $\Delta f \ll f$. An experienced guitar player can distinguish beat notes with a difference frequency of $\Delta f \approx 1$~Hz, which corresponds to 8~cents at $A_2$ ($f = 220$~Hz) or 5~cents at $E_4$ ($f = 329.63$~Hz).
 
 Our model begins with the simple form of the fundamental frequency of a string given by \eqn{f_0_def}, and applies it to the frequency of a string pressed just behind the $n^\mathrm{th}$ fret:
  \begin{equation} \label{eqn:f_n_def}
@@ -40,7 +40,7 @@ f_n = \frac{1}{2\, L_n}\, \sqrt{\frac{T_n}{\mu_n}}\, ,
  \end{equation}
 where (as shown in \red{Fig.~TBD}) $L_n$ is the \emph{resonant length} of the string from the saddle to fret $n$, and $T_n$ and $\mu_n$ are respectively the corresponding tension and linear mass density of the fretted string. We note that $T_n$ and $\mu_n$ depend on $\mathcal{L}_n$, the \emph{total} length of the fretted string from the saddle to the nut. Ideally, in the 12-TET equal-temperament system~\cite{ref:durfee2015pms},
  \begin{equation} \label{eqn:f_n_tet}
-f_n = \gamma_n\, f_0\, ,
+f_n = \gamma_n\, f_0\, , \qquad \textrm{(12-TET~ideal)}
  \end{equation}
 where
  \begin{equation} \label{eqn:gamme_n_def}
@@ -52,4 +52,4 @@ Therefore, the error interval expressed in cents is given by
 \Delta \nu_n &= 1200\, \log_2\left( \frac{f_n}{\gamma_n\, f_0} \right) \\
 &= 1200\, \log_2 \left( \frac{L_0}{\gamma_n\, L_n}\, \sqrt{\frac{\mu_0}{\mu_n}\, \frac{T_n}{T_0}}\, \right)\, .
  \end{split}
- \end{equation}
+ \end{equation} 
