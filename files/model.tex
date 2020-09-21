@@ -80,51 +80,59 @@ L_n = \begin{cases}
 \sqrt{\left(X_n + \Delta S\right)^2 + (b + c)^2}\, . & n \ge 1
  \end{cases}
  \end{equation}
-When $b + c \ll X_0$ and the guitar has been manufactured such that $X_n = X_0 / \gamma_n$, we can approximate $L_n$ by
+When $b + c \ll X_0$, we can approximate $L_n$ by
  \begin{equation} \label{eqn:l_n_approx}
 L_n \approx \begin{cases}
-X_0 + \Delta S + \Delta N + c^2/2\, X_0\, , & n =  0 \\
-\gamma_n^{-1} \left\{X_0 + \gamma_n \Delta S + \left[\gamma_n (b + c)\right]^2/2\, X_0\right\}\, . & n \ge 1
+X_0 + \Delta S + \Delta N + c^2/2\, X_0 & n =  0\, , \\
+X_n + \Delta S + (b + c)^2/2\, X_n & n \ge 1\, .
  \end{cases}
  \end{equation}
- Suppose that $X_0 = 650$~mm, $b + c = 5$~mm, and $n = 12$ (i.e., $\gamma_{12} = 2$). Then $\left[\gamma_n (b + c)\right]^2/2\, X_0 < 0.1$~mm, and it's clear that we can neglect the terms here that depend on $b$ and/or $c$. Then the resonant length error is approximately
-  \begin{equation}
-  1200\, \log_2 \left( \frac{L_0}{\gamma_n\, L_n} \right) \approx -\frac{1200}{\ln(2)}\, \frac{\left(\gamma_n - 1\right) \Delta S - \Delta N}{X_0}
+Then --- when the guitar has been manufactured such that $X_n = X_0 / \gamma_n$ --- the resonant length error is approximately
+  \begin{equation} \label{eqn:rle_approx}
+  1200\, \log_2 \left( \frac{L_0}{\gamma_n\, L_n} \right) \approx -\frac{1200}{\ln(2)} \left[ \frac{\left(\gamma_n - 1\right) \Delta S - \Delta N}{X_0} + \frac{\gamma_n^2 (b + c)^2 - c^2}{2\, X_0^2}\right]
   \end{equation}
-If the guitar is uncompensated, so that $\Delta S = \Delta N = 0$, this error is negligible. In fact, for most classical guitars and strings, it is much less than 1~cent because the impact of $b$ and $c$ on $L_n$ is quadratic and therefore very small. But, with $\Delta S > 0$ and $\Delta N < 0$, we can \emph{increase} the magnitude of this ``error'' and cause the frequency to shift lower. We'll see that this is our primary method of compensation. \red{TBD: Add a figure here?}
+If the guitar is uncompensated, so that $\Delta S = \Delta N = 0$, this error is typically less than 0.25~cents. But, with $\Delta S > 0$ and $\Delta N < 0$, we can significantly \emph{increase} the magnitude of this ``error'' and cause the frequency to shift lower. We'll see that this is our primary method of compensation. \red{TBD: Add a figure here?}
 
-Previous studies of guitar intonation and compensation have chosen to include the apparent increase in length of the string caused by both the depth of the fretting action \red{(Matt: Is this the right term?)} and the shape of the fretted string under the finger~\cite{ref:byers1996cgi,ref:varieschi2010icf}. As the string is initially pressed to the fret, the total length $\mathcal{L}_n$ increases and causes the tension in the string --- which is clamped at the saddle and the nut --- to increase. As the string is pressed further, does the additional deformation of the string increase its tension (throughout the resonant length $L_n$)? There are at least two purely empirical reasons to doubt this hypothesis. First, we can mark a string (with a fine-point felt pen) above a particular fret and then observe the mark with a magnifying glass. As the string is pressed all the way to the finger board, the mark does not move perceptibly --- it has become effectively \emph{clamped} on the fret. Second, we can use either our ears or a simple tool to measure frequencies~\cite{ref:pgtweb} to listen for a shift as we use different fingers and vary the fretted depth of a string. The apparent modulation is far less than would be obtained by classical vibrato, so we assume that once the string is minimally fretted the length(s) can be regarded as fixed. (If this were not the case, then fretting by different people or with different fingers, at a single string or with a barre, would cause additional, varying frequency shifts that would be audible and difficult to compensate.)
+Previous studies of guitar intonation and compensation have chosen to include the apparent increase in length of the string caused by both the fretting depth \red{(Matt: How does this sound?)} and the shape of the fretted string under the finger~\cite{ref:byers1996cgi,ref:varieschi2010icf}. As the string is initially pressed to the fret, the total length $\mathcal{L}_n$ increases and causes the tension in the string --- which is clamped at the saddle and the nut --- to increase. As the string is pressed further, does the additional deformation of the string increase its tension (throughout the resonant length $L_n$)? There are at least two purely empirical reasons to doubt this hypothesis. First, we can mark a string (with a fine-point felt pen) above a particular fret and then observe the mark with a magnifying glass. As the string is pressed all the way to the finger board, the mark does not move perceptibly --- it has become effectively \emph{clamped} on the fret. Second, we can use either our ears or a simple tool to measure frequencies~\cite{ref:pgtweb} to listen for a shift as we use different fingers and vary the fretted depth of a string. The apparent modulation is far less than would be obtained by classical vibrato ($\pm15$~cents), so we assume that once the string is minimally fretted the length(s) can be regarded as fixed. (If this were not the case, then fretting by different people or with different fingers, at a single string or with a barre, would cause additional, varying frequency shifts that would be audible and difficult to compensate.)
 
  \subsection{Linear Mass Density Error}
 As discussed above, the linear mass density $\mu_0$ of an unfretted string is simply the total mass $M$ of the string clamped between the saddle and the nut divided by the length $L_0$. Similarly, the mass density $\mu_n$ of a string held onto fret $N$ is $M/\mathcal{L}_n$. Therefore
  \begin{equation}
-\frac{\mu_0}{\mu_n} = \frac{\mathcal{L}_n}{L_0} = 1 + \frac{\mathcal{L}_n - L_0}{L_0}\, .
+\frac{\mu_0}{\mu_n} = \frac{\mathcal{L}_n}{L_0} \equiv 1 + \lambda_n\, ,
  \end{equation}
-Since we expect that $(\mathcal{L}_n - L_0)/L_0 \ll 1$, we can approximate the second term in the final line of \eqn{error_def} as
+where
+ \begin{equation} \label{eqn:lambda_n_def}
+\lambda_n \equiv \frac{\mathcal{L}_n - L_0}{L_0}\, .
+ \end{equation}
+Since we expect that $\lambda_n \ll 1$, we can approximate the second term in the final line of \eqn{error_def} as
  \begin{equation}
-600\, \log_2 \left(  \frac{\mu_0}{\mu_n} \right) \approx \frac{600}{\ln(2)}\, \frac{\mathcal{L}_n - L_0}{L_0}
+600\, \log_2 \left(  \frac{\mu_0}{\mu_n} \right) \approx \frac{600}{\ln(2)}\, \lambda_n\, .
  \end{equation}
 
-Referring to \fig{guitar_schematic}, we see that $\mathcal{L} = L_n + L^\prime_n$, and we calculate $L^\prime_n$ as
+Referring to \fig{guitar_schematic}, we see that $\mathcal{L}_n = L_n + L^\prime_n$, and we calculate $L^\prime_n$ as
  \begin{equation}
 L^\prime_n = \begin{cases}
 0\, , & n =  0 \\
 \sqrt{\left(X_0 - X_n + \Delta N\right)^2 + b^2}\, . & n \ge 1
  \end{cases}
  \end{equation}
-Assuming that $b^2 \ll X_0 - X_n + \Delta N$, we expand the $n \ne 1$ expression to obtain
+Assuming that $b^2 \ll X_0 - X_n$, we expand the $n \ne 1$ expression to obtain
  \begin{equation}
-L^\prime_n \approx X_0 - X_n + \Delta N + \frac{b^2}{2 \left(X_0 - X_n + \Delta N\right)}
+L^\prime_n \approx X_0 - X_n + \Delta N + \frac{b^2}{2 \left(X_0 - X_n\right)}
  \end{equation}
-Therefore, since \eqn{l_n_approx} gives $L_n \approx X_n + \Delta S$, we have for $n \ne 1$
+Therefore, using \eqn{l_n_approx}, we have for $n \ne 1$
  \begin{equation}
- \begin{split}
-\mathcal{L}_n &= L_n + L^\prime_n \approx X_0 + \Delta S + \Delta N + \frac{b^2}{2 \left(X_0 - X_n + \Delta N\right)} \\
-&\approx L_0 + \frac{b^2}{2 \left(X_0 - X_n + \Delta N\right)}\, ,
- \end{split}
+\mathcal{L}_n = L_n + L^\prime_n \approx X_0 + \Delta S + \Delta N + \frac{(b + c)^2}{2\, X_n} + \frac{b^2}{2 \left(X_0 - X_n\right)}\, ,
  \end{equation}
 and
  \begin{equation}
-600\, \log_2 \left( \frac{\mu_0}{\mu_n} \right) \approx \frac{600}{\ln(2)}\, \frac{b^2}{2\, L_0 \left(X_0 - X_n + \Delta N\right)}\, .
+ \begin{split}
+\lambda_n &\approx \frac{1}{2\, X_0} \left[ \frac{(b + c)^2}{2\, X_n} + \frac{b^2}{2 \left(X_0 - X_n\right)} - \frac{c^2}{2\, X_0} \right] \\
+&= \frac{\gamma_n}{2\, X_0^2} \left[ (b + c)^2 + \frac{b^2}{\gamma_{n} - 1} - \frac{c^2}{\gamma_n} \right] \, .
+ \end{split}
  \end{equation}
-This error is generally quite small. Suppose that $b = 3$~mm, $X_0 = 650$~mm, $n = 1$, $X_1 = 2^{-1/12}\, X_0 = 613.5$~mm, and $\Delta N = 0$. Then the error is less than 0.2~cents, and will be even smaller for $n \ge 2$.
+This error is generally quite small. Suppose that $b = 1.0$~mm, $c = 3.5$~mm, $X_0 = 650$~mm, $n = 12$, and $X_{12} = X_0 / 2 = 325$~mm. Then the error is about 0.03~cents, and will be even smaller for $n < 12$. If we add this shift due to the linear mass density to the residual quadratic resonant length shift given by \eqn{rle_approx}, then we find the total error
+ \begin{equation}
+\Delta \nu_n = \frac{300}{\ln(2)}\, \frac{\gamma_n}{X_0^2} \left[ \frac{b^2}{\gamma_n - 1} + \frac{c^2}{\gamma_n} - (2 \gamma_n - 1) (b + c)^2 \right]\, .
+ \end{equation}
+For the same parameters, $\Delta \nu_{12} = -0.11$~cents, and $|\Delta \nu_n|$ is smaller for $n < 12$. 
