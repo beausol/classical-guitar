@@ -74,7 +74,7 @@ We will discuss each of these three sources of error in turn below.
 
  \subsection{Resonant Length Error}
 We can estimate the first term in the last line of \eqn{error_def} by referring to \fig{guitar_schematic} and computing the resonant length $L_n$. We find:
- \begin{equation}
+ \begin{equation}  \label{eqn:l_n_def}
 L_n = \begin{cases}
 \sqrt{\left(X_0 + \Delta S + \Delta N\right)^2 + c^2}\, , & n =  0 \\
 \sqrt{\left(X_n + \Delta S\right)^2 + (b + c)^2}\, . & n \ge 1
@@ -105,7 +105,7 @@ where
 \lambda_n \equiv \frac{\mathcal{L}_n - L_0}{L_0}\, .
  \end{equation}
 Since we expect that $\lambda_n \ll 1$, we can approximate the second term in the final line of \eqn{error_def} as
- \begin{equation}
+ \begin{equation} \label{eqn:lmd_error}
 600\, \log_2 \left(  \frac{\mu_0}{\mu_n} \right) \approx \frac{600}{\ln(2)}\, \lambda_n\, .
  \end{equation}
 
@@ -125,14 +125,33 @@ Therefore, using \eqn{l_n_approx}, we have for $n \ne 1$
 \mathcal{L}_n = L_n + L^\prime_n \approx X_0 + \Delta S + \Delta N + \frac{(b + c)^2}{2\, X_n} + \frac{b^2}{2 \left(X_0 - X_n\right)}\, ,
  \end{equation}
 and
- \begin{equation}
+ \begin{equation} \label{eqn:lambda_n_approx}
  \begin{split}
-\lambda_n &\approx \frac{1}{2\, X_0} \left[ \frac{(b + c)^2}{2\, X_n} + \frac{b^2}{2 \left(X_0 - X_n\right)} - \frac{c^2}{2\, X_0} \right] \\
+\lambda_n &\approx \frac{1}{2\, X_0} \left[ \frac{(b + c)^2}{X_n} + \frac{b^2}{X_0 - X_n} - \frac{c^2}{X_0} \right] \\
 &= \frac{\gamma_n}{2\, X_0^2} \left[ (b + c)^2 + \frac{b^2}{\gamma_{n} - 1} - \frac{c^2}{\gamma_n} \right] \, .
  \end{split}
  \end{equation}
-This error is generally quite small. Suppose that $b = 1.0$~mm, $c = 3.5$~mm, $X_0 = 650$~mm, $n = 12$, and $X_{12} = X_0 / 2 = 325$~mm. Then the error is about 0.03~cents, and will be even smaller for $n < 12$. If we add this shift due to the linear mass density to the residual quadratic resonant length shift given by \eqn{rle_approx}, then we find the total error
- \begin{equation}
+When we substitute this expression into \eqn{lmd_error}, the resulting error is generally quite small. Suppose that $b = 1.0$~mm, $c = 3.5$~mm, $X_0 = 650$~mm, $n = 12$, and $X_{12} = X_0 / 2 = 325$~mm. Then the error is about 0.03~cents, and will be even smaller for $n < 12$. If we add this shift due to the linear mass density to the residual quadratic resonant length shift given by \eqn{rle_approx}, then we find the total error
+ \begin{equation} \label{eqn:quad_shift}
 \Delta \nu_n = \frac{300}{\ln(2)}\, \frac{\gamma_n}{X_0^2} \left[ \frac{b^2}{\gamma_n - 1} + \frac{c^2}{\gamma_n} - (2 \gamma_n - 1) (b + c)^2 \right]\, .
  \end{equation}
-For the same parameters, $\Delta \nu_{12} = -0.11$~cents, and $|\Delta \nu_n|$ is smaller for $n < 12$. 
+For the same parameters, $\Delta \nu_{12} = -0.11$~cents, and $|\Delta \nu_n| < |\Delta \nu_{12}|$ for $n < 12$.
+
+ \subsection{Tension Error}
+Elasticity properties~\cite{ref:landau1986toe}
+ \begin{equation} \label{eqn:youngs_mod_def}
+\Delta T_n = E\, A\, \frac{\mathcal{L}_n - L_0}{L_0} = A\, E\, \lambda_n\, ,
+ \end{equation}
+where we have used \eqn{lambda_n_def}. Therefore, the tension of the fretted string is
+ \begin{equation}
+T_n = T_0 + T_n = T_0 \left( 1 + \kappa\, \lambda_n \right)\, ,
+ \end{equation}
+where we have defined the dimensionless ``string constant''
+ \begin{equation}\label{ewn:kappa_def}
+\kappa \equiv \frac{A\, E}{T_0} = \frac{\pi R^2 E}{T_0}\, .
+ \end{equation}
+In this case, we assume that $\kappa \lambda_n \ll 1$, so that we can approximate the third term in the final line of \eqn{error_def} as
+ \begin{equation}
+600\, \log_2 \left(  \frac{T_n}{T_0} \right) \approx \frac{600}{\ln(2)}\, \kappa\, \lambda_n\, .
+ \end{equation}
+This frequency shift is larger than that caused by the linear mass density error by a factor of $\kappa$.
