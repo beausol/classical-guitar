@@ -96,17 +96,17 @@ If the guitar is uncompensated, so that $\Delta S = \Delta N = 0$, this error is
 Previous studies of guitar intonation and compensation have chosen to include the apparent increase in length of the string caused by both the fretting depth and the shape of the fretted string under the finger~\cite{ref:byers1996cgi,ref:varieschi2010icf}. As the string is initially pressed to the fret, the total length $\mathcal{L}_n$ increases and causes the tension in the string --- which is clamped at the saddle and the nut --- to increase. As the string is pressed further, does the additional deformation of the string increase its tension (throughout the resonant length $L_n$)? There are at least two purely empirical reasons to doubt this hypothesis. First, we can mark a string (with a fine-point felt pen) above a particular fret and then observe the mark with a magnifying glass. As the string is pressed all the way to the finger board, the mark does not move perceptibly --- it has become effectively \emph{clamped} on the fret. Second, we can use either our ears or a simple tool to measure frequencies~\cite{ref:pgtweb} to listen for a shift as we use different fingers and vary the fretted depth of a string. The apparent modulation is far less than would be obtained by classical vibrato ($\pm15$~cents), so we assume that once the string is minimally fretted the length(s) can be regarded as fixed. (If this were not the case, then fretting by different people or with different fingers, at a single string or with a barre, would cause additional, varying frequency shifts that would be audible and difficult to compensate.)
 
  \subsection{Linear Mass Density Error}
-As discussed above, the linear mass density $\mu_0$ of an unfretted string is simply the total mass $M$ of the string clamped between the saddle and the nut divided by the length $L_0$. Similarly, the mass density $\mu_n$ of a string held onto fret $N$ is $M/\mathcal{L}_n$. Therefore
+As discussed above, the linear mass density $\mu_0$ of an open (unfretted) string is simply the total mass $M$ of the string clamped between the saddle and the nut divided by the length $L_0$. Similarly, the mass density $\mu_n$ of a string held onto fret $N$ is $M/\mathcal{L}_n$. Therefore
  \begin{equation}
-\frac{\mu_0}{\mu_n} = \frac{\mathcal{L}_n}{L_0} \equiv 1 + \lambda_n\, ,
+\frac{\mu_0}{\mu_n} = \frac{\mathcal{L}_n}{L_0} \equiv 1 + Q_n\, ,
  \end{equation}
-where
+where we have followed Byers and defined~\cite{ref:byers1996cgi,ref:varieschi2010icf}
  \begin{equation} \label{eqn:lambda_n_def}
-\lambda_n \equiv \frac{\mathcal{L}_n - L_0}{L_0}\, .
+Q_n \equiv \frac{\mathcal{L}_n - L_0}{L_0}\, .
  \end{equation}
-Since we expect that $\lambda_n \ll 1$, we can approximate the second term in the final line of \eqn{error_def} as
+Since we expect that $Q_n \ll 1$, we can approximate the second term in the final line of \eqn{error_def} as
  \begin{equation} \label{eqn:lmd_error}
-600\, \log_2 \left(  \frac{\mu_0}{\mu_n} \right) \approx \frac{600}{\ln(2)}\, \lambda_n\, .
+600\, \log_2 \left(  \frac{\mu_0}{\mu_n} \right) \approx \frac{600}{\ln(2)}\, Q_n\, .
  \end{equation}
 
 Referring to \fig{guitar_schematic}, we see that $\mathcal{L}_n = L_n + L^\prime_n$, and we calculate $L^\prime_n$ as
@@ -127,7 +127,7 @@ Therefore, using \eqn{l_n_approx}, we have for $n \ne 1$
 and
  \begin{equation} \label{eqn:lambda_n_approx}
  \begin{split}
-\lambda_n &\approx \frac{1}{2\, X_0} \left[ \frac{(b + c)^2}{X_n} + \frac{b^2}{X_0 - X_n} - \frac{c^2}{X_0} \right] \\
+Q_n &\approx \frac{1}{2\, X_0} \left[ \frac{(b + c)^2}{X_n} + \frac{b^2}{X_0 - X_n} - \frac{c^2}{X_0} \right] \\
 &= \frac{\gamma_n}{2\, X_0^2} \left[ (b + c)^2 + \frac{b^2}{\gamma_{n} - 1} - \frac{c^2}{\gamma_n} \right] \, .
  \end{split}
  \end{equation}
@@ -137,21 +137,22 @@ When we substitute this expression into \eqn{lmd_error}, the resulting error is 
  \end{equation}
 For the same parameters, $\Delta \nu_{12} = -0.11$~cents, and $|\Delta \nu_n| < |\Delta \nu_{12}|$ for $n < 12$.
 
- \subsection{Tension Error}
+ \subsection{Tension Error\label{sct:model_tension}}
+%The third term in \eqn{error_def} provides us withe frequency shift of a string 
 Elasticity properties~\cite{ref:landau1986toe}
  \begin{equation} \label{eqn:youngs_mod_def}
-\Delta T_n = E\, A\, \frac{\mathcal{L}_n - L_0}{L_0} = A\, E\, \lambda_n\, ,
+\Delta T_n = E\, A\, \frac{\mathcal{L}_n - L_0}{L_0} = A\, E\, Q_n\, ,
  \end{equation}
 where we have used \eqn{lambda_n_def}. Therefore, the tension of the fretted string is
  \begin{equation}
-T_n = T_0 + T_n = T_0 \left( 1 + \kappa\, \lambda_n \right)\, ,
+T_n = T_0 + T_n = T_0 \left( 1 + \kappa\, Q_n \right)\, ,
  \end{equation}
 where we have defined the dimensionless ``string constant''
- \begin{equation}\label{ewn:kappa_def}
+ \begin{equation}\label{eqn:kappa_def}
 \kappa \equiv \frac{A\, E}{T_0} = \frac{\pi R^2 E}{T_0}\, .
  \end{equation}
-In this case, we assume that $\kappa \lambda_n \ll 1$, so that we can approximate the third term in the final line of \eqn{error_def} as
+In this case, we assume that $\kappa Q_n \ll 1$, so that we can approximate the third term in the final line of \eqn{error_def} as
  \begin{equation}
-600\, \log_2 \left(  \frac{T_n}{T_0} \right) \approx \frac{600}{\ln(2)}\, \kappa\, \lambda_n\, .
+600\, \log_2 \left(  \frac{T_n}{T_0} \right) \approx \frac{600}{\ln(2)}\, \kappa\, Q_n\, .
  \end{equation}
 This frequency shift is larger than that caused by the linear mass density error by a factor of $\kappa$.
