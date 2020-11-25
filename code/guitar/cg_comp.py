@@ -1,4 +1,7 @@
-class String(object):
+import numpy as np
+import pandas as pd
+
+class GuitarString(object):
     def __init__(self, name, note, scale_length, diameter, linear_mass_density, tension, units='IPS'):
         if units == 'IPS':
             in_to_mm = 25.4
@@ -20,18 +23,18 @@ class String(object):
         self._tension = tension
 
     def __str__(self):
-        '''Return a string displaying the attributes of a ModeLockedLaserModel object.
+        '''Return a string displaying the attributes of a GuitarString object.
 
         Example
         -------
-        model = ModeLockedLaserModel(params, freq_shifts, amplifier, absorber)
+        string = GuitarString(name, note, scale_length, diameter, linear_mass_density, tension)
         
-        print(model)
+        print(string)
         '''
         retstr = self._name + " (" + self._note + " = {:5.1f} Hz) -- ".format(self._freq)
+        retstr += 'Scale Length: ' + '{:.1f} mm; '.format(self._scale)
         retstr += 'Radius: ' + '{:.3f} mm; '.format(self._radius)
         retstr += 'Density: ' + '{:.3e} kg/mm; '.format(self._density_lin)
-        retstr += 'Scale Length: ' + '{:.1f} mm; '.format(self._scale)
         retstr += 'Tension: ' + '{:.1f} N'.format(self._tension)
         return retstr
     
@@ -41,27 +44,50 @@ class String(object):
                   ('Gb', 51), ('G', 50), ('G#', 49)])
 
         note = note_str.split('_')
-        return 440 * 2**( int(note[1], 10) - notes[note[0]]/12.0 )
+        return 440.0 * 2**( int(note[1], 10) - notes[note[0]]/12.0 )
 
     def _comp_tension(self):
         mu = self._density_lin * 1000    # Convert kg/mm to kg/m
         x0 = self._scale / 1000      # Convert mm to m
         return mu * (2 * x0 * self._freq)**2
-    
+
+    def _comp_kappa(self):
+        self._kappa = (np.log(2) / 600) * self._r - 1
+
+    def _comp_modulus(self):
+        self._modulus = 1.0e-09 * (self._tension / (np.pi * (self._radius/1000)**2)) * self._kappa
+
+    def _comp_stiffness(self):
+        modulus = 1.0e+09 * self._modulus
+        self._stiffness = np.sqrt( (np.pi * (self._radius/1000)**4) * modulus / (self._tension * (self._scale / 1000)**2) )
+
     def set_scale(self, scale_length):
         self._scale = scale_length
         self._tension = self._comp_tension()
         
+    def set_r(self, r):
+        self._r = r
+        self._comp_kappa()
+        self._comp_modulus()
+        self._comp_stiffness()
+    
     def get_tension(self):
         return self._tension
     
     def get_density(self):
         return self._density_vol
     
-    def comp_modulus(self, p_1):
-        return (np.log(2) * 1.0e-09 / 600) * (self._tension / (np.pi * (self._radius/1000)**2)) * p_1
+    def get_kappa(self):
+        return self._kappa
+    
+    def get_modulus(self):
+        return self._modulus
+    
+    def get_stiffness(self):
+        return self._stiffness
 
-class Strings(object):
+
+class GuitarStrings(object):
     def __init__(self, name, file_name, sheet_name=None, scale_length=None):
         self._name = name
         self._scale = scale_length
@@ -77,7 +103,7 @@ class Strings(object):
         self._strings = []
         row_list = np.arange(data.shape[0])
         for row in row_list:
-            string = String(data.name[row], data.note[row], data.scale[row],
+            string = GuitarString(data.name[row], data.note[row], data.scale[row],
                             data.diameter[row], data.density[row], data.tension[row])
             if scale_length is not None:
                 string.set_scale(scale_length)
@@ -93,7 +119,11 @@ class Strings(object):
         self._scale = scale_length
         for string in self._strings:
             string.set_scale(scale_length)
-    
+
+    def set_r(self, r):
+        for string, r_string in zip(self._strings, r):
+            string.set_r(r_string)
+
     def get_count(self):
         return len(self._strings)
     
@@ -109,8 +139,77 @@ class Strings(object):
             densities.append(string.get_density())
         return np.array(densities)
     
-    def comp_modulus(self, p_1):
+    def get_kappa(self):
+        kappa = []
+        for string in self._strings:
+            kappa.append(string.get_kappa())
+        return np.array(kappa)
+    
+    def get_modulus(self):
         modulus = []
-        for string, p in zip(self._strings, p_1):
-            modulus.append(string.comp_modulus(p))
-        return modulus
+        for string in self._strings:
+            modulus.append(string.get_modulus())
+        return np.array(modulus)
+    
+    def get_stiffness(self):
+        stiffness = []
+        for string in self._strings:
+            stiffness.append(string.get_stiffness())
+        return np.array(stiffness)
+
+
+class Guitar(object):
+    def __init__(self, name, x0, dn, ds, b, c, string_count, strings):
+        self._name = name
+        self._x0 = x0
+        self._dn = dn
+        self._ds = ds
+        self._b = b
+        self._c = c
+        
+        assert string_count == strings.get_count(), "Guitar '{}'".format(self._name) + " requires {} strings, but {} were provided.".format(string_count, strings.get_count())
+        self.string_list = np.arange(1, string_count + 1)
+        self._strings = strings
+    
+    def __str__(self):
+        '''Return a string displaying the attributes of a ModeLockedLaserModel object.
+
+        Example
+        -------
+        model = ModeLockedLaserModel(params, freq_shifts, amplifier, absorber)
+        
+        print(model)
+        '''
+        retstr = self._name + '\n'
+        retstr += 'Scale Length: ' + '{:.1f} mm\n'.format(self._x0)
+        retstr += 'Nut Setback: ' + '{:.2f} mm\n'.format(self._dn)
+        retstr += 'Saddle Setback: ' + '{:.2f} mm\n'.format(self._ds)
+        retstr += 'b: ' + '{:.1f} mm\n'.format(self._b)
+        retstr += 'c: ' + '{:.1f} mm\n'.format(self._c)
+        retstr += self._strings.__str__() + "\n"
+        return retstr
+    
+    def gamma(self, n):
+        return 2.0**(n/12.0)
+
+    def l(self, n):
+        if n != 0:
+            length = np.sqrt( (self._x0/self.gamma(n) + self._ds)**2 + (self._b + self._c)**2 )
+        else:
+            length = np.sqrt( (self._x0 + self._ds + self._dn)**2 + self._c**2 )
+        return length
+
+    def lp(self, n):
+        if n != 0:
+            length = np.sqrt( (self._dn + self._x0 - self._x0/self.gamma(n))**2 + self._b**2 )
+        else:
+            length = 0.0
+        return length
+
+    def lmc(self, n):
+        length = self.l(n) + self.lp(n)
+        return length
+    
+    def qn(self, n):
+        l0 = self.l(0)
+        return (self.lmc(n) - l0) / l0

@@ -24,7 +24,7 @@ B_0 \equiv \sqrt{\frac{\pi\, R^4 E}{T_0\, L_0^2}}\, ,
  \end{equation}
 where $R$ is the radius of the string and $E$ is Young's modulus (or the modulus of elasticity). For a typical nylon guitar string with $E \approx 2 - 4$~GPa, $T_0 \approx 50 - 70$~N, $R \approx 0.35 - 0.51$~mm, and $L_0 \approx 650$~mm, we have $B_0 \approx 0.007 - 0.026$, indicating that the corrections in \eqn{f_0_stiff} are not significant.
 
-Throughout this work, we will use \emph{cents} to describe small differences in pitch~\cite{ref:durfee2015pms}. One cent is one one-hundredth of a 12-TET half step, so that there are 1200~cents per octave. The difference in pitch between frequencies $f_1$ and $f_2$ is therefore defined as
+Throughout this work, we will use \emph{cents} to describe small differences in pitch~\cite{ref:durfee2015pms}. One cent is one one-hundredth of a Twelve-Tone Equal Temperament (12-TET) half step, so that there are 1200~cents per octave. The difference in pitch between frequencies $f_1$ and $f_2$ is therefore defined as
  \begin{equation} \label{eqn:cents_def}
 \Delta \nu \equiv 1200\, \log_2\left(\frac{f_2}{f_1}\right)\, .
  \end{equation}
@@ -37,14 +37,14 @@ where the last approximation applies when $\Delta f \ll f$. An experienced guita
  \begin{figure}
   \centering
   \includegraphics[width=6.0in]{figures/guitar_schematic}
-  \caption{\label{fig:guitar_schematic} A simple (side-view) schematic of the classical guitar used in this model. The scale length of the guitar is $X_0$, but we allow the edges of both the saddle and the nut to be set back an additional distance $\Delta S$ and $\Delta N$, respectively. The location on the $x$-axis of the center of the $n^\textrm{th}$ fret is $X_n$. In the $z$ direction, $z = 0$ is taken as the surface of the fingerboard; therefore the height of each fret above the fingerboard is $a$, the height of the nut is $a + b$, and the height of the saddle is $a + b + c$. $L_n$ is the \emph{resonant length} of the string from the saddle to the center of fret $n$, and $L^\prime_n$ is the length of the string from the fret to the nut.}
+  \caption{\label{fig:guitar_schematic} A simple (side-view) schematic of the classical guitar used in this model. The scale length of the guitar is $X_0$, but we allow the edges of both the saddle and the nut to be set back an additional distance $\Delta S$ and $\Delta N$, respectively. The location on the $x$-axis of the center of the $n^\textrm{th}$ fret is $X_n$. In the $z$ direction, $z = 0$ is taken as the surface of the fingerboard; therefore the height of each fret above the fingerboard is $a$, the height of the nut is $a + b$, and the height of the saddle is $a + b + c$. $L_n$ is the \emph{resonant length} of the string from the saddle to the center of fret $n$, and $L^\prime_n$ is the length of the string from the fret to the nut.\red{Reflect the image through the $z$-axis.}}
  \end{figure}
 
 Our model begins with the schematic of the guitar shown in \fig{guitar_schematic}. The scale length of the guitar is $X_0$, but we allow the edges of both the saddle and the nut to be set back an additional distance $\Delta S$ and $\Delta N$, respectively. The location on the $x$-axis of the center of the $n^\textrm{th}$ fret is $X_n$. In the $z$ direction, $z = 0$ is taken as the surface of the fingerboard; the height of each fret is $a$, the height of the nut is $a + b$, and the height of the saddle is $a + b + c$. $L_n$ is the \emph{resonant length} of the string from the saddle to the center of fret $n$, and $L^\prime_n$ is the length of the string from the fret to the nut. The total length of the string is defined as $\mathcal{L}_n \equiv L_n + L^\prime_n$. For reasons discussed below, we have not adopted a more complicated fretting model~\cite{ref:byers1996cgi,ref:varieschi2010icf}. We start with the simple form of the fundamental frequency of a string given by \eqn{f_0_def}, and apply it to the frequency of a string pressed just behind the $n^\mathrm{th}$ fret:
  \begin{equation} \label{eqn:f_n_def}
 f_n = \frac{1}{2\, L_n}\, \sqrt{\frac{T_n}{\mu_n}}\, ,
  \end{equation}
-where $T_n$ and $\mu_n$ are respectively the tension and linear mass density of the fretted string. We note that $T_n$ and $\mu_n$ depend on $\mathcal{L}_n$, the \emph{total} length of the fretted string from the saddle to the nut. Ideally, in the 12-TET equal-temperament system~\cite{ref:durfee2015pms},
+where $T_n$ and $\mu_n$ are respectively the tension and linear mass density of the fretted string. We note that $T_n$ and $\mu_n$ depend on $\mathcal{L}_n$, the \emph{total} length of the fretted string from the saddle to the nut. Ideally, in the 12-TET system~\cite{ref:durfee2015pms},
  \begin{equation} \label{eqn:f_n_tet}
 f_n = \gamma_n\, f_0\, , \qquad \textrm{(12-TET~ideal)}
  \end{equation}
@@ -138,7 +138,7 @@ When we substitute this expression into \eqn{lmd_error}, the resulting error is 
 For the same parameters, $\Delta \nu_{12} = -0.11$~cents, and $|\Delta \nu_n| < |\Delta \nu_{12}|$ for $n < 12$.
 
  \subsection{Tension Error\label{sct:model_tension}}
-%The third term in \eqn{error_def} provides us withe frequency shift of a string 
+%The third term in \eqn{error_def} provides us withe frequency shift of a string
 Elasticity properties~\cite{ref:landau1986toe}
  \begin{equation} \label{eqn:youngs_mod_def}
 \Delta T_n = E\, A\, \frac{\mathcal{L}_n - L_0}{L_0} = A\, E\, Q_n\, ,
