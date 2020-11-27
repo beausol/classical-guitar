@@ -59,7 +59,7 @@ class GuitarString(object):
 
     def _comp_stiffness(self):
         modulus = 1.0e+09 * self._modulus
-        self._stiffness = np.sqrt( (np.pi * (self._radius/1000)**4) * modulus / (self._tension * (self._scale / 1000)**2) )
+        self._stiffness = np.sqrt( np.pi * (self._radius / 1000)**4 * modulus / ( self._tension * (self._scale / 1000)**2 ) )
 
     def set_scale(self, scale_length):
         self._scale = scale_length
@@ -172,13 +172,13 @@ class Guitar(object):
         self._strings = strings
     
     def __str__(self):
-        '''Return a string displaying the attributes of a ModeLockedLaserModel object.
+        '''Return a string displaying the attributes of a Guitar object.
 
         Example
         -------
-        model = ModeLockedLaserModel(params, freq_shifts, amplifier, absorber)
+        guitar = Guitar(name, x0, dn, ds, b, c, string_count, strings)
         
-        print(model)
+        print(guitar)
         '''
         retstr = self._name + '\n'
         retstr += 'Scale Length: ' + '{:.1f} mm\n'.format(self._x0)
@@ -213,3 +213,17 @@ class Guitar(object):
     def qn(self, n):
         l0 = self.l(0)
         return (self.lmc(n) - l0) / l0
+    
+    def freq_shifts(self):
+        l_0 = self.l(0)
+        kappa = self._strings.get_kappa()
+        b_0 = self._strings.get_stiffness()
+        
+        fret_list = np.arange(1, 13)
+        shifts = np.zeros((self.string_list.size, fret_list.size))
+        for m in self.string_list:
+            for n in fret_list:
+                norm = (l_0 / (self.gamma(n) * self.l(n))) * ((1 + self.gamma(n) * b_0[m-1]) / (1 + b_0[m-1]))
+                shifts[m-1][n-1] = 1200 * ( np.log2(norm) + (0.5/np.log(2.0)) * kappa[m-1] * self.qn(n) )
+            
+        return shifts
