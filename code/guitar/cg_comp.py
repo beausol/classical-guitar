@@ -162,8 +162,14 @@ class Guitar(object):
     def __init__(self, name, x0, dn, ds, b, c, string_count, strings):
         self._name = name
         self._x0 = x0
-        self._dn = dn
-        self._ds = ds
+        if len(dn) == 1:
+            self._dn = np.array(dn * string_count)
+        else:
+            self._dn = np.array(dn)
+        if len(ds) == 1:
+            self._ds = np.array(ds * string_count)
+        else:
+            self._ds = np.array(ds)
         self._b = b
         self._c = c
         
@@ -182,8 +188,22 @@ class Guitar(object):
         '''
         retstr = self._name + '\n'
         retstr += 'Scale Length: ' + '{:.1f} mm\n'.format(self._x0)
-        retstr += 'Nut Setback: ' + '{:.2f} mm\n'.format(self._dn)
-        retstr += 'Saddle Setback: ' + '{:.2f} mm\n'.format(self._ds)
+        if np.all(np.abs(self._ds - self._ds[0]) < 1.0e-06):
+            retstr += 'Saddle Setback: ' + '{:.2f} mm\n'.format(self._ds[0])
+        else:
+            setback_str = 'Saddle Setback: ['
+            template = '{:.{prec}}, '
+            for m in np.arange(self._ds.size):
+                setback_str += template.format(self._ds[m], prec = 3)
+            retstr += setback_str[0:-2] + ']\n'
+        if np.all(np.abs(self._dn - self._dn[0]) < 1.0e-06):
+            retstr += 'Nut Setback: ' + '{:.2f} mm\n'.format(self._dn[0])
+        else:
+            setback_str = 'Nut Setback: ['
+            template = '{:.{prec}}, '
+            for m in np.arange(self._dn.size):
+                setback_str += template.format(self._dn[m], prec = 2)
+            retstr += setback_str[0:-2] + ']\n'
         retstr += 'b: ' + '{:.1f} mm\n'.format(self._b)
         retstr += 'c: ' + '{:.1f} mm\n'.format(self._c)
         retstr += self._strings.__str__() + "\n"
@@ -192,38 +212,44 @@ class Guitar(object):
     def gamma(self, n):
         return 2.0**(n/12.0)
 
-    def l(self, n):
-        if n != 0:
-            length = np.sqrt( (self._x0/self.gamma(n) + self._ds)**2 + (self._b + self._c)**2 )
-        else:
-            length = np.sqrt( (self._x0 + self._ds + self._dn)**2 + self._c**2 )
+    #def l(self, n):
+        #if n != 0:
+            #length = np.sqrt( (self._x0/self.gamma(n) + self._ds)**2 + (self._b + self._c)**2 )
+        #else:
+            #length = np.sqrt( (self._x0 + self._ds + self._dn)**2 + self._c**2 )
+        #return length
+
+    def l0(self):
+        length = np.sqrt( (self._x0 + self._ds + self._dn)**2 + self._c**2 )
         return length
 
-    def lp(self, n):
-        if n != 0:
-            length = np.sqrt( (self._dn + self._x0 - self._x0/self.gamma(n))**2 + self._b**2 )
-        else:
-            length = 0.0
+    def l(self, fret_list):
+        ds, n = np.meshgrid(self._ds, fret_list, sparse=False, indexing='ij')
+        length = np.sqrt( (self._x0/self.gamma(n) + ds)**2 + (self._b + self._c)**2 )
         return length
 
-    def lmc(self, n):
-        length = self.l(n) + self.lp(n)
+    def lp(self, fret_list):
+        dn, n = np.meshgrid(self._dn, fret_list, sparse=False, indexing='ij')
+        length = np.sqrt( (dn + self._x0 - self._x0/self.gamma(n))**2 + self._b**2 )
+        return length
+
+    def lmc(self, fret_list):
+        length = self.l(fret_list) + self.lp(fret_list)
         return length
     
-    def qn(self, n):
-        l0 = self.l(0)
-        return (self.lmc(n) - l0) / l0
+    def qn(self, fret_list):
+        l0 = np.tile(self.l0().reshape(-1, 1), (1, fret_list.size))
+        return (self.lmc(fret_list) - l0) / l0
     
-    def freq_shifts(self):
-        l_0 = self.l(0)
-        kappa = self._strings.get_kappa()
-        b_0 = self._strings.get_stiffness()
+    def freq_shifts(self, fret_list):
+        l_0 = np.tile(self.l0().reshape(-1, 1), (1, fret_list.size))
+        kappa, n_2d = np.meshgrid(self._strings.get_kappa(), fret_list, sparse=False, indexing='ij')
+        b_0, n_2d = np.meshgrid(self._strings.get_stiffness(), fret_list, sparse=False, indexing='ij')
         
-        fret_list = np.arange(1, 13)
-        shifts = np.zeros((self.string_list.size, fret_list.size))
-        for m in self.string_list:
-            for n in fret_list:
-                norm = (l_0 / (self.gamma(n) * self.l(n))) * ((1 + self.gamma(n) * b_0[m-1]) / (1 + b_0[m-1]))
-                shifts[m-1][n-1] = 1200 * ( np.log2(norm) + (0.5/np.log(2.0)) * kappa[m-1] * self.qn(n) )
-            
+        rle = 1200 * np.log2( l_0 / (self.gamma(n_2d) * self.l(fret_list)) )
+        tme = (600/np.log(2.0)) * kappa * self.qn(fret_list)
+        bse = 1200 * np.log2( (1 + self.gamma(n_2d) * b_0) / (1 + b_0) )
+        
+        shifts = rle + tme + bse
+        
         return shifts
