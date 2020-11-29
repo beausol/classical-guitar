@@ -3,14 +3,16 @@ import pandas as pd
 
 class GuitarString(object):
 
-    '''Estimate frequency shifts and time delays    
+    '''Collect parameters and compute properties of guitar strings
        Estimate the frequency shift (due to frequency-pulling and dispersion)
        and the round-trip time delay (due to dispersion) of each mode q.
     
     Public Methods
     --------------
-    get_q : numpy.ndarray.int32
-        Array of integers [-q_max, ..., 0, ..., q_max]
+    set_scale : 
+        Set the scale length of the string
+    set_r :
+        Set the response of the string's frequency to a change of it's length
     get_d_omega : numpy.ndarray.float64
         Frequency shift of each mode q relative to 2 * q * pi
     get_delta_omega : numpy.ndarray.float64
@@ -50,7 +52,7 @@ class GuitarString(object):
             The nominal tension of the guitar string in pounds if units='IPS'
             or newtons otherwise
         units : str
-            If units='IPS', then the unit system of the input variables is
+            If units='IPS' (default), then the unit system of the input variables is
             assumed to use inches, pounds (for both mass and weight), and
             seconds; for any other value, the unit system of the input
             variables is assumed to use millimeters, kilograms, newtons, and
@@ -114,7 +116,11 @@ class GuitarString(object):
         modulus = 1.0e+09 * self._modulus
         self._stiffness = np.sqrt( np.pi * (self._radius / 1000)**4 * modulus / ( self._tension * (self._scale / 1000)**2 ) )
 
-    def set_scale(self, scale_length):
+    def set_scale(self, scale_length, units=None):
+        if units == 'IPS':
+            in_to_mm = 25.4
+            scale_length *= in_to_mm
+            
         self._scale = scale_length
         self._tension = self._comp_tension()
         

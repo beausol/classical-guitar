@@ -32,7 +32,7 @@ where the last approximation applies when $\Delta f \ll f$. An experienced guita
  \begin{figure}
   \centering
   \includegraphics[width=6.0in]{figures/guitar_schematic}
-  \caption{\label{fig:guitar_schematic} A simple (side-view) schematic of the classical guitar used in this model. The scale length of the guitar is $X_0$, but we allow the edges of both the saddle and the nut to be set back an additional distance $\Delta S$ and $\Delta N$, respectively. The location on the $x$-axis of the center of the $n^\textrm{th}$ fret is $X_n$. In the $z$ direction, $z = 0$ is taken as the surface of the fingerboard; therefore the height of each fret above the fingerboard is $a$, the height of the nut is $a + b$, and the height of the saddle is $a + b + c$. $L_n$ is the \emph{resonant length} of the string from the saddle to the center of fret $n$, and $L^\prime_n$ is the length of the string from the fret to the nut. \red{Reflect the image through the $z$-axis.}}
+  \caption{\label{fig:guitar_schematic} A simple (side-view) schematic of the classical guitar used in this model. The scale length of the guitar is $X_0$, but we allow the edges of both the saddle and the nut to be set back an additional distance $\Delta S$ and $\Delta N$, respectively. The location on the $x$-axis of the center of the $n^\textrm{th}$ fret is $X_n$. In the $z$ direction, $z = 0$ is taken as the surface of the fingerboard; therefore the height of each fret above the fingerboard is $a$, the height of the nut is $a + b$, and the height of the saddle is $a + b + c$. $L_n$ is the \emph{resonant length} of the string from the saddle to the center of fret $n$, and $L^\prime_n$ is the length of the string from the fret to the nut.}
  \end{figure}
 
 Our model begins with the schematic of the guitar shown in \fig{guitar_schematic}. The scale length of the guitar is $X_0$, but we allow the edges of both the saddle and the nut to be set back an additional distance $\Delta S$ and $\Delta N$, respectively. The location on the $x$-axis of the center of the $n^\textrm{th}$ fret is $X_n$. In the $z$ direction, $z = 0$ is taken as the surface of the fingerboard; the height of each fret is $a$, the height of the nut is $a + b$, and the height of the saddle is $a + b + c$. $L_n$ is the \emph{resonant length} of the string from the saddle to the center of fret $n$, and $L^\prime_n$ is the length of the string from the fret to the nut. The total length of the string is defined as $\mathcal{L}_n \equiv L_n + L^\prime_n$. For reasons discussed below, we have not adopted a more complicated fretting model~\cite{ref:byers1996cgi,ref:varieschi2010icf}. We start with form of the fundamental frequency of a fretted string given by \eqn{f_n_stiff}, and apply it to the frequency of a string pressed just behind the $n^\mathrm{th}$ fret:
@@ -149,7 +149,7 @@ T_n = T_0 + T_n = T_0 \left( 1 + \kappa\, Q_n \right)\, ,
  \end{equation}
 where we have defined the dimensionless ``string constant''
  \begin{equation}\label{eqn:kappa_def}
-\kappa \equiv \frac{A\, E}{T_0} = \frac{\pi r^2 E}{T_0}\, .
+\kappa \equiv \frac{A\, E}{T_0} = \frac{\pi \rho^2 E}{T_0}\, .
  \end{equation}
 In this case, we assume that $\kappa Q_n \ll 1$, so that we can approximate the third term in the final line of \eqn{error_def} as
  \begin{equation}
