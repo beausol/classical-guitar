@@ -2,7 +2,60 @@ import numpy as np
 import pandas as pd
 
 class GuitarString(object):
+
+    '''Estimate frequency shifts and time delays    
+       Estimate the frequency shift (due to frequency-pulling and dispersion)
+       and the round-trip time delay (due to dispersion) of each mode q.
+    
+    Public Methods
+    --------------
+    get_q : numpy.ndarray.int32
+        Array of integers [-q_max, ..., 0, ..., q_max]
+    get_d_omega : numpy.ndarray.float64
+        Frequency shift of each mode q relative to 2 * q * pi
+    get_delta_omega : numpy.ndarray.float64
+        Frequency of each mode q (relative to q = 0)
+    get_omega : numpy.ndarray.float64
+        Normalized frequency detuning for each mode q
+    get_gamma : numpy.ndarray.complex128
+        Complex ODE decay constant of each mode q
+    get_delay : numpy.ndarray.float64
+        Time delay prefactor for each mode q
+    get_keywords : string
+        String containing the attributes of a
+        FrequencyShifts object
+    '''
+
     def __init__(self, name, note, scale_length, diameter, linear_mass_density, tension, units='IPS'):
+        '''Initialize a GuitarString object.
+
+        Parameters
+        ----------
+        name : str
+            A python string containing the name of the guitar string
+        note : str
+            A python string labeling the fundamental frequency of the
+            open string using scientific notation, such as 'A_4', 'Ab_4',
+            or 'A#_4'
+        scale_length : numpy.float64
+            The scale length of the guitar string in inches if units='IPS'
+            or millimeters otherwise
+        diameter : numpy.float64
+            The diameter of the guitar string in inches if units='IPS'
+            or millimeters otherwise
+        linear_mass_density : numpy.float64
+            The linear_mass_density of the guitar string in pounds per inch
+            if units='IPS' or kilograms per mm otherwise
+        tension : numpy.float64
+            The nominal tension of the guitar string in pounds if units='IPS'
+            or newtons otherwise
+        units : str
+            If units='IPS', then the unit system of the input variables is
+            assumed to use inches, pounds (for both mass and weight), and
+            seconds; for any other value, the unit system of the input
+            variables is assumed to use millimeters, kilograms, newtons, and
+            seconds
+        '''
         if units == 'IPS':
             in_to_mm = 25.4
             lb_to_kg = 1.0 / 2.204
@@ -110,6 +163,14 @@ class GuitarStrings(object):
             self._strings.append(string)
 
     def __str__(self):
+        '''Return a string displaying the attributes of a GuitarStrings object.
+    
+        Example
+        -------
+        strings = GuitarStrings(name, file_name, sheet_name, scale_length)
+        
+        print(strings)
+        '''
         retstr = self._name + "\n"
         for string in self._strings:
             retstr += string.__str__() + "\n"
