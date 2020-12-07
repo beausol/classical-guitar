@@ -9,7 +9,7 @@
 
  \section{Experimental Estimate of the String Constant\label{sct:exp}}
 
-How do we estimate the spring constant $\kappa$ given by \eqn{kappa_def}? Recall how we introduced this concept in \sct{model_tension}: increasing the tension by a quantity $\Delta T$ causes a shift in the frequency of a guitar string by $\Delta \nu$ in cents. Although we were considering fretted strings when we derived \eqn{error_def}, the terms in that equation can be generalized to describe the case of an open string that has been stretched longitudinally. Suppose that we continue to clamp the string at the saddle and the nut, but that we tighten the tuning gear to stretch that string's length by an amount $\Delta L$. The change in the string's frequency due to the change in the open resonant length is zero, because $L_0 / \gamma_0 L_0 = 1$. The linear mass density of the string is smaller now because there is less material between the saddle and the nut, causing the frequency shift (in cents)
+\red{This section needs to be rewritten.} How do we estimate the spring constant $\kappa$ given by \eqn{kappa_def}? Recall how we introduced this concept in \sct{model_tension}: increasing the tension by a quantity $\Delta T$ causes a shift in the frequency of a guitar string by $\Delta \nu$ in cents. Although we were considering fretted strings when we derived \eqn{error_def}, the terms in that equation can be generalized to describe the case of an open string that has been stretched longitudinally. Suppose that we continue to clamp the string at the saddle and the nut, but that we tighten the tuning gear to stretch that string's length by an amount $\Delta L$. The change in the string's frequency due to the change in the open resonant length is zero, because $L_0 / \gamma_0 L_0 = 1$. The linear mass density of the string is smaller now because there is less material between the saddle and the nut, causing the frequency shift (in cents)
  \begin{equation}
 600\, \log_2 \left(  \frac{\mu}{\mu + \Delta \mu} \right) \approx \frac{600}{\ln(2)}\, \frac{\Delta L}{L}\, ,
  \end{equation}
@@ -31,7 +31,7 @@ R \equiv \frac{L}{\Delta L}\, \Delta \nu
  \end{equation}
 is a parameter originally defined by Byers\footnote{Byers expressed this parameter in terms of the fractional frequency shift (in Hertz) as $R = (L/\Delta L) (\Delta f/f) \approx (\ln(2)/1200) (L/\Delta L) \Delta \nu$. Therefore, our dimensionless value of $R$ is larger than Byers' by a factor of about 1730.}~\cite{ref:byers1996cgi,ref:varieschi2010icf}.
 
-It is relatively easy to estimate the value of $R$ for any guitar string with the aid of a simple device that can measure frequency shifts in cents~\cite{ref:pgtweb} and either calipers or a ruler with finely marked graduations. With a fine-point felt pen, make a small mark on the string at some convenient point (say, directly above the first fret). Then tighten that string's tuning gear to increase the frequency by an amount measured using the electronic tuner. (A particularly convenient shift is four half-steps, corresponding to $\Delta \nu = 400$~cents, which will require a stretch of approximate $5 - 6$~mm.) \red{Should we include photos here? Also, we're assuming that the string stretches uniformly (i.e., the nut isn't grabbing the string); we'll have to check this.}
+It is relatively easy to estimate the value of $R$ for any guitar string with the aid of a simple device that can measure frequency shifts in cents~\cite{ref:pgtweb} and either calipers or a ruler with finely marked graduations. With a fine-point felt pen, make a small mark on the string at some convenient point (say, directly above the first fret). Then tighten that string's tuning gear to increase the frequency by an amount measured using the electronic tuner. (A particularly convenient shift is four half-steps, corresponding to $\Delta \nu = 400$~cents, which will require a stretch of approximate $5 - 6$~mm.)
 
 % \begin{equation}
 % \begin{split}
@@ -95,17 +95,35 @@ It is relatively easy to estimate the value of $R$ for any guitar string with th
     \hline \hline
     String  & $R$ & $\kappa$ & Modulus (GPa) & Stiffness \\
     \hline
-    J4301 & 4.39 $\times 10^{4}$ & 49.8 & 8.62 & 3.79 $\times 10^{-3}$ \\
-    J4302 & 5.02 $\times 10^{4}$ & 57.0 & 5.62 & 4.68 $\times 10^{-3}$ \\
-    J4303 & 4.79 $\times 10^{4}$ & 54.4 & 3.57 & 5.72 $\times 10^{-3}$ \\
-    J4304 & 5.02 $\times 10^{4}$ & 57.0 & 9.52 & 4.13 $\times 10^{-3}$ \\
-    J4305 & 4.39 $\times 10^{4}$ & 49.8 & 5.05 & 4.55 $\times 10^{-3}$ \\
-    J4306 & 5.27 $\times 10^{4}$ & 59.9 & 3.97 & 6.35 $\times 10^{-3}$ \\
+    J4301 & 2.67 $\times 10^{4}$ & 29.8 & 5.17 & 2.94 $\times 10^{-3}$ \\
+    J4302 & 1.09 $\times 10^{4}$ & 11.6 & 1.14 & 2.11 $\times 10^{-3}$ \\
+    J4303 & 6.63 $\times 10^{4}$ & 75.6 & 4.97 & 6.75 $\times 10^{-3}$ \\
+    J4304 & 2.60 $\times 10^{4}$ & 29.1 & 4.86 & 2.95 $\times 10^{-3}$ \\
+    J4305 & 2.66 $\times 10^{4}$ & 29.7 & 3.02 & 3.52 $\times 10^{-3}$ \\
+    J4306 & 1.40 $\times 10^{4}$ & 15.2 & 1.01 & 3.20 $\times 10^{-3}$ \\
     \hline
     \end{tabular}%
   \label{tab:addlabel}%
 \end{table}%
 
+
+\begin{table}%[htbp]
+  \centering
+  \caption{\label{tbl:ej46_props} Derived physical properties of the D'Addario Pro-Arte Nylon Classical Guitar Strings -- Hard Tension (EJ46). The corresponding scale length is 650 mm.}
+    \begin{tabular}{lcccc}
+    \hline \hline
+    String  & $R$ & $\kappa$ & Modulus (GPa) & Stiffness \\
+    \hline
+    J4301 & 10.2 $\times 10^{4}$ & 116.5 & 20.1 & 6.01 $\times 10^{-3}$ \\
+    J4302 & 4.13 $\times 10^{4}$ & 46.7 & 4.65 & 4.37 $\times 10^{-3}$ \\
+    J4303 & 2.96 $\times 10^{4}$ & 33.2 & 2.16 & 4.61 $\times 10^{-3}$ \\
+    J4304 & 4.66 $\times 10^{4}$ & 52.8 & 8.47 & 4.26 $\times 10^{-3}$ \\
+    J4305 & 1.79 $\times 10^{4}$ & 19.7 & 2.13 & 3.12 $\times 10^{-3}$ \\
+    J4306 & 2.65 $\times 10^{4}$ & 29.6 & 1.96 & 4.68 $\times 10^{-3}$ \\
+    \hline
+    \end{tabular}%
+  \label{tab:addlabel}%
+\end{table}%
 
 %\begin{table}%[htbp]
 %  \centering

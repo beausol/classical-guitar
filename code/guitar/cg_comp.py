@@ -182,6 +182,20 @@ class GuitarStrings(object):
             retstr += string.__str__() + "\n"
         return retstr
 
+    def comp_r(self, delta_nu:list, g, b, c, ds, dn, x0):
+        q = ( g / (2 * x0**2) ) * ( (b + c)**2 + b**2/(g - 1) - c**2/g )
+        aa = q / 2
+        l0 = x0 + ds + dn
+
+        kappa = np.zeros_like(l0)
+        string_num = np.arange(0, len(self._strings))
+        for string, num in zip(self._strings, string_num):
+            bb = string._radius / l0[num]
+            cc = -(np.log(2)/1200.0) * delta_nu[num] - (g - 1) * (ds[num] - dn[num]) / x0
+            kappa[num] = ( ( -bb + np.sqrt(bb**2 - 4 * aa * cc) ) / (2 * aa) )**2
+
+        return (600.0 / np.log(2)) * (kappa + 1)
+    
     def set_scale(self, scale_length):
         self._scale = scale_length
         for string in self._strings:
@@ -319,4 +333,11 @@ class Guitar(object):
         
         shifts = rle + tme + bse
         
-        return shifts
+        open_strings = np.array([np.zeros(self.string_list[-1])]).T
+        
+        return np.hstack((open_strings, shifts))
+    
+    def comp_r(self, delta_nu:list, fret:int):
+        g = self.gamma(fret)
+        r = self._strings.comp_r(delta_nu, g, self._b, self._c, self._ds, self._dn, self._x0)
+        return r
