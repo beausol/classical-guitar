@@ -112,14 +112,7 @@ class GuitarString(object):
     def _comp_modulus(self):
         self._modulus = 1.0e-09 * (self._tension / (np.pi * (self._radius/1000)**2)) * self._kappa
 
-    #def _comp_stiffness(self, bc):
-        #modulus = 1.0e+09 * self._modulus
-        #if bc == 'clamped':
-            #self._stiffness = np.sqrt( np.pi * (self._radius / 1000)**4 * modulus / ( self._tension * (self._scale / 1000)**2 ) )
-        #elif bc == 'pinned':
-            #self._stiffness = (np.pi**2/8) * (self._radius / 1000)**4 * modulus / ( self._tension * (self._scale / 1000)**2 )
-
-    def _comp_stiffness(self, bc):
+    def _comp_stiffness(self):
         modulus = 1.0e+09 * self._modulus
         self._stiffness = np.sqrt( np.pi * (self._radius / 1000)**4 * modulus / ( 4 * self._tension * (self._scale / 1000)**2 ) )
 
@@ -131,11 +124,11 @@ class GuitarString(object):
         self._scale = scale_length
         self._tension = self._comp_tension()
         
-    def set_r(self, r, bc):
+    def set_r(self, r):
         self._r = r
         self._comp_kappa()
         self._comp_modulus()
-        self._comp_stiffness(bc)
+        self._comp_stiffness()
     
     def get_tension(self):
         return self._tension
@@ -189,27 +182,7 @@ class GuitarStrings(object):
             retstr += string.__str__() + "\n"
         return retstr
 
-    #def comp_r(self, delta_nu:list, g, b, c, ds, dn, x0, bc):
-        #q = ( g / (2 * x0**2) ) * ( (b + c)**2 + b**2/(g - 1) - c**2/g )
-        #l0 = x0 + ds + dn
-
-        #kappa = np.zeros_like(l0)
-        #string_num = np.arange(0, len(self._strings))
-        #if bc == 'clamped':
-            #aa = q / 2
-            #for string, num in zip(self._strings, string_num):
-                #bb = string._radius / l0[num]
-                #cc = -(np.log(2)/1200.0) * delta_nu[num] - (g - 1) * (ds[num] - dn[num]) / x0
-                #kappa[num] = ( ( -bb + np.sqrt(bb**2 - 4 * aa * cc) ) / (2 * aa) )**2
-        #else:   # bc == 'pinned'
-            #b0 = (g**2 - 1) * (np.pi**2/8) * (string._radius / l0[num])**2
-            #denom = b0 + q / 2
-            #numer = (np.log(2)/1200.0) * delta_nu[num] + ((g - 1) * ds[num] - dn[num]) / x0
-            #kappa[num] = numer / denom
-
-        #return (600.0 / np.log(2)) * (kappa + 1)
-
-    def comp_r(self, delta_nu:list, g, b, c, ds, dn, x0, bc):
+    def comp_r(self, delta_nu:list, g, b, c, ds, dn, x0):
         q = ( g / (2 * x0**2) ) * ( (b + c)**2 + b**2/(g - 1) - c**2/g )
         l0 = x0 + ds + dn
 
@@ -228,9 +201,9 @@ class GuitarStrings(object):
         for string in self._strings:
             string.set_scale(scale_length)
 
-    def set_r(self, r, bc):
+    def set_r(self, r):
         for string, r_string in zip(self._strings, r):
-            string.set_r(r_string, bc)
+            string.set_r(r_string)
 
     def get_count(self):
         return len(self._strings)
@@ -267,7 +240,7 @@ class GuitarStrings(object):
 
 
 class Guitar(object):
-    def __init__(self, name, x0, dn, ds, b, c, string_count, strings, d=0, bc='clamped'):
+    def __init__(self, name, x0, dn, ds, b, c, string_count, strings, dbdx = 0.0, d=0.0):
         self._name = name
         self._x0 = x0
         if len(dn) == 1:
@@ -280,8 +253,8 @@ class Guitar(object):
             self._ds = np.array(ds)
         self._b = b
         self._c = c
+        self._dbdx = dbdx
         self._d = d
-        self._bc = bc
         
         assert string_count == strings.get_count(), "Guitar '{}'".format(self._name) + " requires {} strings, but {} were provided.".format(string_count, strings.get_count())
         self.string_list = np.arange(1, string_count + 1)
@@ -316,12 +289,14 @@ class Guitar(object):
             retstr += setback_str[0:-2] + ']\n'
         retstr += 'b: ' + '{:.1f} mm\n'.format(self._b)
         retstr += 'c: ' + '{:.1f} mm\n'.format(self._c)
+        retstr += 'dbdx: ' + '{:.1f}\n'.format(self._dbdx)
         retstr += 'd: ' + '{:.1f} mm\n'.format(self._d)
         retstr += self._strings.__str__() + "\n"
         return retstr
     
-    def get_bc(self):
-        return self._bc
+    def _bn(self, n):
+        g_n = self.gamma(n)
+        return self._b - ((g_n - 1)/g_n) * self._dbdx * self._x0
 
     def gamma(self, n):
         return 2.0**(n/12.0)
@@ -332,12 +307,13 @@ class Guitar(object):
 
     def l(self, fret_list):
         ds, n = np.meshgrid(self._ds, fret_list, sparse=False, indexing='ij')
-        length = np.sqrt( (self._x0/self.gamma(n) + ds)**2 + (self._b + self._c)**2 )
+        #length = np.sqrt( (self._x0/self.gamma(n) + ds)**2 + (self._b + self._c)**2 )
+        length = np.sqrt( (self._x0/self.gamma(n) + ds)**2 + (self._bn(n) + self._c)**2 )
         return length
 
     def lp(self, fret_list):
         dn, n = np.meshgrid(self._dn, fret_list, sparse=False, indexing='ij')
-        length = self._d + np.sqrt( (dn + self._x0 - self._x0/self.gamma(n) - self._d)**2 + self._b**2 )
+        length = self._d + np.sqrt( (dn + self._x0 - self._x0/self.gamma(n) - self._d)**2 + self._bn(n)**2 )
         return length
 
     def lmc(self, fret_list):
@@ -365,5 +341,6 @@ class Guitar(object):
     
     def comp_r(self, delta_nu:list, fret:int):
         g = self.gamma(fret)
-        r = self._strings.comp_r(delta_nu, g, self._b, self._c, self._ds, self._dn, self._x0, bc=self._bc)
+        b = self._bn(fret)
+        r = self._strings.comp_r(delta_nu, g, b, self._c, self._ds, self._dn, self._x0)
         return r
