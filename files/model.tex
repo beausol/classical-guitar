@@ -9,21 +9,19 @@
 
  \section{Simple Model of Guitar Intonation\label{sct:model}}
 
-
+\red{Here's the old \emph{wrong} equation:}
+ \begin{equation}
+f_{m n} = \frac{m}{2\, L_n}\, \sqrt{\frac{T_n}{\mu_n}} \left[ 1 + 2 B_n + 4 \left(1 + \frac{\pi^2\, m^2}{8}\right) B_n^2 \right]\, ,
+ \end{equation}
+\red{Here's the new equation, from \app{freq}, applied to fret $n$:}
  \begin{equation} \label{eqn:f_mn_stiff}
-f_{m n} = \frac{1}{2\, L_n}\, \sqrt{\frac{T_n}{\mu_n}} \left[ 1 + B_n + \left(1 + \frac{\pi^2\, m^2}{8}\right) B_n^2 \right]\, ,
+f_{m n} = \frac{m}{2\, L_n}\, \sqrt{\frac{T_n}{\mu_n}} \left( 1 + B_n \right)\, ,
  \end{equation}
- \begin{equation} \label{eqn:f_n_stiff}
-f_n = \frac{1}{2\, L_n}\, \sqrt{\frac{T_n}{\mu_n}} \left[ 1 + B_n + \left(1 + \frac{\pi^2}{8}\right) B_n^2 \right]\, ,
- \end{equation}
- \begin{equation} \label{eqn:f_m_open}
-f_m = \frac{1}{2\, L_0}\, \sqrt{\frac{T_0}{\mu_0}} \left[ 1 + B_0 + \left(1 + \frac{\pi^2\, m^2}{8}\right) B_0^2 \right]\, ,
- \end{equation}
-where $L_n$ is the length of the vibrating string from the saddle to fret $n$, $T_n$ and $\mu_n$ are the tension and the linear mass density of the fretted string repectively. Here, we are using $B_n$ to represent a small string ``bending stiffness'' coefficient to capture the relevant mechanical properties of the transversely vibrating string. For a homogeneous string with a cylindrical cross section, $B_0$ is given by~\cite{ref:morse1981vsb}
+where $L_n$ is the length of the vibrating string from the saddle to fret $n$, and $T_n$ and $\mu_n$ are the tension and the linear mass density of the fretted string, respectively. Here, we are using $B_n$ to represent a small string ``bending stiffness'' coefficient to capture the relevant mechanical properties of the transversely vibrating string. For a homogeneous string with a cylindrical cross section, $B_n$ is given by
  \begin{equation} \label{eqn:b_n_def}
-B_0 \equiv \sqrt{\frac{\pi\, \rho^4\, E}{T_0\, L_0^2}}\, ,
+B_n \equiv \sqrt{\frac{\pi\, \rho^4\, E}{4\, T_n\, L_n^2}}\, ,
  \end{equation}
-where $\rho$ is the radius of the string and $E$ is Young's modulus (or the modulus of elasticity). Note that \eqn{f_n_stiff} is valid only when $B_n \ll 1$. For a typical nylon guitar string with $E \approx 4$~GPa, $T_0 \approx 60$~N, $\rho \approx 0.5$~mm, and $L_0 \approx 650$~mm, we have $B_0 \approx 6 \times 10^{-3}$. We'll use \eqn{f_n_stiff} and \eqn{b_n_def} with considerable caution, because it's unlikely that they describe the physics of nylon strings (particularly the wound base strings) with a high degree of accuracy~\cite{ref:lynchaird2017mpn}.
+where $\rho$ is the radius of the string and $E$ is Young's modulus (or the modulus of elasticity). Note that \eqn{f_mn_stiff} is valid only when $B_n \ll 1$. For a typical nylon guitar string with $E \approx 4$~GPa, $T_0 \approx 60$~N, $\rho \approx 0.5$~mm, and $L_0 \approx 650$~mm, we have $B_0 \approx 6 \times 10^{-3}$. We'll use \eqn{f_mn_stiff} and \eqn{b_n_def} with considerable caution, because it's unlikely that they describe the physics of nylon strings (particularly the wound base strings) with a high degree of accuracy~\cite{ref:lynchaird2017mpn}.
 
 Throughout this work, we will use \emph{cents} to describe small differences in pitch~\cite{ref:durfee2015pms}. One cent is one one-hundredth of a Twelve-Tone Equal Temperament (12-TET) half step, so that there are 1200~cents per octave. The difference in pitch between frequencies $f_1$ and $f_2$ is therefore defined as
  \begin{equation} \label{eqn:cents_def}
@@ -41,7 +39,7 @@ where the last approximation applies when $\Delta f \ll f$. An experienced guita
   \caption{\label{fig:guitar_schematic} A simple (side-view) schematic of the classical guitar used in this model. The scale length of the guitar is $X_0$, but we allow the edges of both the saddle and the nut to be set back an additional distance $\Delta S$ and $\Delta N$, respectively. The location on the $x$-axis of the center of the $n^\textrm{th}$ fret is $X_n$. (Note that the $x$-axis is directed to the left in this figure.) In the $z$ direction, $z = 0$ is taken as the surface of the fingerboard; therefore the height of each fret above the fingerboard is $a$, the height of the nut is $a + b$, and the height of the saddle is $a + b + c$. $L_n$ is the \emph{resonant length} of the string from the saddle to the center of fret $n$, and $L^\prime_n$ is the length of the string from the fret to the nut.}
  \end{figure}
 
-Our model begins with the schematic of the guitar shown in \fig{guitar_schematic}. The scale length of the guitar is $X_0$, but we allow the edges of both the saddle and the nut to be set back an additional distance $\Delta S$ and $\Delta N$, respectively. The location on the $x$-axis of the center of the $n^\textrm{th}$ fret is $X_n$. In the $z$ direction, $z = 0$ is taken as the surface of the fingerboard; the height of each fret is $a$, the height of the nut is $a + b$, and the height of the saddle is $a + b + c$. $L_n$ is the \emph{resonant length} of the string from the saddle to the center of fret $n$, and $L^\prime_n$ is the length of the string from the fret to the nut. The total length of the string is defined as $\mathcal{L}_n \equiv L_n + L^\prime_n$. For reasons discussed below, we have not adopted a more complicated fretting model~\cite{ref:byers1996cgi,ref:varieschi2010icf}. We start with form of the fundamental frequency of a fretted string given by \eqn{f_n_stiff}, and apply it to the frequency of a string pressed just behind the $n^\mathrm{th}$ fret:
+Our model begins with the schematic of the guitar shown in \fig{guitar_schematic}. The scale length of the guitar is $X_0$, but we allow the edges of both the saddle and the nut to be set back an additional distance $\Delta S$ and $\Delta N$, respectively. The location on the $x$-axis of the center of the $n^\textrm{th}$ fret is $X_n$. In the $z$ direction, $z = 0$ is taken as the surface of the fingerboard; the height of each fret is $a$, the height of the nut is $a + b$, and the height of the saddle is $a + b + c$. $L_n$ is the \emph{resonant length} of the string from the saddle to the center of fret $n$, and $L^\prime_n$ is the length of the string from the fret to the nut. The total length of the string is defined as $\mathcal{L}_n \equiv L_n + L^\prime_n$. For reasons discussed below, we have not adopted a more complicated fretting model~\cite{ref:byers1996cgi,ref:varieschi2010icf}. We start with form of the fundamental frequency of a fretted string given by \eqn{f_mn_stiff} with $m = 1$, and apply it to the frequency of a string pressed just behind the $n^\mathrm{th}$ fret:
  \begin{equation} \label{eqn:f_n_def}
 f_n = \frac{1}{2\, L_n}\, \sqrt{\frac{T_n}{\mu_n}} \left( 1 + B_n \right)\, ,
  \end{equation}
@@ -99,8 +97,6 @@ Then --- when the guitar has been manufactured such that $X_n = X_0 / \gamma_n$ 
   \end{equation}
 If the guitar is uncompensated, so that $\Delta S = \Delta N = 0$, this error is typically less than 0.25~cents. But, with $\Delta S > 0$ and $\Delta N < 0$, we can significantly \emph{increase} the magnitude of this ``error'' and cause the frequency to shift lower. We'll see that this is our primary method of compensation. \red{TBD: Add a figure here?}
 
-Previous studies of guitar intonation and compensation have chosen to include the apparent increase in length of the string caused by both the fretting depth and the shape of the fretted string under the finger~\cite{ref:byers1996cgi,ref:varieschi2010icf}. As the string is initially pressed to the fret, the total length $\mathcal{L}_n$ increases and causes the tension in the string --- which is clamped at the saddle and the nut --- to increase. As the string is pressed further, does the additional deformation of the string increase its tension (throughout the resonant length $L_n$)? There are at least two purely empirical reasons to doubt this hypothesis. First, we can mark a string (with a fine-point felt pen) above a particular fret and then observe the mark with a magnifying glass. As the string is pressed all the way to the finger board, the mark does not move perceptibly --- it has become effectively \emph{clamped} on the fret. Second, we can use either our ears or a simple tool to measure frequencies~\cite{ref:pgtweb} to listen for a shift as we use different fingers and vary the fretted depth of a string. The apparent modulation is far less than would be obtained by classical vibrato ($\pm15$~cents), so we assume that once the string is minimally fretted the length(s) can be regarded as fixed. (If this were not the case, then fretting by different people or with different fingers, at a single string or with a barre, would cause additional, varying frequency shifts that would be audible and difficult to compensate.)
-
  \subsection{Linear Mass Density}
 As discussed above, the linear mass density $\mu_0$ of an open (unfretted) string is simply the total mass $M$ of the string clamped between the saddle and the nut divided by the length $L_0$. Similarly, the mass density $\mu_n$ of a string held onto fret $N$ is $M/\mathcal{L}_n$. Therefore
  \begin{equation}
@@ -114,6 +110,16 @@ Since we expect that $Q_n \ll 1$, we can approximate the second term in the fina
  \begin{equation} \label{eqn:lmd_error}
 600\, \log_2 \left(  \frac{\mu_0}{\mu_n} \right) \approx \frac{600}{\ln(2)}\, Q_n\, .
  \end{equation}
+
+Previous studies of guitar intonation and compensation have chosen to include the apparent increase in length of the string caused by both the fretting depth and the shape of the fretted string under the finger~\cite{ref:byers1996cgi,ref:varieschi2010icf}. As the string is initially pressed to the fret, the total length $\mathcal{L}_n$ increases and causes the tension in the string --- which is clamped at the saddle and the nut --- to increase. As the string is pressed further, does the additional deformation of the string increase its tension (throughout the resonant length $L_n$)? There are at least two purely empirical reasons to doubt this hypothesis. First, we can mark a string (with a fine-point felt pen) above a particular fret and then observe the mark with a magnifying glass. As the string is pressed all the way to the finger board, the mark does not move perceptibly --- it has become effectively \emph{clamped} on the fret. Second, we can use either our ears or a simple tool to measure frequencies~\cite{ref:pgtweb} to listen for a shift as we use different fingers and vary the fretted depth of a string. The apparent modulation is far less than would be obtained by classical vibrato ($\pm15$~cents), so we assume that once the string is minimally fretted the length(s) can be regarded as fixed. (If this were not the case, then fretting by different people or with different fingers, at a single string or with a barre, would cause additional, varying frequency shifts that would be audible and difficult to compensate.)
+
+ \begin{figure}
+  \centering
+  \includegraphics[width=6.0in]{figures/fret_model}
+  \caption{\label{fig:fret_model} Plot of the normalized displacement $Q_n$ as a function of the fret number for three different values of the parameter $d$. Here the guitar has $b = 1.0$~mm, $c = 3.5$~mm, no setbacks, and a scale length of 650~mm.}
+ \end{figure}
+
+
 
 Referring to \fig{guitar_schematic}, we see that $\mathcal{L}_n = L_n + L^\prime_n$, and we calculate $L^\prime_n$ as
  \begin{equation}

@@ -1,0 +1,77 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Section file included in main project file using \input{}
+%
+% Assumes that LaTeX2e macros and packages defined in cg_comp.sty are
+%   available
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+ \section{Vibration Frequencies of a Stiff String\label{app:freq}}
+
+Here we outline the calculation of the normal mode frequencies of a vibrating stiff string with non-symmetric boundary conditions. We begin with the wave equation~\cite{ref:fletcher1964nvf}
+ \begin{equation}
+\mu\, \frac{\partial^2}{\partial t^2}\, y(x) = T\, \frac{\partial^2}{\partial x^2}\, y(x) - E\, S\, \mathcal{K}^2\, \frac{\partial^4}{\partial x^2}\, y (x)\, ,
+ \end{equation}
+where $\mu$ and $T$ are respectively the linear mass density and the tension of the string, $E$ is its Young's modulus (or the modulus of elasticity), $S$ is the cross-sectional area, and $\mathcal{K}$ is the radius of gyration of the string. If we simplify this equation by scaling $x$ by the length $L$ of the string, and $t$ by $1/\omega_0 \equiv  (L/\pi) \sqrt{\mu/T}$, then we obtain the dimensionless wave equation
+ \begin{equation} \label{eqn:wave_eqn_dim}
+\pi^2\, \frac{\partial^2}{\partial t^2}\, y(x) = \frac{\partial^2}{\partial x^2}\, y(x) - B^2\, \frac{\partial^4}{\partial x^2}\, y (x)\, ,
+ \end{equation}
+where $B$ is the ``bending stiffness parameter'' given by
+ \begin{equation} 
+B \equiv \sqrt{\frac{E\, S\, \mathcal{K}^2}{L^2 T}}\, .
+ \end{equation}
+If we assume that $y(x)$ is a sum of terms of the form
+ \begin{equation}
+y(x) = \mathcal{C}\, e^{k\, x - i\, \omega\, t}\, ,
+ \end{equation}
+then $k$ and $\omega$ must satisfy the expression
+ \begin{equation}
+B^2 k^4 - k^2 - (\pi\, \omega)^2 = 0\, ,
+ \end{equation}
+or
+ \begin{equation}
+k^2 = \frac{1 \pm \sqrt{1 + (2\, \pi\, B\, \omega)^2}}{2\, B^2}\, .
+ \end{equation}
+Therefore, given $\omega$, we have four possible choices for $k$: $\pm k_1$, or $\pm i k_2$, where
+ \begin{subequations} \label{eqn:disp_eqns}
+ \begin{align}
+\label{eqn:disp_eqn_1} k_1^2 &= \frac{\sqrt{1 + (2\, \pi\, B\, \omega)^2} + 1}{2\, B^2}\, , \nd \\
+\label{eqn:disp_eqn_2} k_2^2 &= \frac{\sqrt{1 + (2\, \pi\, B\, \omega)^2} - 1}{2\, B^2}\, .
+ \end{align}
+ \end{subequations}
+Therefore, the general solution to \eqn{wave_eqn_dim} has the form
+ \begin{equation} \label{eqn:soln_dim}
+y(x) = e^{-i \omega t} \left( C_1^+ e^{k_1 x} + C_1^- e^{-k_1 x} + C_2^+ e^{i k_2 x} + C_2^- e^{-i k_2 x} \right)\, .
+ \end{equation}
+
+As discussed in \sct{model}, the boundary conditions for the case of a classical guitar string are not symmetric. At $x = 0$ (the saddle), the string is pinned (but not clamped), so that $y = 0$ and $\partial^2 y/\partial x^2 = 0$. However, at $x = 1$ (the fret) the string is clamped, so that $y = 0$ and $\partial y/\partial x = 0$. Applying these boundary conditions to \eqn{soln_dim}, we obtain
+ \begin{subequations}
+ \begin{align}
+  0 &= C_1^+ + C_1^- + C_2^+ + C_2^-\, , \\
+  0 &= k_1^2 \left(C_1^+ + C_1^-\right) - k_2^2 \left(C_2^+ + C_2^-\right)\, , \\
+  0 &= C_1^+ e^{k_1} + C_1^- e^{-k_1} + C_2^+ e^{i k_2} + C_2^- e^{-i k_2}\, , \nd \\
+  0 &= k_1 \left(C_1^+ e^{k_1} - C_1^- e^{-k_1}\right) + i k_2 \left(C_2^+ e^{i k_2} - C_2^- e^{-i k_2}\right)\, .
+ \end{align}
+ \end{subequations}
+Since $k_1^2 + k_2^2 \ne 0$, the first two of these equations tell us that $C_1^- = -C_1^+ \equiv -C_1$, and $C_2^- = -C_2^+ \equiv -C_2$. Therefore, the second two equations become
+ \begin{subequations}
+ \begin{align}
+C_1\, \sinh(k_1) &= - i\, C_2\, \sin(k_2)\, , \nd \\
+k_1\, C_1\, \cosh(k_1) &= -i\, k_2\, C_2\, \cos(k_2)\, .
+ \end{align}
+ \end{subequations}
+Dividing the first of these equations by the second, we find
+ \begin{equation}
+\tan(k_2) = \frac{k_2}{k_1}\, \tanh{k_1}\, .
+ \end{equation}
+
+In the case of a classical guitar, we expect that $B \ll 1$, so from \eqn{disp_eqn_1} we see that $k_1 \approx 1/B \gg 1$, and therefore $\tanh{k_1} \longrightarrow 1$. Writing $k_2 = m \pi (1 + \epsilon)$, where $m$ is an integer greater than or equal to 1, and $\epsilon \ll 1$, we have $\tan(k_2) \approx m \pi \epsilon$, and
+ \begin{equation}
+\frac{k_2}{k_1} \approx m \pi B (1 + \epsilon) = m \pi \epsilon\, ,
+ \end{equation}
+indicating that $\epsilon = B$ to lowest order in $B$. To lowest (zero) order in $B$, we see from \eqn{disp_eqn_2} that $k_2 = \pi \omega = m \pi (1 + B)$, or $\omega = m (1 + B)$. Restoring the time scaling by $1/\omega_0$, and defining the frequency $f = \omega/2 \pi$, we finally have
+ \begin{equation} \label{eqn:f_m_stiff}
+f_m = \frac{m}{2\, L}\, \sqrt{\frac{T}{\mu}} (1 + B)\, .
+ \end{equation}
+We use this result to build our model in \sct{model}.
