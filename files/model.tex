@@ -8,20 +8,19 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
  \section{Simple Model of Guitar Intonation\label{sct:model}}
-
-\red{Here's the old \emph{wrong} equation:}
- \begin{equation}
-f_{m n} = \frac{m}{2\, L_n}\, \sqrt{\frac{T_n}{\mu_n}} \left[ 1 + 2 B_n + 4 \left(1 + \frac{\pi^2\, m^2}{8}\right) B_n^2 \right]\, ,
+The starting point for prior efforts to understand guitar intonation and compensation~\cite{ref:byers1996cgi,ref:varieschi2010icf} is a formula for $f_{m}$, the transverse vibration frequency harmonic $m$ of a stiff string, originally published by Morse in 1936~\cite{ref:morse1981vsb}:
+ \begin{equation}\label{eqn:f_m_clamped}
+f_{m} = \frac{m}{2\, L}\, \sqrt{\frac{T}{\mu}} \left[ 1 + 2 B + 4 \left(1 + \frac{\pi^2\, m^2}{8}\right) B \right]\, .
  \end{equation}
-\red{Here's the new equation, from \app{freq}, applied to fret $n$:}
- \begin{equation} \label{eqn:f_mn_stiff}
-f_{m n} = \frac{m}{2\, L_n}\, \sqrt{\frac{T_n}{\mu_n}} \left( 1 + B_n \right)\, ,
+Here $L$ is the length of the string, $T$ and $\mu$ are its tension and the linear mass density, respectively, and $B$ is a small ``bending stiffness'' coefficient to capture the relevant mechanical properties of the string. For a homogeneous string with a cylindrical cross section, $B$ is given by
+ \begin{equation} \label{eqn:b_def}
+B \equiv \sqrt{\frac{\pi\, \rho^4\, E}{4\, T\, L^2}}\, ,
  \end{equation}
-where $L_n$ is the length of the vibrating string from the saddle to fret $n$, and $T_n$ and $\mu_n$ are the tension and the linear mass density of the fretted string, respectively. Here, we are using $B_n$ to represent a small string ``bending stiffness'' coefficient to capture the relevant mechanical properties of the transversely vibrating string. For a homogeneous string with a cylindrical cross section, $B_n$ is given by
- \begin{equation} \label{eqn:b_n_def}
-B_n \equiv \sqrt{\frac{\pi\, \rho^4\, E}{4\, T_n\, L_n^2}}\, ,
+where $\rho$ is the radius of the string and $E$ is Young's modulus (or the modulus of elasticity). But it's unlikely that \eqn{f_m_clamped} accurately describes the resonant frequencies of a nylon string on a classical guitar, because it assumes that the string is ``clamped'' at both ends, so that a particular set of symmetric boundary conditions must be applied to the partial differential equation (PDE) describing transverse vibrations of the string. We believe that this assumption is correct for the end of the string held at either the nut or the fret, but that the string is ``pinned'' (and not clamped) at the saddle. In \app{freq}, we solve the PDE using these non-symmetric boundary conditions, and find
+ \begin{equation} \label{eqn:f_m_stiff}
+f_m = \frac{m}{2\, L}\, \sqrt{\frac{T}{\mu}} \left[ 1 + B + \left( 1 + \half m^2 \pi^2 \right) B^2 \right]\, .
  \end{equation}
-where $\rho$ is the radius of the string and $E$ is Young's modulus (or the modulus of elasticity). Note that \eqn{f_mn_stiff} is valid only when $B_n \ll 1$. For a typical nylon guitar string with $E \approx 4$~GPa, $T_0 \approx 60$~N, $\rho \approx 0.5$~mm, and $L_0 \approx 650$~mm, we have $B_0 \approx 6 \times 10^{-3}$. We'll use \eqn{f_mn_stiff} and \eqn{b_n_def} with considerable caution, because it's unlikely that they describe the physics of nylon strings (particularly the wound base strings) with a high degree of accuracy~\cite{ref:lynchaird2017mpn}.
+Note that this expression is valid only when $B \ll 1$. For a typical nylon guitar string with $E \approx 4$~GPa, $T_0 \approx 60$~N, $\rho \approx 0.5$~mm, and $L_0 \approx 650$~mm, we have $B_0 \approx 6 \times 10^{-3}$. We'll use \eqn{f_m_stiff} with some caution, because the physics of nylon strings (particularly the wound base strings) are quite complicated~\cite{ref:lynchaird2017mpn}.
 
 Throughout this work, we will use \emph{cents} to describe small differences in pitch~\cite{ref:durfee2015pms}. One cent is one one-hundredth of a Twelve-Tone Equal Temperament (12-TET) half step, so that there are 1200~cents per octave. The difference in pitch between frequencies $f_1$ and $f_2$ is therefore defined as
  \begin{equation} \label{eqn:cents_def}
@@ -36,14 +35,18 @@ where the last approximation applies when $\Delta f \ll f$. An experienced guita
  \begin{figure}
   \centering
   \includegraphics[width=6.0in]{figures/guitar_schematic}
-  \caption{\label{fig:guitar_schematic} A simple (side-view) schematic of the classical guitar used in this model. The scale length of the guitar is $X_0$, but we allow the edges of both the saddle and the nut to be set back an additional distance $\Delta S$ and $\Delta N$, respectively. The location on the $x$-axis of the center of the $n^\textrm{th}$ fret is $X_n$. (Note that the $x$-axis is directed to the left in this figure.) In the $z$ direction, $z = 0$ is taken as the surface of the fingerboard; therefore the height of each fret above the fingerboard is $a$, the height of the nut is $a + b$, and the height of the saddle is $a + b + c$. $L_n$ is the \emph{resonant length} of the string from the saddle to the center of fret $n$, and $L^\prime_n$ is the length of the string from the fret to the nut.}
+  \caption{\label{fig:guitar_schematic} A simple (side-view) schematic of the classical guitar used in this model. The scale length of the guitar is $X_0$, but we allow the edges of both the saddle and the nut to be set back an additional distance $\Delta S$ and $\Delta N$, respectively. The location on the $x$-axis of the center of the $n^\textrm{th}$ fret is $X_n$. (Note that the $x$-axis is directed toward the left in this figure.) In the $y$ direction, $y = 0$ is taken as the surface of the fingerboard; therefore the height of each fret above the fingerboard is $a$, the height of the nut is $a + b$, and the height of the saddle is $a + b + c$. $L_n$ is the \emph{resonant length} of the string from the saddle to the center of fret $n$, and $L^\prime_n$ is the length of the string from the fret to the nut.}
  \end{figure}
 
-Our model begins with the schematic of the guitar shown in \fig{guitar_schematic}. The scale length of the guitar is $X_0$, but we allow the edges of both the saddle and the nut to be set back an additional distance $\Delta S$ and $\Delta N$, respectively. The location on the $x$-axis of the center of the $n^\textrm{th}$ fret is $X_n$. In the $z$ direction, $z = 0$ is taken as the surface of the fingerboard; the height of each fret is $a$, the height of the nut is $a + b$, and the height of the saddle is $a + b + c$. $L_n$ is the \emph{resonant length} of the string from the saddle to the center of fret $n$, and $L^\prime_n$ is the length of the string from the fret to the nut. The total length of the string is defined as $\mathcal{L}_n \equiv L_n + L^\prime_n$. For reasons discussed below, we have not adopted a more complicated fretting model~\cite{ref:byers1996cgi,ref:varieschi2010icf}. We start with form of the fundamental frequency of a fretted string given by \eqn{f_mn_stiff} with $m = 1$, and apply it to the frequency of a string pressed just behind the $n^\mathrm{th}$ fret:
+Our model begins with the schematic of the guitar shown in \fig{guitar_schematic}. The scale length of the guitar is $X_0$, but we allow the edges of both the saddle and the nut to be set back an additional distance $\Delta S$ and $\Delta N$, respectively. The location on the $x$-axis of the center of the $n^\textrm{th}$ fret is $X_n$. In the $y$ direction, $y = 0$ is taken as the surface of the fingerboard; the height of each fret is $a$, the height of the nut is $a + b$, and the height of the saddle is $a + b + c$. $L_n$ is the \emph{resonant length} of the string from the saddle to the center of fret $n$, and $L^\prime_n$ is the length of the string from the fret to the nut. The total length of the string is defined as $\mathcal{L}_n \equiv L_n + L^\prime_n$. For reasons discussed below, we have not (yet) adopted a more complicated fretting model~\cite{ref:byers1996cgi,ref:varieschi2010icf}. We start with the form of the fundamental frequency of a fretted string given by \eqn{f_m_stiff} with $m = 1$, and apply it to the frequency of a string pressed just behind the $n^\mathrm{th}$ fret:
  \begin{equation} \label{eqn:f_n_def}
 f_n = \frac{1}{2\, L_n}\, \sqrt{\frac{T_n}{\mu_n}} \left( 1 + B_n \right)\, ,
  \end{equation}
-where we have neglected the smallest stiffness correction term proportional to $B_n^2$. We note that $T_n$ and $\mu_n$ depend on $\mathcal{L}_n$, the \emph{total} length of the fretted string from the saddle to the nut. Ideally, in the 12-TET system~\cite{ref:durfee2015pms},
+where $T_n$ and $\mu_n$ are the modified tension and the linear mass density of the fretted string,
+ \begin{equation} \label{eqn:b_n_def}
+B_n \equiv \sqrt{\frac{\pi\, \rho^4\, E}{4\, T_n\, L_n^2}}\, ,
+ \end{equation}
+and we have neglected the smallest stiffness correction term proportional to $B_n^2$. We note that $T_n$ and $\mu_n$ depend on $\mathcal{L}_n$, the \emph{total} length of the fretted string from the saddle to the nut. Ideally, in the 12-TET system~\cite{ref:durfee2015pms},
  \begin{equation} \label{eqn:f_n_tet}
 f_n = \gamma_n\, f_0\, , \qquad \textrm{(12-TET~ideal)}
  \end{equation}
@@ -51,7 +54,7 @@ where
  \begin{equation} \label{eqn:gamme_n_def}
 \gamma_n \equiv 2^{n / 12}\, .
  \end{equation}
-Therefore, the error interval expressed in cents is given by
+Therefore, the error interval --- the difference between the fundamental frequency of the fretted string and the corresponding perfect 12-TET frequency --- expressed in cents is given by
  \begin{equation}\label{eqn:error_def}
  \begin{split}
 \Delta \nu_n &= 1200\, \log_2\left( \frac{f_n}{\gamma_n\, f_0} \right) \\
@@ -69,7 +72,7 @@ The final form of \eqn{error_def} makes it clear that --- for nylon guitar strin
   \item
    \emph{Tension}: The third term is the error caused by the \emph{increase} of the tension in the string arising from the stress and strain applied to the string by fretting. This effect will also depend on the total length of the string $\mathcal{L}_n$.
   \item
-   \emph{Bending Stiffness}: The fourth and final term is the error caused by the change in the bending stiffness coefficient caused by changing the length of the string from $L_0$ to $L_n$.
+   \emph{Bending Stiffness}: The fourth and final term is the error caused by the change in the bending stiffness coefficient caused by changing the vibrating length of the string from $L_0$ to $L_n$.
  \end{enumerate}
 We will discuss each of these three sources of error in turn below.
 
@@ -95,7 +98,7 @@ Then --- when the guitar has been manufactured such that $X_n = X_0 / \gamma_n$ 
   \begin{equation} \label{eqn:rle_approx}
   1200\, \log_2 \left( \frac{L_0}{\gamma_n\, L_n} \right) \approx \frac{1200}{\ln(2)} \left[ \frac{\Delta N - \left(\gamma_n - 1\right) \Delta S}{X_0} - \frac{\gamma_n^2 (b + c)^2 - c^2}{2\, X_0^2}\right]
   \end{equation}
-If the guitar is uncompensated, so that $\Delta S = \Delta N = 0$, this error is typically less than 0.25~cents. But, with $\Delta S > 0$ and $\Delta N < 0$, we can significantly \emph{increase} the magnitude of this ``error'' and cause the frequency to shift lower. We'll see that this is our primary method of compensation. \red{TBD: Add a figure here?}
+If the guitar is uncompensated, so that $\Delta S = \Delta N = 0$, this error is typically less than 0.25~cents. But, with $\Delta S > 0$ and $\Delta N < 0$, we can significantly \emph{increase} the magnitude of this ``error'' and cause the frequency to shift lower. We'll see that this is our primary method of compensation.
 
  \subsection{Linear Mass Density}
 As discussed above, the linear mass density $\mu_0$ of an open (unfretted) string is simply the total mass $M$ of the string clamped between the saddle and the nut divided by the length $L_0$. Similarly, the mass density $\mu_n$ of a string held onto fret $N$ is $M/\mathcal{L}_n$. Therefore
@@ -170,6 +173,11 @@ In this case, we assume that $\kappa Q_n \ll 1$, so that we can approximate the 
 This frequency shift is larger than that caused by the linear mass density error by a factor of $\kappa$.
 
  \subsection{Bending Stiffness}
+% \begin{equation}
+%f_{m n} = \frac{m}{2\, L_n}\, \sqrt{\frac{T_n}{\mu_n}} \left( 1 + B_n \right)\, ,
+% \end{equation}
+
+
 Since $B_n$ is already relatively small, we only need to consider the largest contribution arising from the shortened length of the fretted string compared to that of the open string. We see from \eqn{l_n_def} that $L_n \approx L_0/\gamma_n$, so from \eqn{b_n_def} we have
  \begin{equation}
 B_n = \sqrt{\frac{\pi\, \rho^4\, E}{T_n\, L_n^2}} \approx \frac{L_0}{L_n}\, \sqrt{\frac{\pi\, \rho^4\, E}{T_0\, L_0^2}} = \gamma_n\, B_0\, .

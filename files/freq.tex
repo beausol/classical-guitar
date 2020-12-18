@@ -13,20 +13,20 @@ Here we outline the calculation of the normal mode frequencies of a vibrating st
  \begin{equation}
 \mu\, \frac{\partial^2}{\partial t^2}\, y(x) = T\, \frac{\partial^2}{\partial x^2}\, y(x) - E\, S\, \mathcal{K}^2\, \frac{\partial^4}{\partial x^2}\, y (x)\, ,
  \end{equation}
-where $\mu$ and $T$ are respectively the linear mass density and the tension of the string, $E$ is its Young's modulus (or the modulus of elasticity), $S$ is the cross-sectional area, and $\mathcal{K}$ is the radius of gyration of the string. If we simplify this equation by scaling $x$ by the length $L$ of the string, and $t$ by $1/\omega_0 \equiv  (L/\pi) \sqrt{\mu/T}$, then we obtain the dimensionless wave equation
+where $\mu$ and $T$ are respectively the linear mass density and the tension of the string, $E$ is its Young's modulus (or the modulus of elasticity), $S$ is the cross-sectional area, and $\mathcal{K}$ is the radius of gyration of the string. (For a uniform cylindrical string/wire with radius $\rho$, $S = \pi \rho^2$ and $\mathcal{K} = \rho/2$.) If we scale $x$ by the length $L$ of the string, and $t$ by $1/\omega_0 \equiv  (L/\pi) \sqrt{\mu/T}$, then we obtain the dimensionless wave equation
  \begin{equation} \label{eqn:wave_eqn_dim}
 \pi^2\, \frac{\partial^2}{\partial t^2}\, y(x) = \frac{\partial^2}{\partial x^2}\, y(x) - B^2\, \frac{\partial^4}{\partial x^2}\, y (x)\, ,
  \end{equation}
 where $B$ is the ``bending stiffness parameter'' given by
- \begin{equation} 
+ \begin{equation}
 B \equiv \sqrt{\frac{E\, S\, \mathcal{K}^2}{L^2 T}}\, .
  \end{equation}
-If we assume that $y(x)$ is a sum of terms of the form
+We assume that $y(x)$ is a sum of terms of the form
  \begin{equation}
 y(x) = \mathcal{C}\, e^{k\, x - i\, \omega\, t}\, ,
  \end{equation}
-then $k$ and $\omega$ must satisfy the expression
- \begin{equation}
+requiring that $k$ and $\omega$ satisfy the expression
+ \begin{equation} \label{eqn:kw}
 B^2 k^4 - k^2 - (\pi\, \omega)^2 = 0\, ,
  \end{equation}
 or
@@ -40,12 +40,12 @@ Therefore, given $\omega$, we have four possible choices for $k$: $\pm k_1$, or 
 \label{eqn:disp_eqn_2} k_2^2 &= \frac{\sqrt{1 + (2\, \pi\, B\, \omega)^2} - 1}{2\, B^2}\, .
  \end{align}
  \end{subequations}
-Therefore, the general solution to \eqn{wave_eqn_dim} has the form
+The corresponding general solution to \eqn{wave_eqn_dim} has the form
  \begin{equation} \label{eqn:soln_dim}
 y(x) = e^{-i \omega t} \left( C_1^+ e^{k_1 x} + C_1^- e^{-k_1 x} + C_2^+ e^{i k_2 x} + C_2^- e^{-i k_2 x} \right)\, .
  \end{equation}
 
-As discussed in \sct{model}, the boundary conditions for the case of a classical guitar string are not symmetric. At $x = 0$ (the saddle), the string is pinned (but not clamped), so that $y = 0$ and $\partial^2 y/\partial x^2 = 0$. However, at $x = 1$ (the fret) the string is clamped, so that $y = 0$ and $\partial y/\partial x = 0$. Applying these boundary conditions to \eqn{soln_dim}, we obtain
+As discussed in \sct{model}, the boundary conditions for the case of a classical guitar string are not symmetric. At $x = 0$ (the saddle), the string is pinned (but not clamped), so that $y = 0$ and $\partial^2 y/\partial x^2 = 0$. However, at $x = 1$ (the fret) the string is clamped, so that $y = 0$ and $\partial y/\partial x = 0$. Applying these constraints to \eqn{soln_dim}, we obtain
  \begin{subequations}
  \begin{align}
   0 &= C_1^+ + C_1^- + C_2^+ + C_2^-\, , \\
@@ -62,16 +62,36 @@ k_1\, C_1\, \cosh(k_1) &= -i\, k_2\, C_2\, \cos(k_2)\, .
  \end{align}
  \end{subequations}
 Dividing the first of these equations by the second, we find
- \begin{equation}
+ \begin{equation} \label{eqn:tran_eqn_12}
 \tan(k_2) = \frac{k_2}{k_1}\, \tanh{k_1}\, .
  \end{equation}
 
-In the case of a classical guitar, we expect that $B \ll 1$, so from \eqn{disp_eqn_1} we see that $k_1 \approx 1/B \gg 1$, and therefore $\tanh{k_1} \longrightarrow 1$. Writing $k_2 = m \pi (1 + \epsilon)$, where $m$ is an integer greater than or equal to 1, and $\epsilon \ll 1$, we have $\tan(k_2) \approx m \pi \epsilon$, and
+From \eqn{disp_eqns}, we see that $k_1^2 - k_2^2 = 1/B^2$, so that
+ \begin{equation} \label{eqn:k1k2}
+k_1 = \frac{1}{B}\, \sqrt{1 + \left(B\, k_2\right)^2}\, .
+ \end{equation}
+In the case of a classical guitar, we expect that $B \ll 1$, so $k_1 \approx 1/B \gg 1$, and therefore $\tanh{k_1} \longrightarrow 1$. Substituting \eqn{k1k2} into \eqn{tran_eqn_12}, we obtain
+ \begin{equation} \label{eqn:tran_eqn_2}
+\tan(k_2) = \frac{B\, k_2}{ \sqrt{1 + \left(B\, k_2\right)^2}}\, .
+ \end{equation}
+We expect that $B\, k_2 \ll 1$, so we assume that $k_2 = m \pi (1 + \epsilon)$, where $m$ is an integer greater than or equal to 1, and $\epsilon \ll 1$. Therefore, to second order in $\epsilon$, we have $\tan(k_2) \approx m \pi \epsilon$, and
  \begin{equation}
-\frac{k_2}{k_1} \approx m \pi B (1 + \epsilon) = m \pi \epsilon\, ,
+\epsilon = \frac{B\, (1 + \epsilon)}{\sqrt{1 + \left[m\, \pi\, B\, (1 + \epsilon)\right]^2}}\, .
  \end{equation}
-indicating that $\epsilon = B$ to lowest order in $B$. To lowest (zero) order in $B$, we see from \eqn{disp_eqn_2} that $k_2 = \pi \omega = m \pi (1 + B)$, or $\omega = m (1 + B)$. Restoring the time scaling by $1/\omega_0$, and defining the frequency $f = \omega/2 \pi$, we finally have
- \begin{equation} \label{eqn:f_m_stiff}
-f_m = \frac{m}{2\, L}\, \sqrt{\frac{T}{\mu}} (1 + B)\, .
+The denominator of the \rhs of this equation has a Taylor expansion given by $1 - \half\, \left[m\, \pi\, B\, (1 + \epsilon)\right]^2$, indicating that it will not contribute to $\epsilon$ to second order in $B$. Therefore, to this order,
+ \begin{equation}%\label{}
+\epsilon \approx \frac{B}{1 - B} \approx B + B^2\, .
  \end{equation}
-We use this result to build our model in \sct{model}.
+We substitute $k = \pm i k_2$ into \eqn{kw} with $k_2 = m \pi/(1 - B)$ to obtain
+ \begin{equation}
+ \begin{split}
+\omega &= \frac{k_2}{\pi}\, \sqrt{1 + \left(B\, k_2\right)^2} \\
+&= \frac{m}{1 - B}\, \sqrt{1 + m^2 \pi^2 \left(\frac{B}{1 - B}\right)^2} \\
+&\approx m \left[ 1 + B + \left( 1 + \half m^2 \pi^2 \right) B^2 \right]\, .
+ \end{split}
+ \end{equation}
+Restoring the time scaling by $1/\omega_0$, and defining the frequency (in cycles/second) $f = \omega/2 \pi$, we finally have
+ \begin{equation} \label{eqn:f_m_hybrid}
+f_m = \frac{m}{2\, L}\, \sqrt{\frac{T}{\mu}} \left[ 1 + B + \left( 1 + \half m^2 \pi^2 \right) B^2 \right]\, .
+ \end{equation}
+We use this result to build our model in \sct{model}. 
