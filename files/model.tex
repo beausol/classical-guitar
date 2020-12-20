@@ -186,4 +186,9 @@ Therefore, the fourth term in the final line of \eqn{error_def} can be approxima
  \begin{equation}
 1200\, \log_2 \left( \frac{1 + B_n}{1 + B_0} \right) \approx \frac{1200}{\ln(2)}\, \left(\gamma_n - 1\right) B_0\, .
  \end{equation}
-When $n = 12$ and $B_0 = 6 \times 10^{-3}$, the corresponding shift is approximately 10~cents. Note that (to zero order in $Q_n$) this bending stiffness error does not depend on the tiny changes to the linear mass density or the tension that arises due to string fretting. Instead, it is an intrinsic property of the string. 
+When $n = 12$ and $B_0 = 6 \times 10^{-3}$, the corresponding shift is approximately 10~cents. Note that (to zero order in $Q_n$) this bending stiffness error does not depend on the tiny changes to the linear mass density or the tension that arises due to string fretting. Instead, it is an intrinsic property of the string.
+
+Incorporating all of these effects, the total frequency shift is given by
+ \begin{equation}\label{eqn:error_tot}
+\Delta \nu_n \approx \frac{1200}{\ln(2)}\, \left[ \left(\gamma_n - 1\right) \left(B_0 - \frac{\Delta S}{X_0}\right) + \frac{\Delta N}{X_0} + \half\, \kappa\, Q_n \right]\, .
+ \end{equation}

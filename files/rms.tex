@@ -1,0 +1,69 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Appendix file included in main project file using \input{}
+%
+% Assumes that LaTeX2e macros and packages defined in cg_comp.sty are
+%   available
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+ \section{Compensation by Minimizing RMS Error\label{app:rms}}
+
+The root-mean-square (RMS) frequency error (in cents) averaged over the frets $n \in \{1, n_\text{max}\}$ is given by
+ \begin{equation}\label{eqn:rms_def}
+\overline{\Delta \nu} \equiv \sqrt{\frac{\sum_{n = 1}^{n_\text{max}} \Delta \nu_n^2}{n_\text{max}}}\, ,
+ \end{equation}
+where $\Delta \nu_n$ is given by \eqn{error_tot}. Here we will vary both $\Delta S$ and $\Delta N$ to minimize $\overline{\Delta \nu}$. In this case, it is sufficient to minimize the quantity
+ \begin{equation}\label{eqn:chi2_def}
+\chi^2 = \sum_{n = 1}^{n_\text{max}} \left(\frac{\ln(2)}{1200}\, \Delta \nu_n\right)^2
+ \end{equation}
+such that the gradient of $\chi^2$ with respect to $\Delta S$ and $\Delta N$ vanishes. The components of this gradient are
+ \begin{subequations}\label{chi2_grad}
+ \begin{align}
+\frac{\partial}{\partial \Delta S}\, \chi^2 &= -\frac{2}{X_0}\, \sum_n (\gamma_n - 1)\left[ (\gamma_n - 1) \left(B_0 - \frac{\Delta S}{X_0}\right) + \frac{\Delta N}{X_0} + \frac{\kappa}{2}\, Q_n \right]\, , \nd \\
+\frac{\partial}{\partial \Delta N}\, \chi^2 &= \frac{2}{X_0}\, \sum_n \left[ (\gamma_n - 1) \left(B_0 - \frac{\Delta S}{X_0}\right) + \frac{\Delta N}{X_0} + \frac{\kappa}{2}\, Q_n \right]\, .
+ \end{align}
+ \end{subequations}
+Setting both of these components to zero, we can rewrite them as the matrix equation
+ \begin{equation}
+\begin{bmatrix}
+  \sigma_2 & -\sigma_1 \\
+  \sigma_1 & -\sigma_0
+\end{bmatrix}\,
+\begin{bmatrix}
+  \Delta S \\
+  \Delta N
+\end{bmatrix} = X_0
+\begin{bmatrix}
+  \sigma_2\, B_0 +  \half\, \kappa\, \sum_n (\gamma_n - 1) Q_n\\
+  \sigma_1\, B_0 +  \half\, \kappa\, \sum_n Q_n
+\end{bmatrix}\, ,
+ \end{equation}
+which has the analytic solution
+ \begin{equation}\label{eqn:rms_sol}
+\begin{bmatrix}
+  \Delta S \\
+  \Delta N
+\end{bmatrix} = \frac{X_0}{\sigma_1^2 - \sigma_0\, \sigma_2}\, 
+\begin{bmatrix}
+  -\sigma_0 & \sigma_1 \\
+  -\sigma_1 & \sigma_2
+\end{bmatrix}\,
+\begin{bmatrix}
+  \sigma_2\, B_0 +  \half\, \kappa\, \sum_n (\gamma_n - 1) Q_n\\
+  \sigma_1\, B_0 +  \half\, \kappa\, \sum_n Q_n
+\end{bmatrix}\, ,
+ \end{equation}
+
+The corresponding Hessian matrix for this problem is
+ \begin{equation}
+H = \begin{bmatrix}
+      \frac{\partial^2 \chi^2}{\partial \Delta S^2} & \frac{\partial^2 \chi^2}{\partial \Delta N\, \partial \Delta S} \\
+      \frac{\partial^2 \chi^2}{\partial \Delta S\, \partial \Delta N} & \frac{\partial^2 \chi^2}{\partial \Delta N^2}
+    \end{bmatrix}
+  = \frac{2}{X_0^2} \begin{bmatrix}
+      \sigma_2 & -\sigma_1 \\
+      -\sigma_1 & \sigma_0
+    \end{bmatrix}\, .
+ \end{equation}
+In the case of a $2 \times 2$ real matrix, the Hessian is positive definite if both eigenvalues are positive, and this holds if the determinant is greater than zero. It is easy to verify numerically (and with some effort algebraically) that $\Det(H) > 0$ for $n_\text{max} > 1$. Therefore, the solution for $\Delta S$ and $\Delta N$ given by \eqn{rms_sol} minimizes the RMS frequency error. 

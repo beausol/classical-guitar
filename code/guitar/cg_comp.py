@@ -182,7 +182,7 @@ class GuitarStrings(object):
             retstr += string.__str__() + "\n"
         return retstr
 
-    def comp_r(self, delta_nu:list, g, b, c, ds, dn, x0):
+    def estimate_r(self, delta_nu:list, g, b, c, ds, dn, x0):
         q = ( g / (2 * x0**2) ) * ( (b + c)**2 + b**2/(g - 1) - c**2/g )
         l0 = x0 + ds + dn
 
@@ -237,29 +237,57 @@ class GuitarStrings(object):
         for string in self._strings:
             stiffness.append(string.get_stiffness())
         return np.array(stiffness)
+    
+    def compensate(self, g_n, q_n):
+        def sigma(g_n, k):
+            return np.sum((g_n - 1)**k)
+
+        sigma_0 = sigma(g_n, 0)
+        sigma_1 = sigma(g_n, 1)
+        sigma_2 = sigma(g_n, 2)
+        
+        sigma = np.array([[sigma_2, -sigma_1], [sigma_1, -sigma_0]])
+        sum_qn = 0.5 * np.sum(q_n)
+        sum_gq = 0.5 * np.sum((g_n - 1) * q_n)
+
+        idx_list = np.arange(0, self.get_count())
+        kappa = self.get_kappa()
+        b0 = self.get_stiffness()
+        ds = np.zeros(self.get_count())
+        dn = np.zeros(self.get_count())
+        for string, idx in zip(self._strings, idx_list):
+            rhs = np.array([[sigma_2 * b0[idx] + sum_gq * kappa[idx]], [sigma_1 * b0[idx] + sum_qn * kappa[idx]]])
+            lhs = np.dot(np.linalg.inv(sigma), rhs)
+            ds[idx] = lhs[0]
+            dn[idx] = lhs[1]
+        
+        return ds, dn
 
 
 class Guitar(object):
-    def __init__(self, name, x0, dn, ds, b, c, string_count, strings, dbdx = 0.0, d=0.0):
+    def __init__(self, name, string_count, strings, x0, ds, dn, b, c, dbdx = 0.0, d=0.0):
         self._name = name
+
+        assert string_count == strings.get_count(), "Guitar '{}'".format(self._name) + " requires {} strings, but {} were provided.".format(string_count, strings.get_count())
+        self.string_list = np.arange(1, string_count + 1)
+        self._strings = strings
+    
         self._x0 = x0
-        if len(dn) == 1:
-            self._dn = np.array(dn * string_count)
-        else:
-            self._dn = np.array(dn)
+
         if len(ds) == 1:
             self._ds = np.array(ds * string_count)
         else:
             self._ds = np.array(ds)
+        if len(dn) == 1:
+            self._dn = np.array(dn * string_count)
+        else:
+            self._dn = np.array(dn)
+
         self._b = b
         self._c = c
         self._dbdx = dbdx
         self._d = d
         
-        assert string_count == strings.get_count(), "Guitar '{}'".format(self._name) + " requires {} strings, but {} were provided.".format(string_count, strings.get_count())
-        self.string_list = np.arange(1, string_count + 1)
-        self._strings = strings
-    
     def __str__(self):
         '''Return a string displaying the attributes of a Guitar object.
 
@@ -288,8 +316,8 @@ class Guitar(object):
                 setback_str += template.format(self._dn[m], prec = 2)
             retstr += setback_str[0:-2] + ']\n'
         retstr += 'b: ' + '{:.1f} mm\n'.format(self._b)
+        retstr += 'dbdx: ' + '{:.4f}\n'.format(self._dbdx)
         retstr += 'c: ' + '{:.1f} mm\n'.format(self._c)
-        retstr += 'dbdx: ' + '{:.1f}\n'.format(self._dbdx)
         retstr += 'd: ' + '{:.1f} mm\n'.format(self._d)
         retstr += self._strings.__str__() + "\n"
         return retstr
@@ -339,8 +367,24 @@ class Guitar(object):
         
         return np.hstack((open_strings, shifts))
     
-    def comp_r(self, delta_nu:list, fret:int):
+    def estimate_r(self, delta_nu:list, fret:int):
         g = self.gamma(fret)
         b = self._bn(fret)
-        r = self._strings.comp_r(delta_nu, g, b, self._c, self._ds, self._dn, self._x0)
+        r = self._strings.estimate_r(delta_nu, g, b, self._c, self._ds, self._dn, self._x0)
         return r
+    
+    def compensate(self, max_fret:int):
+        ds_save = self._ds
+        dn_save = self._dn
+        self._ds = np.array([0.0] * self._strings.get_count())
+        self._dn = np.array([0.0] * self._strings.get_count())
+        
+        fret_list = np.arange(1, max_fret + 1)
+        g_n = self.gamma(fret_list)
+        q_n = self.qn(fret_list)[0]
+
+        ds, dn = self._strings.compensate(g_n, q_n)
+        self._ds = ds_save
+        self._dn = dn_save
+        
+        return self._x0 * ds, self._x0 * dn
