@@ -1,5 +1,14 @@
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
+
+
+def file_path(pathname, filename):
+    if (pathname is not None) and (filename is not None):
+        return pathname + filename
+    else:
+        return None
+
 
 class GuitarString(object):
 
@@ -320,11 +329,25 @@ class Guitar(object):
         retstr += 'c: ' + '{:.1f} mm\n'.format(self._c)
         retstr += 'd: ' + '{:.1f} mm\n'.format(self._d)
         retstr += self._strings.__str__() + "\n"
+        rmsstr = 'RMS Frequency Errors: ['#+ '{:.2f} cents\n'.format(self._rms())
+        template = '{:.{prec}}, '
+        rms = self._rms()
+        for m in np.arange(rms.size):
+            rmsstr += template.format(rms[m], prec = 2)
+        retstr += rmsstr[0:-2] + ']\n'
+
         return retstr
     
     def _bn(self, n):
         g_n = self.gamma(n)
         return self._b - ((g_n - 1)/g_n) * self._dbdx * self._x0
+    
+    def _rms(self):
+        fret_list = np.arange(1, 13)
+        dnu = self.freq_shifts(fret_list)
+        rms = np.sqrt(np.mean(dnu[:,1:]**2, axis=1))
+        
+        return rms
 
     def gamma(self, n):
         return 2.0**(n/12.0)
@@ -374,8 +397,6 @@ class Guitar(object):
         return r
     
     def compensate(self, max_fret:int):
-        ds_save = self._ds
-        dn_save = self._dn
         self._ds = np.array([0.0] * self._strings.get_count())
         self._dn = np.array([0.0] * self._strings.get_count())
         
@@ -384,7 +405,105 @@ class Guitar(object):
         q_n = self.qn(fret_list)[0]
 
         ds, dn = self._strings.compensate(g_n, q_n)
-        self._ds = ds_save
-        self._dn = dn_save
+        self._ds = self._x0 * ds
+        self._dn = self._x0 * dn
         
-        return self._x0 * ds, self._x0 * dn
+        return self._ds, self._dn
+
+    def plot_comp(self, savepath, filename):
+        fret_list = np.arange(0, 13)
+        shifts = self.freq_shifts(fret_list[1:])
+
+        labelsize = 18
+        fontsize = 24
+        font = {'family' : 'serif',
+                'color'  : 'black',
+                'weight' : 'normal',
+                'size'   : fontsize,
+                }
+        plt.rc('text', usetex=True)
+        plt.rc('font', family='serif')
+        
+        plt.figure(figsize=(8.0,6.0))
+        for string in self.string_list:
+            plt.plot(fret_list, shifts[string-1], label='String {}'.format(string))
+        plt.xlabel('FRET', fontdict=font)
+        plt.ylabel('SHIFT (cents)', fontdict=font)
+        plt.tick_params(axis='x', labelsize=labelsize)
+        plt.tick_params(axis='y', labelsize=labelsize)
+        plt.xlim(fret_list[0],fret_list[-1])
+        plt.ylim(-5,20)
+        plt.legend(loc='upper right', fontsize=labelsize)
+        
+        if np.all(np.abs(self._ds - self._ds[0]) < 1.0e-06):
+            ds = self._ds[0]
+            template_ds = '$\Delta S = {}~\mathrm{{mm}}$'
+        else:
+            ds = np.round(np.mean(self._ds), 2)
+            template_ds = '$\Delta S = {}~\mathrm{{mm~(mean)}}$'
+        if np.all(np.abs(self._dn - self._dn[0]) < 1.0e-06):
+            dn = self._dn[0]
+            template_dn = '$\Delta N = {}~\mathrm{{mm}}$'
+        else:
+            dn = np.round(np.mean(self._dn), 2)
+            template_dn = '$\Delta N = {}~\mathrm{{mm~(mean)}}$'
+        template = '{}\n' + template_ds + '\n' + template_dn
+        plt.text(0.35, 14.1, template.format(self._name, ds, dn),
+                 fontdict=font, bbox=dict(facecolor='white', edgecolor='lightgray', alpha=0.75))
+        plt.grid(True)
+        
+        filepath = file_path(savepath, filename)
+        if filepath is not None:
+            plt.savefig(filepath, bbox_inches='tight')
+        plt.show()
+
+    def plot_harm(self, zero_strings, zero_frets, savepath, filename):
+        fret_list = np.arange(0, 13)
+        shifts = self.freq_shifts(fret_list[1:])
+        for s, n in zip(zero_strings, zero_frets):
+#            shifts[s] -= shifts[s][n]
+            shifts[s-1] -= shifts[s-1][n]
+
+        labelsize = 18
+        fontsize = 24
+        font = {'family' : 'serif',
+                'color'  : 'black',
+                'weight' : 'normal',
+                'size'   : fontsize,
+                }
+        plt.rc('text', usetex=True)
+        plt.rc('font', family='serif')
+        
+        plt.figure(figsize=(8.0,6.0))
+        
+        for string in self.string_list:
+            plt.plot(fret_list, shifts[string-1], label='String {}'.format(string))
+        plt.xlabel('FRET', fontdict=font)
+        plt.ylabel('SHIFT (cents)', fontdict=font)
+        plt.tick_params(axis='x', labelsize=labelsize)
+        plt.tick_params(axis='y', labelsize=labelsize)
+        plt.xlim(fret_list[0],fret_list[-1])
+        plt.ylim(-10,20)
+        plt.legend(loc='upper right', fontsize=labelsize)
+        
+        if np.all(np.abs(self._ds - self._ds[0]) < 1.0e-06):
+            ds = self._ds[0]
+            template_ds = '$\Delta S = {}~\mathrm{{mm}}$'
+        else:
+            ds = np.round(np.mean(self._ds), 2)
+            template_ds = '$\Delta S = {}~\mathrm{{mm~(mean)}}$'
+        if np.all(np.abs(self._dn - self._dn[0]) < 1.0e-06):
+            dn = self._dn[0]
+            template_dn = '$\Delta N = {}~\mathrm{{mm}}$'
+        else:
+            dn = np.round(np.mean(self._dn), 2)
+            template_dn = '$\Delta N = {}~\mathrm{{mm~(mean)}}$'
+        template = '{}\n' + template_ds + '\n' + template_dn
+        plt.text(0.35, 12.8, template.format(self._name, ds, dn),
+                 fontdict=font, bbox=dict(facecolor='white', edgecolor='lightgray', alpha=0.75))
+        plt.grid(True)
+        
+        filepath = file_path(savepath, filename)
+        if filepath is not None:
+            plt.savefig(filepath, bbox_inches='tight')
+        plt.show()

@@ -10,7 +10,7 @@
  \section{Simple Model of Guitar Intonation\label{sct:model}}
 The starting point for prior efforts to understand guitar intonation and compensation~\cite{ref:byers1996cgi,ref:varieschi2010icf} is a formula for $f_{m}$, the transverse vibration frequency harmonic $m$ of a stiff string, originally published by Morse in 1936~\cite{ref:morse1981vsb}:
  \begin{equation}\label{eqn:f_m_clamped}
-f_{m} = \frac{m}{2\, L}\, \sqrt{\frac{T}{\mu}} \left[ 1 + 2 B + 4 \left(1 + \frac{\pi^2\, m^2}{8}\right) B \right]\, .
+f_{m} = \frac{m}{2\, L}\, \sqrt{\frac{T}{\mu}} \left[ 1 + 2 B + 4 \left(1 + \frac{\pi^2\, m^2}{8}\right) B^2 \right]\, .
  \end{equation}
 Here $L$ is the length of the string, $T$ and $\mu$ are its tension and the linear mass density, respectively, and $B$ is a small ``bending stiffness'' coefficient to capture the relevant mechanical properties of the string. For a homogeneous string with a cylindrical cross section, $B$ is given by
  \begin{equation} \label{eqn:b_def}
@@ -177,10 +177,9 @@ This frequency shift is larger than that caused by the linear mass density error
 %f_{m n} = \frac{m}{2\, L_n}\, \sqrt{\frac{T_n}{\mu_n}} \left( 1 + B_n \right)\, ,
 % \end{equation}
 
-
 Since $B_n$ is already relatively small, we only need to consider the largest contribution arising from the shortened length of the fretted string compared to that of the open string. We see from \eqn{l_n_def} that $L_n \approx L_0/\gamma_n$, so from \eqn{b_n_def} we have
  \begin{equation}
-B_n = \sqrt{\frac{\pi\, \rho^4\, E}{T_n\, L_n^2}} \approx \frac{L_0}{L_n}\, \sqrt{\frac{\pi\, \rho^4\, E}{T_0\, L_0^2}} = \gamma_n\, B_0\, .
+B_n = \sqrt{\frac{\pi\, \rho^4\, E}{4\, T_n\, L_n^2}} \approx \frac{L_0}{L_n}\, \sqrt{\frac{\pi\, \rho^4\, E}{4\, T_0\, L_0^2}} = \gamma_n\, B_0\, .
  \end{equation}
 Therefore, the fourth term in the final line of \eqn{error_def} can be approximated as
  \begin{equation}
