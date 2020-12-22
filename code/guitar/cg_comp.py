@@ -139,11 +139,26 @@ class GuitarString(object):
         self._comp_modulus()
         self._comp_stiffness()
     
+    def get_radius(self):
+        return self._radius
+    
     def get_tension(self):
         return self._tension
     
     def get_density(self):
+        return self._density_lin
+    
+    def get_density_vol(self):
         return self._density_vol
+    
+    def get_name(self):
+        return self._name
+    
+    def get_note(self):
+        return self._note
+    
+    def get_r(self):
+        return self._r
     
     def get_kappa(self):
         return self._kappa
@@ -217,18 +232,42 @@ class GuitarStrings(object):
     def get_count(self):
         return len(self._strings)
     
-    def get_tensions(self):
-        tensions = []
+    def get_string_names(self):
+        names = []
         for string in self._strings:
-            tensions.append(string.get_tension())
-        return np.array(tensions)
-    
+            names.append(string.get_name())
+        return names
+
+    def get_notes(self):
+        notes = []
+        for string in self._strings:
+            notes.append('$' + string.get_note() + '$')
+        return notes
+
+    def get_radii(self):
+        radii = []
+        for string in self._strings:
+            radii.append(string.get_radius())
+        return np.array(radii)
+
     def get_densities(self):
         densities = []
         for string in self._strings:
             densities.append(string.get_density())
         return np.array(densities)
     
+    def get_tensions(self):
+        tensions = []
+        for string in self._strings:
+            tensions.append(string.get_tension())
+        return np.array(tensions)
+
+    def get_r(self):
+        r = []
+        for string in self._strings:
+            r.append(string.get_r())
+        return np.array(r)
+
     def get_kappa(self):
         kappa = []
         for string in self._strings:
@@ -271,6 +310,45 @@ class GuitarStrings(object):
             dn[idx] = lhs[1]
         
         return ds, dn
+    
+    def save_specs_table(self, savepath, filename):
+        names = self.get_string_names()
+        notes = self.get_notes()
+        radii = self.get_radii()
+        densities = self.get_densities()
+        tensions = self.get_tensions()
+
+        df = pd.DataFrame({'String': names,
+                           'Note': notes,
+                           'Radius (mm)': radii.tolist(),
+                           'Density ($\times 10^{-7}$ kg/mm)': (densities * 1.0e+07).tolist(),
+                           'Tension (N)': tensions.tolist()})
+        table_str = df.to_latex(index=False, escape=False, float_format="%.2f", column_format='ccccc')
+
+        filepath = file_path(savepath, filename)
+        if filepath is not None:
+            print(table_str,  file=open(filepath, 'w'))        
+    
+    def save_props_table(self, dnu, savepath, filename):
+        names = self.get_string_names()
+        r = self.get_r()
+        kappa = self.get_kappa()
+        modulus = self.get_modulus()
+        stiffness = self.get_stiffness()
+        df = pd.DataFrame({'String': names,
+                           '$\Delta \nu_{12}$ (cents)': dnu,
+                           '$R$ ($\times 10^4$)': (r * 1.0e-04).tolist(),
+                           '$\kappa$': kappa.tolist(),
+                           '$E$ (GPa)': modulus.tolist(),
+                           '$B_0$ ($\times 10^{-3}$)': (stiffness * 1.0e+03).tolist()})
+        table_str = df.to_latex(index=False, escape=False, float_format="%.1f", column_format='cccccc')#,
+                          #caption="Derived physical properties of the D'Addario Pro-Arte Nylon Classical Guitar Strings -- Normal Tension (EJ45). The corresponding scale length is 650 mm.",
+                          #label='tbl:ej45_props')
+
+        print(table_str)
+        filepath = file_path(savepath, filename)
+        if filepath is not None:
+            print(table_str,  file=open(filepath, 'w'))        
 
 
 class Guitar(object):
@@ -278,7 +356,7 @@ class Guitar(object):
         self._name = name
 
         assert string_count == strings.get_count(), "Guitar '{}'".format(self._name) + " requires {} strings, but {} were provided.".format(string_count, strings.get_count())
-        self.string_list = np.arange(1, string_count + 1)
+        self._string_list = np.arange(1, string_count + 1)
         self._strings = strings
     
         self._x0 = x0
@@ -386,7 +464,7 @@ class Guitar(object):
         
         shifts = rle + tme + bse
         
-        open_strings = np.array([np.zeros(self.string_list[-1])]).T
+        open_strings = np.array([np.zeros(self._string_list[-1])]).T
         
         return np.hstack((open_strings, shifts))
     
@@ -425,7 +503,7 @@ class Guitar(object):
         plt.rc('font', family='serif')
         
         plt.figure(figsize=(8.0,6.0))
-        for string in self.string_list:
+        for string in self._string_list:
             plt.plot(fret_list, shifts[string-1], label='String {}'.format(string))
         plt.xlabel('FRET', fontdict=font)
         plt.ylabel('SHIFT (cents)', fontdict=font)
@@ -482,7 +560,7 @@ class Guitar(object):
         
         plt.figure(figsize=(8.0,6.0))
         
-        for string in self.string_list:
+        for string in self._string_list:
             plt.plot(fret_list, shifts[string-1], label='String {}'.format(string))
         plt.xlabel('FRET', fontdict=font)
         plt.ylabel('SHIFT (cents)', fontdict=font)
@@ -513,3 +591,14 @@ class Guitar(object):
         if filepath is not None:
             plt.savefig(filepath, bbox_inches='tight')
         plt.show()
+    
+    def save_setbacks_table(self, savepath, filename):
+        df = pd.DataFrame({'String': self._strings.get_string_names(),
+                           '$\Delta S$ (mm)': self._ds.tolist(),
+                           '$\Delta N$ (mm)': self._dn.tolist()})
+        table_str = df.to_latex(index=False, escape=False, float_format="%.2f", column_format='cccccc')
+
+        filepath = file_path(savepath, filename)
+        if filepath is not None:
+            print(table_str,  file=open(filepath, 'w'))        
+    
