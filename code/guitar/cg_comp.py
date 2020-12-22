@@ -461,8 +461,14 @@ class Guitar(object):
         fret_list = np.arange(0, 13)
         shifts = self.freq_shifts(fret_list[1:])
         for s, n in zip(zero_strings, zero_frets):
-#            shifts[s] -= shifts[s][n]
             shifts[s-1] -= shifts[s-1][n]
+
+        rms = np.sqrt(np.mean(shifts[:,1:]**2, axis=1))
+        rmsstr = 'RMS Frequency Errors (Harmonic Tuning): ['
+        template = '{:.{prec}}, '
+        for m in np.arange(rms.size):
+            rmsstr += template.format(rms[m], prec = 2)
+        print(rmsstr[0:-2] + ']\n')
 
         labelsize = 18
         fontsize = 24

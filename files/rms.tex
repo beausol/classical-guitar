@@ -9,13 +9,13 @@
 
  \section{Compensation by Minimizing RMS Error\label{app:rms}}
 
-The root-mean-square (RMS) frequency error (in cents) averaged over the frets $n \in \{1, n_\text{max}\}$ is given by
+The root-mean-square (RMS) frequency error (in cents) averaged over the frets $n \in \{1, n_\text{max}\}$ \emph{of a particular string} is given by
  \begin{equation}\label{eqn:rms_def}
 \overline{\Delta \nu} \equiv \sqrt{\frac{\sum_{n = 1}^{n_\text{max}} \Delta \nu_n^2}{n_\text{max}}}\, ,
  \end{equation}
 where $\Delta \nu_n$ is given by \eqn{error_tot}. Here we will vary both $\Delta S$ and $\Delta N$ to minimize $\overline{\Delta \nu}$. In this case, it is sufficient to minimize the quantity
  \begin{equation}\label{eqn:chi2_def}
-\chi^2 = \sum_{n = 1}^{n_\text{max}} \left(\frac{\ln(2)}{1200}\, \Delta \nu_n\right)^2
+\chi^2 = \sum_{n = 1}^{n_\text{max}} \left[\frac{\ln(2)}{1200}\, \Delta \nu_n\right]^2
  \end{equation}
 such that the gradient of $\chi^2$ with respect to $\Delta S$ and $\Delta N$ vanishes. The components of this gradient are
  \begin{subequations}\label{chi2_grad}
@@ -25,7 +25,7 @@ such that the gradient of $\chi^2$ with respect to $\Delta S$ and $\Delta N$ van
  \end{align}
  \end{subequations}
 Setting both of these components to zero, we can rewrite them as the matrix equation
- \begin{equation}
+ \begin{equation} \label{eqn:rms_mat}
 \begin{bmatrix}
   \sigma_2 & -\sigma_1 \\
   \sigma_1 & -\sigma_0
@@ -39,12 +39,16 @@ Setting both of these components to zero, we can rewrite them as the matrix equa
   \sigma_1\, B_0 +  \half\, \kappa\, \sum_n Q_n
 \end{bmatrix}\, ,
  \end{equation}
-which has the analytic solution
+where
+ \begin{equation}
+\sigma_k \equiv \sum_{n = 1}^{n_\text{max}} \left(\gamma_n - 1\right)^k\, .
+ \end{equation}
+\Eqn{rms_mat} has the straightforward analytic solution
  \begin{equation}\label{eqn:rms_sol}
 \begin{bmatrix}
   \Delta S \\
   \Delta N
-\end{bmatrix} = \frac{X_0}{\sigma_1^2 - \sigma_0\, \sigma_2}\, 
+\end{bmatrix} = \frac{X_0}{\sigma_1^2 - \sigma_0\, \sigma_2}\,
 \begin{bmatrix}
   -\sigma_0 & \sigma_1 \\
   -\sigma_1 & \sigma_2
@@ -52,7 +56,7 @@ which has the analytic solution
 \begin{bmatrix}
   \sigma_2\, B_0 +  \half\, \kappa\, \sum_n (\gamma_n - 1) Q_n\\
   \sigma_1\, B_0 +  \half\, \kappa\, \sum_n Q_n
-\end{bmatrix}\, ,
+\end{bmatrix}\, .
  \end{equation}
 
 The corresponding Hessian matrix for this problem is
@@ -66,4 +70,4 @@ H = \begin{bmatrix}
       -\sigma_1 & \sigma_0
     \end{bmatrix}\, .
  \end{equation}
-In the case of a $2 \times 2$ real matrix, the Hessian is positive definite if both eigenvalues are positive, and this holds if the determinant is greater than zero. It is easy to verify numerically (and with some effort algebraically) that $\Det(H) > 0$ for $n_\text{max} > 1$. Therefore, the solution for $\Delta S$ and $\Delta N$ given by \eqn{rms_sol} minimizes the RMS frequency error. 
+The Hessian is positive definite if and only if all of its eigenvalues are positive, and in the case of a $2 \times 2$ real matrix, this holds when the determinant is greater than zero. It is easy to verify numerically (and with some effort algebraically) that $\Det(H) > 0$ for $n_\text{max} > 1$. Therefore, the solution for $\Delta S$ and $\Delta N$ given by \eqn{rms_sol} minimizes the RMS frequency error. 
