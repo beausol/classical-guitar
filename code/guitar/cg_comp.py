@@ -205,20 +205,6 @@ class GuitarStrings(object):
         for string in self._strings:
             retstr += string.__str__() + "\n"
         return retstr
-
-    def estimate_r(self, delta_nu:list, g, b, c, ds, dn, x0):
-        q = ( g / (2 * x0**2) ) * ( (b + c)**2 + b**2/(g - 1) - c**2/g )
-        l0 = x0 + ds + dn
-
-        kappa = np.zeros_like(l0)
-        string_num = np.arange(0, len(self._strings))
-        aa = q / 2
-        for string, num in zip(self._strings, string_num):
-            bb = string._radius / (2 * l0[num])
-            cc = -(np.log(2)/1200.0) * delta_nu[num] - (g - 1) * (ds[num] - dn[num]) / x0
-            kappa[num] = ( ( -bb + np.sqrt(bb**2 - 4 * aa * cc) ) / (2 * aa) )**2
-
-        return (600.0 / np.log(2)) * (kappa + 1)
     
     def set_scale(self, scale_length):
         self._scale = scale_length
@@ -241,7 +227,9 @@ class GuitarStrings(object):
     def get_notes(self):
         notes = []
         for string in self._strings:
-            notes.append('$' + string.get_note() + '$')
+            note_str = string.get_note()
+            note = note_str.split('_')
+            notes.append(note[0] + '$_{' + note[1] + '}$')
         return notes
 
     def get_radii(self):
@@ -285,6 +273,59 @@ class GuitarStrings(object):
         for string in self._strings:
             stiffness.append(string.get_stiffness())
         return np.array(stiffness)
+
+    #def estimate_r(self, delta_nu:list, g, b, c, ds, dn, x0):
+        #q = ( g / (2 * x0**2) ) * ( (b + c)**2 + b**2/(g - 1) - c**2/g )
+        #l0 = x0 + ds + dn
+
+        #kappa = np.zeros_like(l0)
+        #string_num = np.arange(0, len(self._strings))
+        #aa = q / 2
+        #for string, num in zip(self._strings, string_num):
+            #bb = string._radius / (2 * l0[num])
+            #cc = -(np.log(2)/1200.0) * delta_nu[num] - (g - 1) * (ds[num] - dn[num]) / x0
+            #print(aa, bb, cc)
+            #kappa[num] = ( ( -bb + np.sqrt(bb**2 - 4 * aa * cc) ) / (2 * aa) )**2
+
+        #return (600.0 / np.log(2)) * (kappa + 1)
+
+    def estimate_r(self, delta_nu:list, g, q, ds, dn, x0):
+        #q = ( g / (2 * x0**2) ) * ( (b + c)**2 + b**2/(g - 1) - c**2/g )
+        l0 = x0 + ds + dn
+
+        kappa = np.zeros_like(l0)
+        string_num = np.arange(0, len(self._strings))
+        for string, num in zip(self._strings, string_num):
+            alpha = 0.5 * ( q + (g**2 - 1) * (1 + np.pi**2) * (string._radius / (2 * l0[num]))**2 )
+            beta = (g - 1) * string._radius / (2 * l0[num])
+            xi = -(np.log(2)/1200.0) * delta_nu[num] - ((g - 1) * ds[num] - dn[num]) / x0
+            kappa[num] = ( ( -beta + np.sqrt(beta**2 - 4 * alpha * xi) ) / (2 * alpha) )**2
+
+        return (600.0 / np.log(2)) * (kappa + 1)
+    #def compensate(self, g_n, q_n):
+        #def sigma(g_n, k):
+            #return np.sum((g_n - 1)**k)
+
+        #sigma_0 = sigma(g_n, 0)
+        #sigma_1 = sigma(g_n, 1)
+        #sigma_2 = sigma(g_n, 2)
+        
+        #sigma = np.array([[sigma_2, -sigma_1], [sigma_1, -sigma_0]])
+        #sum_qn = 0.5 * np.sum(q_n)
+        #sum_gq = 0.5 * np.sum((g_n - 1) * q_n)
+
+        #idx_list = np.arange(0, self.get_count())
+        #kappa = self.get_kappa()
+        #b0 = self.get_stiffness()
+        #ds = np.zeros(self.get_count())
+        #dn = np.zeros(self.get_count())
+        #for string, idx in zip(self._strings, idx_list):
+            #rhs = np.array([[sigma_2 * b0[idx] + sum_gq * kappa[idx]], [sigma_1 * b0[idx] + sum_qn * kappa[idx]]])
+            #lhs = np.dot(np.linalg.inv(sigma), rhs)
+            #ds[idx] = lhs[0]
+            #dn[idx] = lhs[1]
+        
+        #return ds, dn
     
     def compensate(self, g_n, q_n):
         def sigma(g_n, k):
@@ -293,6 +334,7 @@ class GuitarStrings(object):
         sigma_0 = sigma(g_n, 0)
         sigma_1 = sigma(g_n, 1)
         sigma_2 = sigma(g_n, 2)
+        sigma_3 = sigma(g_n, 3)
         
         sigma = np.array([[sigma_2, -sigma_1], [sigma_1, -sigma_0]])
         sum_qn = 0.5 * np.sum(q_n)
@@ -304,13 +346,15 @@ class GuitarStrings(object):
         ds = np.zeros(self.get_count())
         dn = np.zeros(self.get_count())
         for string, idx in zip(self._strings, idx_list):
-            rhs = np.array([[sigma_2 * b0[idx] + sum_gq * kappa[idx]], [sigma_1 * b0[idx] + sum_qn * kappa[idx]]])
+            b_1 = sigma_1 * b0[idx] + 0.5 * (1 + np.pi**2) * (sigma_2 + 2.0 * sigma_1) * b0[idx]**2
+            b_2 = sigma_2 * b0[idx] + 0.5 * (1 + np.pi**2) * (sigma_3 + 2.0 * sigma_2) * b0[idx]**2
+            rhs = np.array([[b_2 + sum_gq * kappa[idx]], [b_1 + sum_qn * kappa[idx]]])
             lhs = np.dot(np.linalg.inv(sigma), rhs)
             ds[idx] = lhs[0]
             dn[idx] = lhs[1]
         
         return ds, dn
-    
+
     def save_specs_table(self, savepath, filename):
         names = self.get_string_names()
         notes = self.get_notes()
@@ -461,6 +505,8 @@ class Guitar(object):
         rle = 1200 * np.log2( l_0 / (self.gamma(n_2d) * self.l(fret_list)) )
         tme = (600/np.log(2.0)) * kappa * self.qn(fret_list)
         bse = 1200 * np.log2( (1 + self.gamma(n_2d) * b_0) / (1 + b_0) )
+        bse = 1200 * np.log2( (1 + self.gamma(n_2d) * b_0 + (1.0 + 0.5 * np.pi**2) * (self.gamma(n_2d) * b_0)**2)
+                              / (1 + b_0 + (1.0 + 0.5 * np.pi**2) * b_0**2) )
         
         shifts = rle + tme + bse
         
@@ -470,8 +516,8 @@ class Guitar(object):
     
     def estimate_r(self, delta_nu:list, fret:int):
         g = self.gamma(fret)
-        b = self._bn(fret)
-        r = self._strings.estimate_r(delta_nu, g, b, self._c, self._ds, self._dn, self._x0)
+        q = self.qn(np.array([fret]))[0,0]
+        r = self._strings.estimate_r(delta_nu, g, q, self._ds, self._dn, self._x0)
         return r
     
     def compensate(self, max_fret:int):
