@@ -35,14 +35,15 @@ Setting both of these components to zero, we can rewrite them as the matrix equa
   \Delta N
 \end{bmatrix} = X_0
 \begin{bmatrix}
-  \sigma_2\, B_0 +  \half\, \kappa\, \sum_n (\gamma_n - 1) Q_n\\
-  \sigma_1\, B_0 +  \half\, \kappa\, \sum_n Q_n
+  \sigma_2\, B_0 +  \half\, \kappa\, \overline{Q}_1 \\
+  \sigma_1\, B_0 +  \half\, \kappa\, \overline{Q}_0
 \end{bmatrix}\, ,
  \end{equation}
 where
- \begin{equation}
-\sigma_k \equiv \sum_{n = 1}^{n_\text{max}} \left(\gamma_n - 1\right)^k\, .
- \end{equation}
+ \begin{align}
+\sigma_k &\equiv \sum_{n = 1}^{n_\text{max}} \left(\gamma_n - 1\right)^k\, , \nd \\
+\overline{Q}_k &\equiv \sum_{n = 1}^{n_\text{max}} \left(\gamma_n - 1\right)^k\, Q_n\, .
+ \end{align}
 \Eqn{rms_mat} has the straightforward analytic solution
  \begin{equation}\label{eqn:rms_sol}
 \begin{bmatrix}
@@ -54,8 +55,23 @@ where
   -\sigma_1 & \sigma_2
 \end{bmatrix}\,
 \begin{bmatrix}
-  \sigma_2\, B_0 +  \half\, \kappa\, \sum_n (\gamma_n - 1) Q_n\\
-  \sigma_1\, B_0 +  \half\, \kappa\, \sum_n Q_n
+  \sigma_2\, B_0 + \half\, \kappa\, \overline{Q}_1 \\
+  \sigma_1\, B_0 + \half\, \kappa\, \overline{Q}_0
+\end{bmatrix}\, .
+ \end{equation}
+For completeness, the corresponding solution when the quadratic stiffness term is included is given by
+ \begin{equation}\label{eqn:rms_sol_quad}
+\begin{bmatrix}
+  \Delta S \\
+  \Delta N
+\end{bmatrix} = \frac{X_0}{\sigma_1^2 - \sigma_0\, \sigma_2}\,
+\begin{bmatrix}
+  -\sigma_0 & \sigma_1 \\
+  -\sigma_1 & \sigma_2
+\end{bmatrix}\,
+\begin{bmatrix}
+  \sigma_2\, B_0 + \half \left(1 + \pi^2\right) \left(2 \sigma_2 + \sigma_3\right) B_0^2 + \half\, \kappa\, \overline{Q}_1 \\
+  \sigma_1\, B_0 + \half \left(1 + \pi^2\right) \left(2 \sigma_1 + \sigma_2\right) B_0^2 + \half\, \kappa\, \overline{Q}_0
 \end{bmatrix}\, .
  \end{equation}
 
