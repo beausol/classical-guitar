@@ -22,16 +22,6 @@ f_m = \frac{m}{2\, L}\, \sqrt{\frac{T}{\mu}} \left[ 1 + B + \left( 1 + \half m^2
  \end{equation}
 Note that this expression is valid only when $B \ll 1$. For a typical nylon guitar string with $E \approx 5$~GPa, $T \approx 60$~N, $\rho \approx 0.5$~mm, and $L \approx 650$~mm, we have $B \approx 3 \times 10^{-3}$. (In this case, the quadratic term in $B$ is only 2\% as large as the linear term, and can generally be neglected. We will include it in our analysis below only for completeness.) We'll use \eqn{f_m_stiff} with some caution, because the physics of nylon strings (particularly the wound base strings) are quite complicated~\cite{ref:lynchaird2017mpn}.
 
-Throughout this work, we will use \emph{cents} to describe small differences in pitch~\cite{ref:durfee2015pms}. One cent is one one-hundredth of a Twelve-Tone Equal Temperament (12-TET) half step, so that there are 1200~cents per octave. Using this approach, the difference in pitch between frequencies $f_1$ and $f_2$ is defined as
- \begin{equation} \label{eqn:cents_def}
-\Delta \nu \equiv 1200\, \log_2\left(\frac{f_2}{f_1}\right)\, .
- \end{equation}
-We define $f \equiv (f_1 + f_2) / 2$ and $\Delta f \equiv f_2 - f_1$. Then
- \begin{equation} \label{eqn:cents_approx}
-\Delta \nu = 1200\, \log_2\left(\frac{f + \Delta f / 2}{f - \Delta f /2}\right) \approx \frac{1200}{\ln 2}\, \frac{\Delta f}{f}\, ,
- \end{equation}
-where the last approximation applies when $\Delta f \ll f$. An experienced guitar player can distinguish beat notes with a difference frequency of $\Delta f \approx 1$~Hz, which corresponds to 8~cents at $A_2$ ($f = 220$~Hz) or 5~cents at $E_4$ ($f = 329.63$~Hz).
-
  \begin{figure}
   \centering
   \includegraphics[width=6.0in]{figures/guitar_schematic}
@@ -157,7 +147,7 @@ Elasticity properties~\cite{ref:landau1986toe}
  \end{equation}
 where we have used \eqn{q_n_def}. Therefore, the tension of the fretted string is
  \begin{equation}
-T_n = T_0 + T_n = T_0 \left( 1 + \kappa\, Q_n \right)\, ,
+T_n = T_0 + \Delta T_n = T_0 \left( 1 + \kappa\, Q_n \right)\, ,
  \end{equation}
 where we have defined the dimensionless ``string constant''
  \begin{equation}\label{eqn:kappa_def}

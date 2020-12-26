@@ -116,7 +116,8 @@ class GuitarString(object):
         return mu * (2 * x0 * self._freq)**2
 
     def _comp_kappa(self):
-        self._kappa = (np.log(2) / 600) * self._r - 1
+#        self._kappa = (np.log(2) / 600) * self._r - 1
+        self._kappa = 2 * self._r + 1
 
     def _comp_modulus(self):
         self._modulus = 1.0e-09 * (self._tension / (np.pi * (self._radius/1000)**2)) * self._kappa
@@ -286,7 +287,8 @@ class GuitarStrings(object):
             xi = -(np.log(2)/1200.0) * delta_nu[num] - ((g - 1) * ds[num] - dn[num]) / x0
             kappa[num] = ( ( -beta + np.sqrt(beta**2 - 4 * alpha * xi) ) / (2 * alpha) )**2
 
-        return (600.0 / np.log(2)) * (kappa + 1)
+        #return (600.0 / np.log(2)) * (kappa + 1)
+        return 0.5 * (kappa - 1)
     
     def compensate(self, g_n, q_n):
         def sigma(g_n, k):
@@ -342,7 +344,7 @@ class GuitarStrings(object):
         stiffness = self.get_stiffness()
         df = pd.DataFrame({'String': names,
                            '$\Delta \nu_{12}$ (cents)': dnu,
-                           '$R$ ($\times 10^4$)': (r * 1.0e-04).tolist(),
+                           '$R$': r.tolist(),
                            '$\kappa$': kappa.tolist(),
                            '$E$ (GPa)': modulus.tolist(),
                            '$B_0$ ($\times 10^{-3}$)': (stiffness * 1.0e+03).tolist()})

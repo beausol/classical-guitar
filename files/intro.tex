@@ -8,11 +8,23 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
  \section{Introduction and Background\label{sct:intro}}
-Discuss initial~\cite{ref:byersweb} and ongoing work by G.\ Byers~\cite{ref:byers1996cgi}, and recent studies of steel-string guitars~\cite{ref:varieschi2010icf}. General references on the physics of sound, music, and musical instruments are \cite{ref:morse1981vas}.
+Discuss initial~\cite{ref:byers1996cgi} and ongoing~\cite{ref:byersweb} work by G.\ Byers, and recent studies of steel guitar strings~\cite{ref:varieschi2010icf}. General references on the physics of sound, music, and musical instruments are \cite{ref:morse1981vas}.
 
 Fundamental frequency of a string~\cite{ref:morse1981vsa}:
  \begin{equation} \label{eqn:f_0_def}
 f_0 = \frac{1}{2\, L_0}\, \sqrt{\frac{T_0}{\mu_0}}\, ,
  \end{equation}
 where $L_0$ is the length of the free (unfretted) string from the saddle to the nut, $T_0$ is the tension in the free string, and $\mu_0 \equiv M / L_0$ is the linear mass density of a free string of mass $M$.
+
+Throughout this work, we will use \emph{cents} to describe small differences in pitch~\cite{ref:durfee2015pms}. One cent is one one-hundredth of a Twelve-Tone Equal Temperament (12-TET) half step, so that there are 1200~cents per octave. Using this approach, the difference in pitch between frequencies $f_1$ and $f_2$ is defined as
+ \begin{equation} \label{eqn:cents_def}
+\Delta \nu \equiv 1200\, \log_2\left(\frac{f_2}{f_1}\right)\, .
+ \end{equation}
+We define $f \equiv (f_1 + f_2) / 2$ and $\Delta f \equiv f_2 - f_1$. Then
+ \begin{equation} \label{eqn:cents_approx}
+\Delta \nu = 1200\, \log_2\left(\frac{f + \Delta f / 2}{f - \Delta f /2}\right) \approx \frac{1200}{\ln 2}\, \frac{\Delta f}{f}\, ,
+ \end{equation}
+where the last approximation applies when $\Delta f \ll f$. An experienced guitar player can distinguish beat notes with a difference frequency of $\Delta f \approx 1$~Hz, which corresponds to 8~cents at $A_2$ ($f = 220$~Hz) or 5~cents at $E_4$ ($f = 329.63$~Hz).
+
+
 
