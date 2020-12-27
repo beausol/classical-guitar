@@ -67,26 +67,20 @@ The final form of \eqn{error_def} makes it clear that --- for nylon guitar strin
   \item
    \emph{Tension}: The third term is the error caused by the \emph{increase} of the tension in the string arising from the stress and strain applied to the string by fretting. This effect will also depend on the total length of the string $\mathcal{L}_n$.
   \item
-   \emph{Bending Stiffness}: The fourth and final term is the error caused by the change in the bending stiffness coefficient caused by changing the vibrating length of the string from $L_0$ to $L_n$.
+   \emph{Bending Stiffness}: The fourth and final term is the error caused by the change in the bending stiffness coefficient caused by decreasing the vibrating length of the string from $L_0$ to $L_n$.
  \end{enumerate}
 Note that the properties of the logarithm function have \emph{decoupled} these physical effects by converting multiplication into addition. We will discuss each of these sources of error in turn below.
 
  \subsection{Resonant Length}
-We can estimate the first term in the last line of \eqn{error_def} by referring to \fig{guitar_schematic} and computing the resonant length $L_n$. We find:
+The length $L_0$ of the open (unfretted) guitar string can be calculated quickly by referring to \fig{guitar_schematic}. We find:
+ \begin{equation}  \label{eqn:l_0_def}
+L_0 = \sqrt{\left(X_0 + \Delta S + \Delta N\right)^2 + c^2} \approx X_0 + \Delta S + \Delta N + \frac{c^2}{2\, X_0}\, ,
+ \end{equation}
+where the approximation arises from Taylor Series that applies when $c^2 \ll X_0^2$. Similarly, if $(b + c)^2 \ll X_0^2$, the resonant length $L_n$ is given by
  \begin{equation}  \label{eqn:l_n_def}
-L_n = \begin{cases}
-\sqrt{\left(X_0 + \Delta S + \Delta N\right)^2 + c^2} & n =  0\, , \\
-\sqrt{\left(X_n + \Delta S\right)^2 + (b + c)^2} & n \ge 1\, .
- \end{cases}
+L_n = \sqrt{\left(X_n + \Delta S\right)^2 + (b + c)^2} \approx X_n + \Delta S + \frac{(b + c)^2}{2\, X_n}\, .
  \end{equation}
-When $b + c \ll X_0$, we can use a Taylor series to approximate $L_n$ by
- \begin{equation} \label{eqn:l_n_approx}
-L_n \approx \begin{cases}
-X_0 + \Delta S + \Delta N + c^2/2\, X_0 & n =  0\, , \\
-X_n + \Delta S + (b + c)^2/2\, X_n & n \ge 1\, .
- \end{cases}
- \end{equation}
-Then --- when the guitar has been manufactured such that $X_n = X_0 / \gamma_n$ --- the resonant length error is approximately
+Then --- if the guitar has been manufactured such that $X_n = X_0 / \gamma_n$ --- the resonant length error determined by the first term in the last line of \eqn{error_def} is approximately
 %  \begin{equation}
 %  1200\, \log_2 \left( \frac{L_0}{\gamma_n\, L_n} \right) \approx -\frac{1200}{\ln(2)} \left[ \frac{\left(\gamma_n - 1\right) \Delta S - \Delta N}{X_0} + \frac{\gamma_n^2 (b + c)^2 - c^2}{2\, X_0^2}\right]
 %  \end{equation}
@@ -113,7 +107,7 @@ Referring to \fig{guitar_schematic}, we see that $\mathcal{L}_n = L_n + L^\prime
  \begin{equation} \label{eqn:l_p_def}
 L^\prime_n = \sqrt{\left(X_0 - X_n + \Delta N\right)^2 + b^2} \approx X_0 - X_n + \Delta N + \frac{b^2}{2 \left(X_0 - X_n\right)}\, ,
  \end{equation}
-where the approximation applies when $b^2 \ll X_0 - X_n$. Therefore, using \eqn{l_n_approx}, we have
+where the approximation applies when $b^2 \ll (X_0 - X_n)^2$. Therefore, using \eqn{l_n_def}, we have
  \begin{equation}
 \mathcal{L}_n = L_n + L^\prime_n \approx X_0 + \Delta S + \Delta N + \frac{(b + c)^2}{2\, X_n} + \frac{b^2}{2 \left(X_0 - X_n\right)}\, ,
  \end{equation}
@@ -141,19 +135,19 @@ In \fig{qn_test}, we plot a comparison between the exact expression for the norm
 
  \subsection{Tension\label{sct:model_tension}}
 %The third term in \eqn{error_def} provides us withe frequency shift of a string
-Elasticity properties~\cite{ref:landau1986toe}
+As a guitar string is fretted, its length increases, thereby increasing its tension through linear elastic deformation~\cite{ref:landau1986toe}. We will focus on the response of the string to a longitudinal strain, and neglect the transverse stress that causes negligible changes in the diameter of the string~\cite{ref:lynchaird2017mpn}. In this case, we can write the change in tension of a string experiencing a change in length from $L$ to $\mathcal{L}$ as
  \begin{equation} \label{eqn:youngs_mod_def}
-\Delta T_n = E\, A\, \frac{\mathcal{L}_n - L_0}{L_0} = A\, E\, Q_n\, ,
+\Delta T = \pi\, \rho^2\, E\, \frac{\mathcal{L} - L}{L}\, .
  \end{equation}
-where we have used \eqn{q_n_def}. Therefore, the tension of the fretted string is
+Therefore, the tension in a string clamped to fret $n$ is
  \begin{equation}
 T_n = T_0 + \Delta T_n = T_0 \left( 1 + \kappa\, Q_n \right)\, ,
  \end{equation}
-where we have defined the dimensionless ``string constant''
+where we have used \eqn{q_n_def} and defined the dimensionless ``string constant''
  \begin{equation}\label{eqn:kappa_def}
-\kappa \equiv \frac{A\, E}{T_0} = \frac{\pi \rho^2 E}{T_0}\, .
+\kappa \equiv \frac{\pi \rho^2 E}{T_0}\, .
  \end{equation}
-In this case, we assume that $\kappa Q_n \ll 1$, so that we can approximate the third term in the final line of \eqn{error_def} as
+In this case, we assume that $\kappa\, Q_n \ll 1$, so that we can approximate the third term in the final line of \eqn{error_def} as
  \begin{equation}
 600\, \log_2 \left(  \frac{T_n}{T_0} \right) \approx \frac{600}{\ln(2)}\, \kappa\, Q_n\, .
  \end{equation}
@@ -178,4 +172,4 @@ Incorporating all of these effects --- and neglecting the term proportional to $
  \begin{equation}\label{eqn:error_tot}
 \Delta \nu_n \approx \frac{1200}{\ln(2)}\, \left[ \left(\gamma_n - 1\right) \left(B_0 - \frac{\Delta S}{X_0}\right) + \frac{\Delta N}{X_0} + \half\, \kappa\, Q_n \right]\, .
  \end{equation}
-In this form, we see that the bending stiffness and the increase in string tension due to fretting sharpen the pitch, but that we can flatten it with a positive saddle setback and negative nut setback. In fact, a simple compensation strategy would be to choose $\Delta S = B_0\, X_0$ to compensate for stiffness, and then select $\Delta N = - \kappa\, X_0\, \overline{Q} / 2$, where $\overline{Q}$ is the displacement averaged over a particular set of frets. We'll choose a more flexible method for compensation in \sct{comp}, but we'll obtain results that are similar to this basic approach. 
+In this form, we see that the bending stiffness and the increase in string tension due to fretting sharpen the pitch, but that we can flatten it with a positive saddle setback and negative nut setback. In fact, a simple compensation strategy would be to choose $\Delta S = B_0\, X_0$ to compensate for stiffness, and then select $\Delta N = - \kappa\, X_0\, \overline{Q} / 2$, where $\overline{Q}$ is the displacement averaged over a particular set of frets. We'll rely on a more flexible method for compensation in \sct{comp}, but we'll obtain results that are similar to those found using this basic approach. 

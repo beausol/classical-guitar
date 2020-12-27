@@ -602,10 +602,12 @@ class Guitar(object):
         plt.show()
     
     def save_setbacks_table(self, savepath, filename):
+        rms = self._rms()
         df = pd.DataFrame({'String': self._strings.get_string_names(),
                            '$\Delta S$ (mm)': self._ds.tolist(),
-                           '$\Delta N$ (mm)': self._dn.tolist()})
-        table_str = df.to_latex(index=False, escape=False, float_format="%.2f", column_format='ccc')
+                           '$\Delta N$ (mm)': self._dn.tolist(),
+                           '$\overline{\Delta \nu}_\text{rms}$ (cents)': rms.tolist()})
+        table_str = df.to_latex(index=False, escape=False, float_format="%.2f", column_format='cccc')
 
         filepath = file_path(savepath, filename)
         if filepath is not None:
