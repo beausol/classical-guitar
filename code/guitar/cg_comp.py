@@ -605,7 +605,7 @@ class Guitar(object):
         df = pd.DataFrame({'String': self._strings.get_string_names(),
                            '$\Delta S$ (mm)': self._ds.tolist(),
                            '$\Delta N$ (mm)': self._dn.tolist()})
-        table_str = df.to_latex(index=False, escape=False, float_format="%.2f", column_format='cccccc')
+        table_str = df.to_latex(index=False, escape=False, float_format="%.2f", column_format='ccc')
 
         filepath = file_path(savepath, filename)
         if filepath is not None:
