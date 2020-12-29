@@ -9,15 +9,27 @@
 
  \section{Fretting Model\label{app:fret}}
 
+As discussed in \sct{model}, we have neglected to include a contribution to the incremental change in the length of the fretted string caused by both the depth and the shape of the string under the finger~\cite{ref:byers1996cgi,ref:varieschi2010icf}. Here we include this concept in a simple way to determine the effect it could have on the frequency shift due to increased string tension. In \fig{fretting_schematic}, we adopt the schematic of the guitar shown in \fig{guitar_schematic}, but we allow a small, horizontal linear section of string with length $d$ to represent the action of the finger. In this case, the resonant length $L_n$ is unaffected, but the remaining string length becomes
  \begin{equation}
-L^\prime_n = d + \sqrt{\left(X_0 + \Delta N - X_n - d\right)^2 + b^2} \approx X_0 - X_n + \Delta N + \frac{b^2}{2 \left(X_0 + \Delta N - X_n - d\right)}\, ,
+L^\prime_n = d + \sqrt{\left(X_0 + \Delta N - X_n - d\right)^2 + b^2} \approx X_0 - X_n + \Delta N + \frac{b^2}{2 \left(X_0 + \Delta N - X_n - d\right)}\, .
  \end{equation}
+Roughly speaking, the act of fretting increases the effective value of $b^2$ in $L^\prime_n$ by a factor of $1 + d / (X_0 - X_n)$. We can use \eqn{q_n_def} to determine the increase in the relative displacement $Q_n$.
+
+In \fig{fret_model}, we plot $Q_n$ for the first three frets as a function of the distance parameter $d$. For this example, we have taken $b = 1.0$~mm, $c = 3.5$~mm, $\Delta S = \Delta N = 0$, and a scale length of 650~mm. We see that for $n > 3$, the increase in $Q_n$ with $d$ is negligible. In the worst case, where $d = 1$~cm, $Q_1$ increases by almost $8.0 \times 10^{-6}$. For string 3 (G) in \tbl{ej45_props}, we see that $\kappa = 111$, so \eqn{tension_shift} predicts that $\Delta \nu_1$ for that string should increase by an additional 0.75 cents above its value for $d = 0$. Even so, our measurements for $\Delta \nu_1$ using the Alhambra 8P guitar and normal tension strings is consistent with the theoretical values shown in \fig{shift_alhambra8p_ej45_factory}. It is true that we can press the string so hard that it touches the fret board, increasing the frequency shift by as much as 2 -- 3 cents, but this is likely the result of dragging the string over the fret and causing a local change in tension that is inconsistent with the boundary conditions used to derive \eqn{f_m_stiff}.
+
+ \begin{figure}
+  \centering
+  \includegraphics[width=6.0in]{figures/fretting_schematic}
+  \caption{\label{fig:fretting_schematic} A recapitulation of \fig{guitar_schematic} with the addition of a horizontal linear distance $d$ at fret $n$ to represent the slight increase in the distance $L_n^\prime$ caused by a finger.}
+ \end{figure}
+
+
 
 
  \begin{figure}
   \centering
   \includegraphics[width=6.0in]{figures/fret_model}
-  \caption{\label{fig:fret_model} Plot of the normalized displacement $Q_n$ as a function of the fret number for three different values of the parameter $d$. Here the guitar has $b = 1.0$~mm, $c = 3.5$~mm, no setbacks, and a scale length of 650~mm.}
+  \caption{\label{fig:fret_model} Plot of the relative displacement $Q_n$ for the first three frets as a function of the distance parameter $d$. Here the guitar has $b = 1.0$~mm, $c = 3.5$~mm, no setbacks, and a scale length of 650~mm. For $n > 3$, the increase in $Q_n$ with $d$ is negligible.}
  \end{figure}
 
 
