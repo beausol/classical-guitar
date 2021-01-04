@@ -8,7 +8,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
  \section{Introduction and Background\label{sct:intro}}
-Discuss initial~\cite{ref:byers1996cgi} and ongoing~\cite{ref:byersweb} work by G.\ Byers, and recent studies of steel guitar strings~\cite{ref:varieschi2010icf}. General references on the physics of sound, music, and musical instruments are \cite{ref:morse1981vas}.
+ 
+The relationship between mathematics and music is 
+Discuss initial~\cite{ref:byers1996cgi} and ongoing~\cite{ref:byersweb} work by G.\ Byers, and recent studies of steel guitar strings~\cite{ref:varieschi2010icf}. General references on the physics of sound, music, and musical instruments are \cite{ref:morse1981vas,ref:fletcher2005pmi}.
 
 Fundamental frequency of a string~\cite{ref:morse1981vsa}:
  \begin{equation} \label{eqn:f_0_def}
@@ -26,5 +28,6 @@ We define $f \equiv (f_1 + f_2) / 2$ and $\Delta f \equiv f_2 - f_1$. Then
  \end{equation}
 where the last approximation applies when $\Delta f \ll f$. An experienced guitar player can distinguish beat notes with a difference frequency of $\Delta f \approx 1$~Hz, which corresponds to 8~cents at $A_2$ ($f = 220$~Hz) or 5~cents at $E_4$ ($f = 329.63$~Hz).
 
+We present the basics of our model of classical guitar strings in \sct{model}. We begin with a new expression for the allowed vibration frequencies of a stiff string, derived in \app{freq} under the assumption that the boundary conditions are not symmetric. We then include a discussion of the four contributions to frequency shifts and errors of non-ideal strings: changes in the resonant length of the fretted string; a decrease in the linear mass density and an increase in the tension of the string; and the mechanical stiffness of the resonating string. Our goal is to simplify the equations through Taylor series expansions to allow an intuitive picture of the string's behavior to emerge. We offer an empirical reason to doubt the need for a complicated model of string fretting, and we explore this argument in greater detail in \app{fret}. In \sct{exp}, we suggest a simple experiment to estimate the response of the string's tension to the change in length caused by fretting, and we demonstrate the idea using a normal-tension string set on an Alhambra 8P guitar (as well as other string sets in \app{specs}). Then, in \sct{comp}, we use these estimates to demonstrate a straightforward analytic approach to compensating the errors in a guitar string, relying on a method --- described in \app{rms} --- to minimize the root-mean-squared (RMS) frequency deviation at each fret. Finally, we discuss a collaboration of guitar manufacturer and musician to temper the guitar using harmonic tuning and optimize it for a particular piece.
 
-
+This document -- as well as the Python computer code needed to reproduce the figures -- is available at GitHub~\cite{ref:github2021rgb}.

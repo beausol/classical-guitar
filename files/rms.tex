@@ -86,4 +86,40 @@ H = \begin{bmatrix}
       -\sigma_1 & \sigma_0
     \end{bmatrix}\, .
  \end{equation}
-The Hessian is positive definite if and only if all of its eigenvalues are positive, and in the case of a $2 \times 2$ real matrix, this holds when the determinant is greater than zero. It is easy to verify numerically (and with some effort algebraically) that $\Det(H) > 0$ for $n_\text{max} > 1$. Therefore, the solution for $\Delta S$ and $\Delta N$ given by \eqn{rms_sol} minimizes the RMS frequency error. 
+The Hessian is positive definite if and only if all of its eigenvalues are positive, and in the case of a $2 \times 2$ real matrix, this holds when the determinant is greater than zero. It is easy to verify numerically (and with some effort algebraically) that $\Det(H) > 0$ for $n_\text{max} > 1$. Therefore, the solution for $\Delta S$ and $\Delta N$ given by \eqn{rms_sol} minimizes the RMS frequency error.
+
+The setback solution given by \eqn{rms_sol} is valid for a single string, and results like those shown in \tbl{ej45_setbacks} and \fig{shift_alhambra8p_ej45_full} assume that the guitar is built such that each string --- from a particular set of strings --- has a unique saddle and nut setback. Suppose that we'd prefer to engineer a guitar with single, uniform values of both $\Delta S$ and $\Delta N$ that provide reasonable compensation across an entire string set (or an ensemble of strings from a variety of manufacturers). In this case, \eqn{rms_def} becomes
+ \begin{equation}\label{eqn:rms_def_m}
+\overline{\Delta \nu}_\text{rms} \equiv \sqrt{\frac{\sum_{m = 1}^{m_\text{max}} \sum_{n = 1}^{n_\text{max}} \left[\Delta \nu^{(m)}_{n}\right]^2}{m_\text{max}\, n_\text{max}}}\, ,
+ \end{equation}
+where $m$ labels the strings in the set, and \eqn{error_tot} has been updated to become
+ \begin{equation}\label{eqn:error_tot_m}
+\Delta \nu^{(m)}_n \approx \frac{1200}{\ln(2)}\, \left\{ \left(\gamma_n - 1\right) \left[B_0^{(m)} - \frac{\Delta S}{X_0}\right] + \frac{\Delta N}{X_0} + \half\, \kappa^{(m)}\, Q_n \right\}\, .
+ \end{equation}
+If we rigorously follow the same approach that we used to arrive at \eqn{rms_sol}, in the multi-string case we obtain
+ \begin{equation}\label{eqn:rms_sol_multi}
+\begin{bmatrix}
+  \Delta S \\
+  \Delta N
+\end{bmatrix} = 
+\begin{bmatrix}
+  \frac{1}{m_\text{max}}\, \sum_{m = 1}^{m_\text{max}} \Delta S^{(m)} \\
+  \frac{1}{m_\text{max}}\, \sum_{m = 1}^{m_\text{max}} \Delta N^{(m)}
+\end{bmatrix}\, ,
+ \end{equation}
+where
+ \begin{equation}\label{eqn:rms_sol_uni}
+\begin{bmatrix}
+  \Delta S^{(m)} \\
+  \Delta N^{(m)}
+\end{bmatrix} = \frac{X_0}{\sigma_1^2 - \sigma_0\, \sigma_2}\,
+\begin{bmatrix}
+  -\sigma_0 & \sigma_1 \\
+  -\sigma_1 & \sigma_2
+\end{bmatrix}\,
+\begin{bmatrix}
+  \sigma_2\, B_0^{(m)} + \half\, \kappa^{(m)}\, \overline{Q}_1 \\
+  \sigma_1\, B_0^{(m)} + \half\, \kappa^{(m)}\, \overline{Q}_0
+\end{bmatrix}\, .
+ \end{equation}
+In other words, we can find the optimum values for both $\Delta S$ and $\Delta N$ simply by averaging the corresponding setbacks over a commercially interesting collection of string sets.
