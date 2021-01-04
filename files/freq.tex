@@ -74,24 +74,24 @@ In the case of a classical guitar, we expect that $B \ll 1$, so $k_1 \approx 1/B
  \begin{equation} \label{eqn:tran_eqn_2}
 \tan(k_2) = \frac{B\, k_2}{ \sqrt{1 + \left(B\, k_2\right)^2}}\, .
  \end{equation}
-We expect that $B\, k_2 \ll 1$, so we assume that $k_2 = m \pi (1 + \epsilon)$, where $m$ is an integer greater than or equal to 1, and $\epsilon \ll 1$. Therefore, to second order in $\epsilon$, we have $\tan(k_2) \approx m \pi \epsilon$, and
+We expect that $B\, k_2 \ll 1$, so we assume that $k_2 = q \pi (1 + \epsilon)$, where $q \in \mathbb{N}$ is an integer greater than or equal to 1, and $\epsilon \ll 1$. Therefore, to second order in $\epsilon$, we have $\tan(k_2) \approx q \pi \epsilon$, and
  \begin{equation}
-\epsilon = \frac{B\, (1 + \epsilon)}{\sqrt{1 + \left[m\, \pi\, B\, (1 + \epsilon)\right]^2}}\, .
+\epsilon = \frac{B\, (1 + \epsilon)}{\sqrt{1 + \left[q\, \pi\, B\, (1 + \epsilon)\right]^2}}\, .
  \end{equation}
-The denominator of the \rhs of this equation has a Taylor expansion given by $1 - \half\, \left[m\, \pi\, B\, (1 + \epsilon)\right]^2$, indicating that it will not contribute to $\epsilon$ to second order in $B$. Therefore, to this order,
+The denominator of the \rhs of this equation has a Taylor expansion given by $1 - \half\, \left[q\, \pi\, B\, (1 + \epsilon)\right]^2$, indicating that it will not contribute to $\epsilon$ to second order in $B$. Therefore, to this order,
  \begin{equation}%\label{}
 \epsilon \approx \frac{B}{1 - B} \approx B + B^2\, .
  \end{equation}
-We substitute $k = \pm i k_2$ into \eqn{kw} with $k_2 = m \pi/(1 - B)$ to obtain
+We substitute $k = \pm i k_2$ into \eqn{kw} with $k_2 = q \pi/(1 - B)$ to obtain
  \begin{equation}
  \begin{split}
 \omega &= \frac{k_2}{\pi}\, \sqrt{1 + \left(B\, k_2\right)^2} \\
-&= \frac{m}{1 - B}\, \sqrt{1 + m^2 \pi^2 \left(\frac{B}{1 - B}\right)^2} \\
-&\approx m \left[ 1 + B + \left( 1 + \half m^2 \pi^2 \right) B^2 \right]\, .
+&= \frac{q}{1 - B}\, \sqrt{1 + q^2 \pi^2 \left(\frac{B}{1 - B}\right)^2} \\
+&\approx q \left[ 1 + B + \left( 1 + \half q^2 \pi^2 \right) B^2 \right]\, .
  \end{split}
  \end{equation}
 Restoring the time scaling by $1/\omega_0$, and defining the frequency (in cycles/second) $f = \omega/2 \pi$, we finally have
  \begin{equation} \label{eqn:f_m_hybrid}
-f_m = \frac{m}{2\, L}\, \sqrt{\frac{T}{\mu}} \left[ 1 + B + \left( 1 + \half m^2 \pi^2 \right) B^2 \right]\, .
+f_q = \frac{q}{2\, L}\, \sqrt{\frac{T}{\mu}} \left[ 1 + B + \left( 1 + \half q^2 \pi^2 \right) B^2 \right]\, .
  \end{equation}
 We use this result to build our model in \sct{model}. 

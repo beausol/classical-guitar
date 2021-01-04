@@ -8,9 +8,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
  \section{Simple Model of Guitar Intonation\label{sct:model}}
-The starting point for prior efforts to understand guitar intonation and compensation~\cite{ref:byers1996cgi,ref:varieschi2010icf} is a formula for $f_{m}$, the transverse vibration frequency harmonic $m$ of a stiff string, originally published by Morse in 1936~\cite{ref:morse1981vsb}:
+The starting point for prior efforts to understand guitar intonation and compensation~\cite{ref:byers1996cgi,ref:varieschi2010icf} is a formula for $f_{q}$, the transverse vibration frequency harmonic $q$ of a stiff string, originally published by Morse in 1936~\cite{ref:morse1981vsb,ref:fletcher1964nvf, ref:fletcher2005pmb}:
  \begin{equation}\label{eqn:f_m_clamped}
-f_{m} = \frac{m}{2\, L}\, \sqrt{\frac{T}{\mu}} \left[ 1 + 2 B + 4 \left(1 + \frac{\pi^2\, m^2}{8}\right) B^2 \right]\, .
+f_{q} = \frac{q}{2\, L}\, \sqrt{\frac{T}{\mu}} \left[ 1 + 2 B + 4 \left(1 + \frac{\pi^2\, q^2}{8}\right) B^2 \right]\, .
  \end{equation}
 Here $L$ is the length of the string, $T$ and $\mu$ are its tension and the linear mass density, respectively, and $B$ is a small ``bending stiffness'' coefficient to capture the relevant mechanical properties of the string. For a homogeneous string with a cylindrical cross section, $B$ is given by
  \begin{equation} \label{eqn:b_def}
@@ -18,7 +18,7 @@ B \equiv \sqrt{\frac{\pi\, \rho^4\, E}{4\, T\, L^2}}\, ,
  \end{equation}
 where $\rho$ is the radius of the string and $E$ is Young's modulus (or the modulus of elasticity). But it's unlikely that \eqn{f_m_clamped} accurately describes the resonant frequencies of a nylon string on a classical guitar, because it assumes that the string is ``clamped'' at both ends, so that a particular set of symmetric boundary conditions must be applied to the partial differential equation (PDE) describing transverse vibrations of the string. We believe that this assumption is correct for the end of the string held at either the nut or the fret, but that the string is ``pinned'' (and not clamped) at the saddle. In \app{freq}, we solve the PDE using these non-symmetric boundary conditions, and find
  \begin{equation} \label{eqn:f_m_stiff}
-f_m = \frac{m}{2\, L}\, \sqrt{\frac{T}{\mu}} \left[ 1 + B + \left( 1 + \half m^2 \pi^2 \right) B^2 \right]\, .
+f_q = \frac{q}{2\, L}\, \sqrt{\frac{T}{\mu}} \left[ 1 + B + \left( 1 + \half q^2 \pi^2 \right) B^2 \right]\, .
  \end{equation}
 Note that this expression is valid only when $B \ll 1$. For a typical nylon guitar string with $E \approx 5$~GPa, $T \approx 60$~N, $\rho \approx 0.5$~mm, and $L \approx 650$~mm, we have $B \approx 3 \times 10^{-3}$. (In this case, the quadratic term in $B$ is only 2\% as large as the linear term, and can generally be neglected. We will include it in our analysis below only for completeness.) We'll use \eqn{f_m_stiff} with some caution, because the physics of nylon strings (particularly the wound base strings) are quite complicated~\cite{ref:lynchaird2017mpn}.
 
@@ -32,7 +32,7 @@ Our model is based on the schematic of the guitar shown in \fig{guitar_schematic
 
 Previous studies of guitar intonation and compensation have chosen to include the apparent increase in length of the string caused by both the fretting depth and the shape of the fretted string under the finger~\cite{ref:byers1996cgi,ref:varieschi2010icf}. As the string is initially pressed to the fret, the total length $\mathcal{L}_n$ increases and causes the tension in the string --- which is pinned at the saddle and clamped at the nut --- to increase. As the string is pressed further, does the additional deformation of the string increase its tension (throughout the resonant length $L_n$)? There are at least two purely empirical reasons to doubt this hypothesis. First, we can mark a string (with a fine-point felt pen) above a particular fret and then observe the mark with a magnifying glass. As the string is pressed all the way to the finger board, the mark does not move perceptibly --- it has become \emph{clamped} on the fret. Second, we can use either our ears or a simple tool to measure frequencies~\cite{ref:pgtweb} to listen for a shift as we use different fingers and vary the fretted depth of a string. The apparent modulation is far less than would be obtained by classical vibrato ($\pm15$~cents), so we assume that once the string is minimally fretted the length(s) can be regarded as fixed. (If this were not the case, then fretting by different people or with different fingers, at a single string or with a barre, would cause additional, varying frequency shifts that would be audible and difficult to compensate.) We discuss this issue in more detail in \app{fret}.
 
-We start with the form of the fundamental frequency of a fretted string given by \eqn{f_m_stiff} with $m = 1$, and apply it to the frequency of a string pressed just behind the $n^\mathrm{th}$ fret:
+We start with the form of the fundamental frequency of a fretted string given by \eqn{f_m_stiff} with $q = 1$, and apply it to the frequency of a string pressed just behind the $n^\mathrm{th}$ fret:
  \begin{equation} \label{eqn:f_n_def}
 f_n = \frac{1}{2\, L_n}\, \sqrt{\frac{T_n}{\mu_n}} \left[ 1 + B_n + \left(1 + \frac{\pi^2}{2}\right) B_n^2 \right]\, ,
  \end{equation}
@@ -128,7 +128,7 @@ In \fig{qn_test}, we plot a comparison between the exact expression for the norm
 
  \begin{figure}
   \centering
-  \includegraphics[width=6.0in]{figures/qn_test}
+  \includegraphics[width=5.0in]{figures/qn_test}
   \caption{\label{fig:qn_test} Comparison of the exact expression for the normalized displacement $Q_n$ as a function of the fret number given by \eqn{q_n_def} with the approximate expression given by \eqn{q_n_approx}. For example, at the fifth fret, $Q_n \approx 22 \times 10^{-6}$. Here the guitar has $b = 1.0$~mm, $c = 3.5$~mm, $\Delta S = 1.5$~mm, $\Delta N = -0.25$~mm, and a scale length of 650~mm.}
  \end{figure}
 
