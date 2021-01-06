@@ -13,7 +13,7 @@ The root-mean-square (RMS) frequency error (in cents) averaged over the frets $n
  \begin{equation}\label{eqn:rms_def}
 \overline{\Delta \nu}_\text{rms} \equiv \sqrt{\frac{\sum_{n = 1}^{n_\text{max}} \Delta \nu_n^2}{n_\text{max}}}\, ,
  \end{equation}
-where $\Delta \nu_n$ is given by \eqn{error_tot}. Here we will vary both $\Delta S$ and $\Delta N$ to minimize $\overline{\Delta \nu}$. In this case, it is sufficient to minimize the quantity
+where $\Delta \nu_n$ is given by \eqn{error_tot}. Here we will vary both $\Delta S$ and $\Delta N$ to minimize $\overline{\Delta \nu}_\text{rms}$. In this case, it is sufficient to minimize the quantity
  \begin{equation}\label{eqn:chi2_def}
 \chi^2 = \sum_{n = 1}^{n_\text{max}} \left[\frac{\ln(2)}{1200}\, \Delta \nu_n\right]^2
  \end{equation}
@@ -24,7 +24,7 @@ such that the gradient of $\chi^2$ with respect to $\Delta S$ and $\Delta N$ van
 \frac{\partial}{\partial \Delta N}\, \chi^2 &= \frac{2}{X_0}\, \sum_n \left[ (\gamma_n - 1) \left(B_0 - \frac{\Delta S}{X_0}\right) + \frac{\Delta N}{X_0} + \frac{\kappa}{2}\, Q_n \right]\, .
  \end{align}
  \end{subequations}
-Setting both of these components to zero, we can rewrite them as the matrix equation
+Setting both of these expressions to zero, we can rewrite them as the matrix equation
  \begin{equation} \label{eqn:rms_mat}
 \begin{bmatrix}
   \sigma_2 & -\sigma_1 \\
@@ -101,7 +101,7 @@ If we rigorously follow the same approach that we used to arrive at \eqn{rms_sol
 \begin{bmatrix}
   \Delta S \\
   \Delta N
-\end{bmatrix} = 
+\end{bmatrix} =
 \begin{bmatrix}
   \frac{1}{m_\text{max}}\, \sum_{m = 1}^{m_\text{max}} \Delta S^{(m)} \\
   \frac{1}{m_\text{max}}\, \sum_{m = 1}^{m_\text{max}} \Delta N^{(m)}
@@ -122,4 +122,4 @@ where
   \sigma_1\, B_0^{(m)} + \half\, \kappa^{(m)}\, \overline{Q}_0
 \end{bmatrix}\, .
  \end{equation}
-In other words, we can find the optimum values for both $\Delta S$ and $\Delta N$ simply by averaging the corresponding setbacks over a commercially interesting collection of string sets.
+In other words, we can find the optimum values for both $\Delta S$ and $\Delta N$ simply by averaging the corresponding setbacks over a commercially interesting collection of string sets. 

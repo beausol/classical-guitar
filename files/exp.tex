@@ -38,7 +38,7 @@ With this measurement of $\kappa$, we can estimate the bending stiffness coeffic
 B_0 = \sqrt{\kappa}\, \frac{\rho}{2\, L_0}\, .
  \end{equation}
 
-It is relatively easy to estimate the values of $\kappa$ and $R$ for any guitar string with the aid of a simple device that can measure frequency shifts in cents~\cite{ref:pgtweb}. First, we tune the open string to the correct 12-TET frequency. Then, we select a fret $n$, and measure the frequency deviation $\Delta \nu_n$ of the fretted string while muting the other strings to eliminate sympathetic vibratioins. If we substitute \eqn{b_0_kappa} into \eqn{error_tot}, then we find
+It is relatively easy to estimate the values of $\kappa$ and $R$ for any guitar string with the aid of a simple device that can measure frequency shifts in cents~\cite{ref:pgtweb}. First, we tune the open string to the correct 12-TET frequency. Then, we select a fret $n$, and measure the frequency deviation $\Delta \nu_n$ of the fretted string while muting the other strings to eliminate sympathetic vibrations. If we substitute \eqn{b_0_kappa} into \eqn{error_tot}, then we find
  \begin{equation} \label{eqn:root_kappa_quad}
 \alpha\, \kappa + \beta\, \sqrt{\kappa} - \xi = 0\, ,
  \end{equation}
@@ -54,7 +54,7 @@ where we have included the quadratic bending stiffness term, and defined the coe
  \begin{equation} \label{eqn:root_kappa_soln}
 \sqrt{\kappa} = \frac{-\beta + \sqrt{\beta^2 + 4\, \alpha\, \xi}}{2\, \alpha}\, ,
  \end{equation}
-where we have chosen the positive root to ensure that $\kappa > 0$.
+where we have chosen the positive root to ensure that $\sqrt{\kappa} > 0$.
 
 We've used this approach to estimate $\kappa$ and $R$ of different string sets on the Alhambra 8P classical guitar, which has $X_0 = 650$~mm, $c = 3.5$~mm, $\Delta S = 1.5$~mm, and $\Delta N = 0.0$~mm. At the nut, $b = 1.0$~mm, but the height of the fret board decreases roughly linearly further toward the saddle, effectively increasing $b$. We estimate that $d b / d x \approx -0.0034$, so that $b$ has increased to 2.0~mm at the 12$^{\text{th}}$ fret. We show the specifications of a normal-tension classical string set in \tbl{ej45_mks} using metric units\footnote{Note that the correct unit of force in the metric system is Newtons (N), rather than kilograms, which is a unit of mass.}. In \tbl{ej45_props}, we list the frequency deviation from 12-TET at the 12$^{\text{th}}$ fret for each string in this set, as well as the corresponding estimates of $\kappa$, $R$, $E$, and $B_0$, computed from \eqn{root_kappa_soln}, \eqn{r_def}, \eqn{kappa_def}, and \eqn{b_0_kappa}, respectively. The units used for the elastic modulus are gigapascals (1 GPa = $10^9$~N/m$^2$.). Similar measurements and results for other string sets are provided in \app{specs}.
 

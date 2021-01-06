@@ -12,7 +12,7 @@ The starting point for prior efforts to understand guitar intonation and compens
  \begin{equation}\label{eqn:f_m_clamped}
 f_{q} = \frac{q}{2\, L}\, \sqrt{\frac{T}{\mu}} \left[ 1 + 2 B + 4 \left(1 + \frac{\pi^2\, q^2}{8}\right) B^2 \right]\, .
  \end{equation}
-Here $L$ is the length of the string, $T$ and $\mu$ are its tension and the linear mass density, respectively, and $B$ is a small ``bending stiffness'' coefficient to capture the relevant mechanical properties of the string. For a homogeneous string with a cylindrical cross section, $B$ is given by
+Here $L$ is the length of the string, $T$ and $\mu$ are its tension and linear mass density, respectively, and $B$ is a small ``bending stiffness'' coefficient to capture the relevant mechanical properties of the string. For a homogeneous string with a cylindrical cross section, $B$ is given by
  \begin{equation} \label{eqn:b_def}
 B \equiv \sqrt{\frac{\pi\, \rho^4\, E}{4\, T\, L^2}}\, ,
  \end{equation}
@@ -20,7 +20,7 @@ where $\rho$ is the radius of the string and $E$ is Young's modulus (or the modu
  \begin{equation} \label{eqn:f_m_stiff}
 f_q = \frac{q}{2\, L}\, \sqrt{\frac{T}{\mu}} \left[ 1 + B + \left( 1 + \half q^2 \pi^2 \right) B^2 \right]\, .
  \end{equation}
-Note that this expression is valid only when $B \ll 1$. For a typical nylon guitar string with $E \approx 5$~GPa, $T \approx 60$~N, $\rho \approx 0.5$~mm, and $L \approx 650$~mm, we have $B \approx 3 \times 10^{-3}$. (In this case, the quadratic term in $B$ is only 2\% as large as the linear term, and can generally be neglected. We will include it in our analysis below only for completeness.) We'll use \eqn{f_m_stiff} with some caution, because the physics of nylon strings (particularly the wound base strings) are quite complicated~\cite{ref:lynchaird2017mpn}.
+Note that this expression is valid only when $B \ll 1$. For a typical nylon guitar string with $E \approx 5$~GPa, $T \approx 60$~N, $\rho \approx 0.5$~mm, and $L \approx 650$~mm, we have $B \approx 3 \times 10^{-3}$. (In this case, the quadratic $B$ term in \eqn{f_m_stiff} is only 2\% as large as the linear term, and can generally be neglected. We will include it in our analysis below only for completeness.) We should use \eqn{f_m_stiff} with some caution, because the physics of nylon strings (particularly the wound bass strings) are quite complicated~\cite{ref:lynchaird2017mpn}.
 
  \begin{figure}
   \centering
@@ -63,7 +63,7 @@ The final form of \eqn{error_def} makes it clear that --- for nylon guitar strin
   \item
    \emph{Resonant Length}: The first term represents the error caused by the increase in the length of the fretted string $L_n$ compared to the ideal length $X_n$, which would be obtained if $b = c = 0$ and $\Delta S = \Delta N = 0$.
   \item
-   \emph{Linear Mass Density}: The second term is the error caused by the reduction of the linear mass density of the fretted string. This effect will depend on the \emph{total} length of the string, given by $\mathcal{L}_n = L_n + L^\prime_n$.
+   \emph{Linear Mass Density}: The second term is the error caused by the reduction of the linear mass density of the fretted string. This effect will depend on the \emph{total} length of the string $\mathcal{L}_n = L_n + L^\prime_n$.
   \item
    \emph{Tension}: The third term is the error caused by the \emph{increase} of the tension in the string arising from the stress and strain applied to the string by fretting. This effect will also depend on the total length of the string $\mathcal{L}_n$.
   \item
@@ -76,7 +76,7 @@ The length $L_0$ of the open (unfretted) guitar string can be calculated quickly
  \begin{equation}  \label{eqn:l_0_def}
 L_0 = \sqrt{\left(X_0 + \Delta S + \Delta N\right)^2 + c^2} \approx X_0 + \Delta S + \Delta N + \frac{c^2}{2\, X_0}\, ,
  \end{equation}
-where the approximation arises from Taylor Series that applies when $c^2 \ll X_0^2$. Similarly, if $(b + c)^2 \ll X_0^2$, the resonant length $L_n$ is given by
+where the approximation arises from the Taylor series that applies when $c^2 \ll X_0^2$. Similarly, if $(b + c)^2 \ll X_0^2$, the resonant length $L_n$ is given by
  \begin{equation}  \label{eqn:l_n_def}
 L_n = \sqrt{\left(X_n + \Delta S\right)^2 + (b + c)^2} \approx X_n + \Delta S + \frac{(b + c)^2}{2\, X_n}\, .
  \end{equation}
@@ -87,7 +87,7 @@ Then --- if the guitar has been manufactured such that $X_n = X_0 / \gamma_n$ --
   \begin{equation} \label{eqn:rle_approx}
   1200\, \log_2 \left( \frac{L_0}{\gamma_n\, L_n} \right) \approx \frac{1200}{\ln(2)} \left[ \frac{\Delta N - \left(\gamma_n - 1\right) \Delta S}{X_0} - \frac{\gamma_n^2 (b + c)^2 - c^2}{2\, X_0^2}\right]
   \end{equation}
-If the guitar is uncompensated, so that $\Delta S = \Delta N = 0$, this error is typically less than 0.25~cents. But, with $\Delta S > 0$ and $\Delta N < 0$, we can significantly \emph{increase} the magnitude of this ``error'' and cause the frequency to shift lower. We'll see that this is our primary method of compensation.
+If the guitar is uncompensated, so that $\Delta S = \Delta N = 0$, the magnitude of this error is typically less than 0.25~cents. But, with $\Delta S > 0$ and $\Delta N < 0$, we can significantly flatten the frequency shift --- for example, with $\Delta S = 2.0$~mm and $\Delta N = -0.25$~mm, the contribution of this term to the shift at the 12$^\text{th}$ fret is $-6$~cents. We'll see that this is our primary method of compensation.
 
  \subsection{Linear Mass Density}
 As discussed above, the linear mass density $\mu_0$ of an open (unfretted) string is simply the total mass $M$ of the string clamped between the saddle and the nut divided by the length $L_0$. Similarly, the mass density $\mu_n$ of a string held onto fret $N$ is $M/\mathcal{L}_n$. Therefore
@@ -166,7 +166,7 @@ Therefore, the fourth term in the final line of \eqn{error_def} can be approxima
  \begin{equation}
 1200\, \log_2 \left[ \frac{1 + B_n + (1 + \pi^2/2)\, B_n^2}{1 + B_0 + (1 + \pi^2/2)\, B_0^2} \right] \approx \frac{1200}{\ln(2)}\, \left[ \left(\gamma_n - 1\right) B_0 + \half\, \left(\gamma_n^2 - 1\right) \left(1 + \pi^2\right) B_0^2 \right]\, .
  \end{equation}
-When $n = 12$ and $B_0 = 3 \times 10^{-3}$, the corresponding shift is approximately 5.5~cents, with the quadratic term contributing about 0.25~cents. Note that (to zero order in $Q_n$) this bending stiffness error does not depend on the tiny changes to the linear mass density or the tension that arises due to string fretting. Instead, it is an intrinsic property of the string.\bigskip
+When $n = 12$ and $B_0 = 3 \times 10^{-3}$, the corresponding shift is approximately 5.5~cents, with the quadratic term contributing about 0.25~cents. Note that (to zero order in $Q_n$) this bending stiffness error does not depend on the tiny changes to the linear mass density or the tension that arises due to string fretting. Instead, it is an intrinsic mechanical property of the string.\bigskip
 
 Incorporating all of these effects --- and neglecting the term proportional to $B_0^2$ --- we find that the total frequency shift is given by
  \begin{equation}\label{eqn:error_tot}
