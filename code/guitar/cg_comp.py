@@ -21,7 +21,7 @@ class GuitarString(object):
     set_scale : 
         Set the scale length of the string
     set_r :
-        Set the response of the string's frequency to a change of it's length
+        Set the response of the string's frequency to a change of its length
     get_d_omega : numpy.ndarray.float64
         Frequency shift of each mode q relative to 2 * q * pi
     get_delta_omega : numpy.ndarray.float64
@@ -116,7 +116,6 @@ class GuitarString(object):
         return mu * (2 * x0 * self._freq)**2
 
     def _comp_kappa(self):
-#        self._kappa = (np.log(2) / 600) * self._r - 1
         self._kappa = 2 * self._r + 1
 
     def _comp_modulus(self):
