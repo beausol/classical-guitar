@@ -26,7 +26,10 @@
  \RequirePackage{textcomp}
  \RequirePackage[LY1,expert,altbullet]{lucidabr}
 
-% Include a LaTeX macro article set, and then set up hyperref for these notes.
+% Use enhanced table formatting.
+ \RequirePackage{booktabs}
+
+ % Include a LaTeX macro article set, and then set up hyperref for these notes.
  \RequirePackage{rgb_report}
  \hypersetup{
     pdfauthor   = {Raymond G.\ Beausoleil <ray.beausoleil@pm.me>},
@@ -76,55 +79,3 @@
 % that it is aligned with the left margin, and italic instead of bold.
  \renewcommand{\descriptionlabel}[1]%
    {\hspace{\labelsep}\textit{#1}}
-
-% Introduce special formatting macros.
- \newcommand{\bmi}[1]{\bm{\mathit{#1}}}
- \newcommand{\bmc}[1]{\bm{\mathcal{#1}}}
-
- \newcommand{\lhs}{left-hand side }
- \newcommand{\rhs}{right-hand side }
-
-% Use enhanced table formatting.
- \usepackage{booktabs}
-
-% Test a few new physics macros.
- \newcommand{\z}{(z)}
- \newcommand{\zp}{(z')}
- \newcommand{\zw}{(z, \omega)}
- \newcommand{\zwn}{(z, \omega_0)}
- \newcommand{\zwt}{(\omega, z, t)}
- \newcommand{\wn}{(\omega_0)}
- \newcommand{\nz}{n\z}
- \newcommand{\nzp}{n\zp}
- \newcommand{\ngz}{n_g\z}
- \newcommand{\ngzp}{n_g\zp}
- \newcommand{\az}{\alpha\z}
- \newcommand{\azp}{\alpha\zp}
- \newcommand{\etaz}{\eta(z)}
- \newcommand{\zetaz}{\zeta(z)}
- \newcommand{\emwnt}{\ensuremath{e^{-i \omega_0 t}}}
- \newcommand{\epwnt}{\ensuremath{e^{+i \omega_0 t}}}
- \newcommand{\epkrwnt}{\ensuremath{e^{+i (\mathbf{k} \bm{\cdot} \mathbf{r} - \omega_0\, t)}}}
- \newcommand{\emkrwnt}{\ensuremath{e^{-i (\mathbf{k} \bm{\cdot} \mathbf{r} - \omega_0\, t)}}}
- \newcommand{\epkzwnt}{\ensuremath{e^{i (k z - \omega_0 t)}}}
- \newcommand{\emkzwnt}{\ensuremath{e^{-i (k z - \omega_0 t)}}}
- \newcommand{\rwn}{\ensuremath{(\mathbf{r}, \omega_0)}}
- \newcommand{\dotp}{\bm{\cdot}}
- \newcommand{\cross}{\bm{\times}}
- \newcommand{\grad}{\bm{\nabla}}
- \newcommand{\divr}{\bm{\nabla \cdot}}
- \newcommand{\curl}{\bm{\nabla \times}}
- \newcommand{\lapl}{\nabla^2}
- \newcommand{\abs}[1]{\left|#1\right|}
- \newcommand{\intV}{\int_\mathcal{V} d^3 r\, }
- \newcommand{\intS} {\int_\mathcal{S} d \mathbf{a}\, }
- \newcommand{\intC} {\oint_\mathcal{C} d \mathbf{l}\, }
- \newcommand{\nhat}{\hat{\mathbf{n}}}
-% \newcommand{\hatb}[1]{\hat{\mathbf{#1}}}
- \newcommand{\hatb}[1]{\bm{\hat{#1}}}
- \newcommand{\Erw}{\ensuremath{\mathbf{E}\rw}}
- \newcommand{\Drw}{\ensuremath{\mathbf{D}\rw}}
- \newcommand{\Hrw}{\ensuremath{\mathbf{H}\rw}}
- \newcommand{\Brw}{\ensuremath{\mathbf{B}\rw}}
- \newcommand{\Gnt}{\overline{G}_{0}(t)}
- \newcommand{\Gn}{\overline{G}_{0}}

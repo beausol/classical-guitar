@@ -8,3 +8,5 @@
 *.synctex
 *.toc
 *.pyc
+.vscode/settings.json
+cg_comp.synctex.gz
