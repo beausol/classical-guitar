@@ -1,0 +1,53 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Project main file
+%
+% Assumes that LaTeX2e macros and packages defined in cg_comp.sty are
+%   available
+%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ \RequirePackage{pdf14}
+ \pdfminorversion=6
+
+ \documentclass[12pt]{article}
+
+ \usepackage{amerluth}
+
+ \title{{\Huge\textbf{Classical Guitar Intonation and Compensation: The Well-Tempered Guitar}}}
+
+ \author{ M.\ B.\ Anderson and R.\ G.\ Beausoleil \\
+ \textit{Rosewood Guitar} \\
+ \textit{8402 Greenwood Ave.\ N, Seattle, WA  98103}}
+
+ \date{\today}
+
+ \begin{document}
+
+ \maketitle
+
+ \begin{abstract}
+Inspired by the pioneering work of luthier Greg Byers in 1996, we build an intuitive model of classical guitar intonation that includes the effects of the resonant length of the fretted string, linear mass density, tension, and bending stiffness. We begin by deriving an expression for the vibration frequencies of a stiff string using boundary conditions that are pinned at the saddle but clamped at the fret. We adopt logarithmic frequency differences based on ``cents'' that decouple these physical effects, and then we introduce Taylor series expansions that exhibit clearly the origins of frequency shifts of fretted notes from the corresponding Twelve-Tone Equal Temperament (12-TET) values. Although we have postponed careful measurements of the changes in frequency of open strings arising from small changes in length, we propose a simple experimental method that any interested guitarist can use to estimate these parameters for their own guitars and their favorite string sets. Based on these results, we employ an RMS frequency error method to select values of saddle and nut setbacks that map fretted frequencies --- for a particular string set on a particular guitar --- almost perfectly onto their 12-TET targets. This exercise allow us to discuss a general approach to tempering an ``off-the-shelf'' guitar to further reduce the tonal errors inherent in any fretted musical instrument.
+ \end{abstract}
+
+ \tableofcontents
+
+ \input{../files/intro}
+ \input{../files/model}
+ \input{../files/exp}
+ \input{../files/comp}
+ \input{../files/temp}
+ \input{../files/conc}
+
+ \appendix
+ \input{../files/freq}
+ \input{../files/fret}
+ \input{../files/rms}
+ \input{../files/specs}
+
+
+ \addtotoc{\refname}
+ \bibliographystyle{rgb}
+ \bibliography{music,amerluth}
+
+ \end{document}

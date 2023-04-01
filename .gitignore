@@ -10,3 +10,6 @@
 *.pyc
 .vscode/settings.json
 cg_comp.synctex.gz
+*.fdb_latexmk
+*.fls
+*.gz
