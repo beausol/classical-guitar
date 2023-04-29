@@ -87,7 +87,7 @@ Then --- if the guitar has been manufactured such that $X_n = X_0 / \gamma_n$ --
   \begin{equation} \label{eqn:rle_approx}
   1200\, \log_2 \left( \frac{L_0}{\gamma_n\, L_n} \right) \approx \frac{1200}{\ln(2)} \left[ \frac{\Delta N - \left(\gamma_n - 1\right) \Delta S}{X_0} - \frac{\gamma_n^2 (b + c)^2 - c^2}{2\, X_0^2}\right]
   \end{equation}
-If the guitar is uncompensated, so that $\Delta S = \Delta N = 0$, the magnitude of this error is typically less than 0.25~cents. But, with $\Delta S > 0$ and $\Delta N < 0$, we can significantly flatten the frequency shift --- for example, with $\Delta S = 2.0$~mm and $\Delta N = -0.25$~mm, the contribution of this term to the shift at the 12$^\text{th}$ fret is $-6$~cents. We'll see that this is our primary method of compensation.
+If the guitar is uncompensated, so that $\Delta S = \Delta N = 0$, the magnitude of this error is typically less than 0.25~cents, and can be neglected. But, with $\Delta S > 0$ and $\Delta N < 0$, we can significantly flatten the frequency shift --- for example, with $\Delta S = 2.0$~mm and $\Delta N = -0.25$~mm, the contribution of this term to the shift at the 12$^\text{th}$ fret is $-6$~cents. We'll see that this is our primary method of compensation.
 
  \subsection{Linear Mass Density}
 As discussed above, the linear mass density $\mu_0$ of an open (unfretted) string is simply the total mass $M$ of the string clamped between the saddle and the nut divided by the length $L_0$. Similarly, the mass density $\mu_n$ of a string held onto fret $N$ is $M/\mathcal{L}_n$. Therefore
@@ -168,7 +168,7 @@ Therefore, the fourth term in the final line of \eqn{error_def} can be approxima
  \end{equation}
 When $n = 12$ and $B_0 = 3 \times 10^{-3}$, the corresponding shift is approximately 5.5~cents, with the quadratic term contributing about 0.25~cents. Note that (to zero order in $Q_n$) this bending stiffness error does not depend on the tiny changes to the linear mass density or the tension that arises due to string fretting. Instead, it is an intrinsic mechanical property of the string.\bigskip
 
-Incorporating all of these effects --- and neglecting the term proportional to $B_0^2$ --- we find that the total frequency shift is given by
+Incorporating all of these effects --- and \emph{temporarily} neglecting the term proportional to $B_0^2$ --- we find that the total frequency shift is given by
  \begin{equation}\label{eqn:error_tot}
 \Delta \nu_n \approx \frac{1200}{\ln(2)}\, \left[ \left(\gamma_n - 1\right) \left(B_0 - \frac{\Delta S}{X_0}\right) + \frac{\Delta N}{X_0} + \half\, \kappa\, Q_n \right]\, .
  \end{equation}
