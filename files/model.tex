@@ -115,7 +115,8 @@ and
  \begin{equation} \label{eqn:q_n_approx}
  \begin{split}
 Q_n &\approx \frac{1}{2\, X_0} \left[ \frac{(b + c)^2}{X_n} + \frac{b^2}{X_0 - X_n} - \frac{c^2}{X_0} \right] \\
-&= \frac{\gamma_n}{2\, X_0^2} \left[ (b + c)^2 + \frac{b^2}{\gamma_{n} - 1} - \frac{c^2}{\gamma_n} \right] \, .
+&= \frac{\gamma_n}{2\, X_0^2} \left[ (b + c)^2 + \frac{b^2}{\gamma_{n} - 1} - \frac{c^2}{\gamma_n} \right] \\
+&= \frac{\gamma_n - 1}{2\, X_0^2} \left( \frac{\gamma_n}{\gamma_n - 1}\, b + c \right)^2\, .
  \end{split}
  \end{equation}
 In \fig{qn_test}, we plot a comparison between the exact expression for the normalized displacement $Q_n$ given by \eqn{q_n_def} with the approximate expression given by \eqn{q_n_approx}. Here the guitar has $b = 1.0$~mm, $c = 3.5$~mm, $\Delta S = 1.5$~mm, $\Delta N = -0.25$~mm, and $X_0 = 650$~mm. We see that our Taylor series estimate is quite accurate even though it neglects both setbacks, indicating that $Q_n$ is determined primarily by the values of $b$ and $c$. For the same parameters, $\Delta \nu_{12} \approx 0.03$~cents, and will be even smaller for $n < 12$. In general, the shift due to linear mass density can be neglected without much loss of accuracy.

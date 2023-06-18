@@ -44,21 +44,36 @@ where
 \sigma_k &\equiv \sum_{n = 1}^{n_\text{max}} \left(\gamma_n - 1\right)^k\, , \nd \\
 \overline{Q}_k &\equiv \sum_{n = 1}^{n_\text{max}} \left(\gamma_n - 1\right)^k\, Q_n\, .
  \end{align}
-\Eqn{rms_mat} has the straightforward analytic solution
- \begin{equation}\label{eqn:rms_sol}
-\begin{bmatrix}
-  \Delta S \\
-  \Delta N
-\end{bmatrix} = \frac{X_0}{\sigma_1^2 - \sigma_0\, \sigma_2}\,
-\begin{bmatrix}
-  -\sigma_0 & \sigma_1 \\
-  -\sigma_1 & \sigma_2
-\end{bmatrix}\,
-\begin{bmatrix}
-  \sigma_2\, B_0 + \half\, \kappa\, \overline{Q}_1 \\
-  \sigma_1\, B_0 + \half\, \kappa\, \overline{Q}_0
-\end{bmatrix}\, .
- \end{equation}
+We note that
+\begin{subequations}
+  \begin{align}
+    \sigma_0 &= n_\text{max}\, ,\\
+    \sigma_1 &= \frac{\gamma_1 \left(\gamma_{n_\text{max}} - 1\right)}{\gamma_1 - 1} - \sigma_0
+  \end{align}
+\end{subequations}
+
+ \Eqn{rms_mat} has the straightforward analytic solution
+\begin{equation}
+  \begin{bmatrix}
+    \Delta S \\
+    \Delta N
+  \end{bmatrix} = \frac{X_0}{\sigma_1^2 - \sigma_0\, \sigma_2}\,
+  \begin{bmatrix}
+    -\sigma_0 & \sigma_1 \\
+    -\sigma_1 & \sigma_2
+  \end{bmatrix}\,
+  \begin{bmatrix}
+    \sigma_2\, B_0 + \half\, \kappa\, \overline{Q}_1 \\
+    \sigma_1\, B_0 + \half\, \kappa\, \overline{Q}_0
+  \end{bmatrix}\, ,
+\end{equation}
+or
+\begin{subequations} \label{eqn:rms_sol}
+  \begin{align}
+    \label{eqn:rms_sol_ds} \Delta S &= B_0\, X_0 + \frac{\kappa\, X_0}{2 \left(\sigma_1^2 - \sigma_0\, \sigma_2\right)}\, \left( \sigma_1\, \overline{Q}_0 - \sigma_0\, \overline{Q}_1 \right)\, , \nd \\
+    \label{eqn:rms_sol_dn} \Delta N &= \frac{\kappa\, X_0}{2 \left(\sigma_1^2 - \sigma_0\, \sigma_2\right)}\, \left( \sigma_2\, \overline{Q}_0 - \sigma_1\, \overline{Q}_1 \right)\, .
+  \end{align}
+\end{subequations}
 For completeness, the corresponding solution when the quadratic stiffness term is included is given by
  \begin{equation}\label{eqn:rms_sol_quad}
 \begin{bmatrix}
