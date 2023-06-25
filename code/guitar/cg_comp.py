@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from IPython.display import display
 
 from scipy.optimize import curve_fit
 
@@ -9,6 +10,38 @@ def file_path(pathname, filename):
         return pathname + filename
     else:
         return None
+
+def get_xlim():
+    '''
+    Return the "nice" values of the min and max of the x-axis of the current plot
+    for matplotlib graphics.
+    
+    Returns
+    ----------
+    retval : numpy.ndarray.float64
+        The minimum [0] and maximum [1] of the x values, rounded to a value that's
+        convenient for a matplotlib graph.
+    '''
+    loc = plt.xticks()[0]
+    retval =  np.array([loc[0], loc[len(loc)-1]])
+
+    return retval
+
+def get_ylim():
+    '''
+    Return the "nice" values of the min and max of the y-axis of the current plot
+    for matplotlib graphics.
+    
+    Returns
+    ----------
+    retval : numpy.ndarray.float64
+        The minimum [0] and maximum [1] of the y values, rounded to a value that's
+        convenient for a matplotlib graph.
+    '''
+    loc = plt.yticks()[0]
+    retval =  np.array([loc[0], loc[len(loc)-1]])
+
+    return retval
 
 
 class GuitarString(object):
@@ -149,7 +182,7 @@ class GuitarString(object):
         
         self.set_r(r, dr)
 
-        return fit, r, dr
+        return fit
     
     def set_r(self, r, dr):
         self._r = r
@@ -239,31 +272,48 @@ class GuitarStrings(object):
         for string in self._strings:
             string.set_scale_length(scale_length)
 
-    def fit_r(self, file_name, sheet_name=None, scale=1.0):
-        if sheet_name is None:
-            data = pd.read_excel(file_name,
-                                 dtype={'dx': float, 'String 1': float, 'String 2': float, 'String 3': float,
-                                                     'String 4': float, 'String 5': float, 'String 6': float})
-        else:
-            data = pd.read_excel(file_name, sheet_name=sheet_name,
-                                 dtype={'dx': float, 'String 1': float, 'String 2': float, 'String 3': float,
-                                                     'String 4': float, 'String 5': float, 'String 6': float})
-        dx = np.array(data[['dx']].values.T[0])
-        df = np.array(data[['String 1', 'String 2', 'String 3', 'String 4', 'String 5', 'String 6']].values.T)
-
-        fit = np.zeros_like(df)
-        r = np.zeros(df.shape[0])
-        dr = np.zeros_like(r)
-
-        row_list = np.arange(df.shape[0])
-        for string, row in zip(self._strings, row_list):
-            fit[row], r[row], dr[row] = string.fit_r(dx, df[row] - df[row][0], scale)
+    def fit_r(self, datapath, sheet_name=0, scale=1.0, savedir=None, savename=None):
+        data = pd.read_excel(datapath, sheet_name=sheet_name)
+        column_names = list(data.columns)
+        dx = np.array(data[[column_names[0]]].values.T[0])
+        self.compare_string_names(column_names[1:])
         
-        self.plot_fit(fit, savepath, filename)
+        fit_dict = {}
+        for string in self._strings:
+            name = string.get_name()
+            fit = string.fit_r(dx, data[name].values -  data[name].values[0], scale)
+            fit_dict[name] = fit
+        
+        savepath = file_path(savedir, savename)
+        self.plot_fit(fit_dict, data, savepath)
 
-    def set_r(self, r):
-        for string, r_string in zip(self._strings, r):
-            string.set_r(r_string)
+    def plot_fit(self, fit_dict, data, savepath):
+        dx = np.array(data[[list(data.columns)[0]]].values.T[0])
+        
+        plt.figure(figsize=(8.0,6.0))
+
+        for string in self._strings:
+            name = string.get_name()
+            plt.plot(dx, data[name].values -  data[name].values[0], '.')
+            plt.plot(dx, fit_dict[name], color=plt.gca().lines[-1].get_color(), label='{}'.format(name))
+
+        plt.xlabel(r'$\Delta x$~(mm)', fontdict=self._font)
+        plt.ylabel(r'$\Delta f$~(Hz)', fontdict=self._font)
+        plt.tick_params(axis='x', labelsize=self._labelsize)
+        plt.tick_params(axis='y', labelsize=self._labelsize)
+        plt.xlim(dx[0], dx[-1])
+        plt.ylim(0, get_ylim()[1])
+        plt.legend(loc='upper left', fontsize=self._labelsize)
+        plt.grid(True)
+
+        if savepath is not None:
+            plt.savefig(savepath, bbox_inches='tight')
+        plt.show()
+
+ 
+    # def set_r(self, r):
+    #     for string, r_string in zip(self._strings, r):
+    #         string.set_r(r_string)
 
     def get_count(self):
         return len(self._strings)
@@ -274,6 +324,11 @@ class GuitarStrings(object):
             names.append(string.get_name())
         return names
 
+    def compare_string_names(self, name_list):
+        string_names = self.get_string_names()
+        assert len(string_names) == len(name_list), 'This string set has {} strings, not {}.'.format(len(string_names), len(name_list))
+        assert sorted(string_names) == sorted(name_list), 'The input string names should be {}, not {}.'.format(string_names, name_list)
+    
     def get_notes(self):
         notes = []
         for string in self._strings:
@@ -302,9 +357,11 @@ class GuitarStrings(object):
 
     def get_r(self):
         r = []
+        dr = []
         for string in self._strings:
-            r.append(string.get_r())
-        return np.array(r)
+            r.append(string.get_r()[0])
+            dr.append(string.get_r()[1])
+        return np.array(r), np.array(dr)
 
     def get_kappa(self):
         kappa = []
@@ -367,57 +424,7 @@ class GuitarStrings(object):
         
         return ds, dn
 
-    def plot_fit(self, fit, show=True, savepath=None):
-        plt.rc('text', usetex=True)
-        plt.rc('font', family='serif')
-        plt.rc('text.latex', preamble=r'\usepackage{amsmath,amssymb,amsfonts}')
-        colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd',
-                  '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
-
-        plt.figure(figsize=(8.0,6.0))
-        for row in row_list:
-            plt.plot(dx, df[row] - df[row][0], '.', label='String {}'.format(row + 1))
-            plt.plot(dx, fit[row], colors[row])#, '.', label='String {}'.format(row + 1))
-        #    plt.plot(dx, fit[row] - df[row][0])#, '.', label='String {}'.format(row + 1))
-        plt.xlabel(r'$\Delta x$', fontdict=self._font)
-        plt.ylabel(r'$\Delta f$', fontdict=self._font)
-        plt.tick_params(axis='x', labelsize=self._labelsize)
-        plt.tick_params(axis='y', labelsize=self._labelsize)
-        plt.xlim(0, 3)
-        plt.ylim(0, 40)
-        plt.legend(loc='upper left', fontsize=self._labelsize)
-        plt.grid(True)
-        plt.show()
-        
-        annotation = ( r'$\overline{{\alpha}}_0 = {:.{prec}}$'.format(abs(self._lossz.get_gbar_0()), prec=2) + '\n'
-                     + r'$\Omega = {}$'.format(self._omega) +'\n'
-                     + r'$A = {}$'.format(self._a_1) )
-
-        plt.figure(figsize=(8.0,6.0))
-        plt.xlabel(r'$R$', fontdict=self._font)
-        plt.ylabel(r'$I_\mathrm{out}$', fontdict=self._font)
-        for n in range(gbar_0.size):
-            plt.plot(r_mg[:,n], i_e[:,n], label=r'$\overline{{G}}_0 = {}$'.format(gbar_0[n]) + label_e)
-            plt.plot(r_mg[:,n], i_x[:,n], '--', label=r'$\overline{{G}}_0 = {}$: approximate'.format(gbar_0[n]))
-        plt.tick_params(axis='both', labelsize=self._labelsize)
-        plt.grid(True)
-        plt.xlim(0, 1)
-        y_max = get_ylim()[1]
-        plt.ylim(np.finfo(float).eps, y_max)
-        plt.legend(fontsize=self._labelsize, loc='upper left')
-        plt.text(0.76, 0.75 * y_max, annotation, bbox=self._bbox, fontdict=self._font)
-
-        if savepath is None:
-            pass
-        else:
-            plt.savefig(savepath, bbox_inches='tight')
-            print("Saved {0}\n".format(savepath))
-        if show:
-            plt.show()
-        else:
-            plt.close()
-
-    def save_specs_table(self, savepath, filename):
+    def save_specs_table(self, savepath=None, filename=None):
         names = self.get_string_names()
         notes = self.get_notes()
         radii = self.get_radii()
@@ -427,35 +434,50 @@ class GuitarStrings(object):
         df = pd.DataFrame({'String': names,
                            'Note': notes,
                            'Radius (mm)': radii.tolist(),
-                           'Density ($\times 10^{-7}$ kg/mm)': (densities * 1.0e+07).tolist(),
+                           'Density ($\\times 10^{-7}$ kg/mm)': (densities * 1.0e+07).tolist(),
                            'Tension (N)': tensions.tolist()})
-        table_str = df.to_latex(index=False, escape=False, float_format="%.2f", column_format='ccccc')
+        
+        formatter = {'Radius (mm)': '{:.3f}',
+                     'Density ($\\times 10^{-7}$ kg/mm)': '{:.2f}',
+                     'Tension (N)': '{:.1f}'}
+        styler = df.style.format(formatter=formatter).hide()
+        display(styler)
+        
+        table_str = styler.to_latex(column_format='cccccc', hrules=True)
+        print(table_str)
 
         filepath = file_path(savepath, filename)
         if filepath is not None:
             print(table_str,  file=open(filepath, 'w'))        
-    
-    def save_props_table(self, dnu, savepath, filename):
+        
+    def save_props_table(self, savepath=None, filename=None):
         names = self.get_string_names()
-        r = self.get_r()
+        r, dr = self.get_r()
         kappa = self.get_kappa()
         modulus = self.get_modulus()
         stiffness = self.get_stiffness()
-        df = pd.DataFrame({'String': names,
-                           '$\Delta \nu_{12}$ (cents)': dnu,
-                           '$R$': r.tolist(),
-                           '$\kappa$': kappa.tolist(),
-                           '$E$ (GPa)': modulus.tolist(),
-                           '$B_0$ ($\times 10^{-3}$)': (stiffness * 1.0e+03).tolist()})
-        table_str = df.to_latex(index=False, escape=False, float_format="%.1f", column_format='cccccc')#,
-                          #caption="Derived physical properties of the D'Addario Pro-Arte Nylon Classical Guitar Strings -- Normal Tension (EJ45). The corresponding scale length is 650 mm.",
-                          #label='tbl:ej45_props')
 
+        df = pd.DataFrame({'String': names,
+                           '$R$': r.tolist(),
+                           '$\sigma$': dr.tolist(),
+                           '$\kappa$': kappa.tolist(),
+                           '$B_0$': stiffness.tolist(),
+                           '$E$ (GPa)': modulus.tolist()})
+
+        formatter = {'$R$': '{:.1f}',
+                      '$\sigma$': '{:.1f}',
+                      '$\kappa$': '{:.1f}',
+                      '$B_0$': '{:.5f}',
+                      '$E$ (GPa)': '{:.2f}'}
+        styler = df.style.format(formatter).hide()
+        display(styler)
+        
+        table_str = styler.to_latex(column_format='cccccc', hrules=True)
         print(table_str)
+        
         filepath = file_path(savepath, filename)
         if filepath is not None:
             print(table_str,  file=open(filepath, 'w'))        
-
 
 class Guitar(object):
     def __init__(self, name, string_count, strings, x0, ds, dn, b, c, dbdx = 0.0, d=0.0):
