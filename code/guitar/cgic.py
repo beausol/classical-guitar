@@ -142,9 +142,9 @@ class GuitarString(object):
         print(string)
         '''
         retstr = self._name + " (" + self._note + " = {:5.1f} Hz) -- ".format(self._freq)
-        retstr += 'Scale Length: ' + '{:.1f} mm; '.format(self._scale_length)
+        retstr += 'Scale Length: ' + '{} mm; '.format(round(self._scale_length))
         retstr += 'Radius: ' + '{:.3f} mm; '.format(self._radius)
-        retstr += 'Density: ' + '{:.3e} kg/mm; '.format(self._density_lin)
+        retstr += 'Density: ' + '{:.1e} kg/mm; '.format(self._density_lin)
         retstr += 'Tension: ' + '{:.1f} N'.format(self._tension)
         return retstr
     
@@ -457,7 +457,7 @@ class GuitarStrings(object):
         display(styler)
         
         table_str = styler.to_latex(column_format='cccccc', hrules=True)
-        print(table_str)
+        #print(table_str)
 
         filepath = file_path(savepath, filename)
         if filepath is not None:
@@ -486,7 +486,7 @@ class GuitarStrings(object):
         display(styler)
         
         table_str = styler.to_latex(column_format='cccccc', hrules=True)
-        print(table_str)
+        #print(table_str)
         
         filepath = file_path(savepath, filename)
         if filepath is not None:
@@ -633,7 +633,7 @@ class Guitar(object):
         else:
             self._dn = np.array(dn)
 
-    def plot_shifts(self, max_fret=12, savepath=None, filename=None):
+    def plot_shifts_old(self, max_fret=12, savepath=None, filename=None):
         fret_list = np.arange(0, max_fret + 1)
         shifts = self.freq_shifts(fret_list[1:])
         rms = np.sqrt(np.mean(shifts**2))
@@ -672,7 +672,61 @@ class Guitar(object):
         else:
             dn = np.round(np.mean(self._dn), 2)
             template_dn = '$\Delta N = {}~\mathrm{{mm~(mean)}}$'
-        template = '{}\n' + template_ds + '\n' + template_dn + '\nRMS Shift: {}'
+        template = '{}\n' + template_ds + '\n' + template_dn + '\n' + 'Shift~(rms):~{}~cents'
+        plt.text(0.35, 5.3, template.format(self._name, ds, dn, np.round(rms, 2)),
+                 fontdict=font, bbox=bbox)
+        plt.grid(True)
+        
+        filepath = file_path(savepath, filename)
+        if filepath is not None:
+            plt.savefig(filepath, bbox_inches='tight')
+        plt.show()
+
+    def plot_shifts(self, max_fret=12, harm=[], savepath=None, filename=None):
+        fret_list = np.arange(0, max_fret + 1)
+        shifts = self.freq_shifts(fret_list[1:])
+        if harm:
+            zero_strings = harm[0]
+            zero_frets = harm[1]
+            for s, n in zip(zero_strings, zero_frets):
+                shifts[s-1] -= shifts[s-1][n]
+        rms = np.sqrt(np.mean(shifts**2))
+        names = self._strings.get_string_names()
+
+        # labelsize = 18
+        # fontsize = 24
+        # font = {'family' : 'serif',
+        #         'color'  : 'black',
+        #         'weight' : 'normal',
+        #         'size'   : fontsize,
+        #         }
+        # plt.rc('text', usetex=True)
+        # plt.rc('font', family='serif')
+        
+        plt.figure(figsize=(8.0,6.0))
+        for string in self._string_list:
+            plt.plot(fret_list, shifts[string-1], label='{}'.format(names[string-1]))
+        plt.xlabel('FRET', fontdict=font)
+        plt.ylabel('SHIFT (cents)', fontdict=font)
+        plt.tick_params(axis='x', labelsize=labelsize)
+        plt.tick_params(axis='y', labelsize=labelsize)
+        plt.xlim(fret_list[0],fret_list[-1])
+        plt.ylim(-4,10)
+        plt.legend(loc='upper right', fontsize=labelsize)
+        
+        if np.all(np.abs(self._ds - self._ds[0]) < 1.0e-06):
+            ds = self._ds[0]
+            template_ds = '$\Delta S = {}~\mathrm{{mm}}$'
+        else:
+            ds = np.round(np.mean(self._ds), 2)
+            template_ds = '$\Delta S = {}~\mathrm{{mm~(mean)}}$'
+        if np.all(np.abs(self._dn - self._dn[0]) < 1.0e-06):
+            dn = self._dn[0]
+            template_dn = '$\Delta N = {}~\mathrm{{mm}}$'
+        else:
+            dn = np.round(np.mean(self._dn), 2)
+            template_dn = '$\Delta N = {}~\mathrm{{mm~(mean)}}$'
+        template = '{}\n' + template_ds + '\n' + template_dn + '\n' + 'Shift~(rms):~{}~cents'
         plt.text(0.35, 5.3, template.format(self._name, ds, dn, np.round(rms, 2)),
                  fontdict=font, bbox=bbox)
         plt.grid(True)
@@ -731,7 +785,7 @@ class Guitar(object):
         else:
             dn = np.round(np.mean(self._dn), 2)
             template_dn = '$\Delta N = {}~\mathrm{{mm~(mean)}}$'
-        template = '{}\n' + template_ds + '\n' + template_dn + '\nRMS Shift: {}'
+        template = '{}\n' + template_ds + '\n' + template_dn + '\n' + 'Shift~(rms):~{}~cents'
         plt.text(0.35, 5.3, template.format(self._name, ds, dn, np.round(rms, 2)),
                  fontdict=font, bbox=bbox)
         plt.grid(True)
@@ -752,7 +806,7 @@ class Guitar(object):
         display(styler)
         
         table_str = styler.to_latex(column_format='cccccc', hrules=True)
-        print(table_str)
+        #print(table_str)
 
         filepath = file_path(savepath, filename)
         if filepath is not None:
