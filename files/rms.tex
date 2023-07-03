@@ -70,8 +70,8 @@ We note that
 or
 \begin{subequations} \label{eqn:rms_sol}
   \begin{align}
-    \label{eqn:rms_sol_ds} \Delta S &= B_0\, X_0 + \frac{\kappa\, X_0}{2 \left(\sigma_1^2 - \sigma_0\, \sigma_2\right)}\, \left( \sigma_1\, \overline{Q}_0 - \sigma_0\, \overline{Q}_1 \right)\, , \nd \\
-    \label{eqn:rms_sol_dn} \Delta N &= \frac{\kappa\, X_0}{2 \left(\sigma_1^2 - \sigma_0\, \sigma_2\right)}\, \left( \sigma_2\, \overline{Q}_0 - \sigma_1\, \overline{Q}_1 \right)\, .
+    \label{eqn:rms_sol_ds} \Delta S &= \left(B_0 - \frac{\kappa}{2}\, \frac{\sigma_1\, \overline{Q}_0 - \sigma_0\, \overline{Q}_1}{\sigma_0\, \sigma_2 - \sigma_1^2} \right) X_0\, , \nd \\
+    \label{eqn:rms_sol_dn} \Delta N &= -\frac{\kappa}{2}\, \frac{\sigma_2\, \overline{Q}_0 - \sigma_1\, \overline{Q}_1}{\sigma_0\, \sigma_2 - \sigma_1^2}\, X_0\, .
   \end{align}
 \end{subequations}
 For completeness, the corresponding solution when the quadratic stiffness term is included is given by
@@ -101,7 +101,7 @@ H = \begin{bmatrix}
       -\sigma_1 & \sigma_0
     \end{bmatrix}\, .
  \end{equation}
-The Hessian is positive definite if and only if all of its eigenvalues are positive, and in the case of a $2 \times 2$ real matrix, this holds when the determinant is greater than zero. It is easy to verify numerically (and with some effort algebraically) that $\Det(H) > 0$ for $n_\text{max} > 1$. Therefore, the solution for $\Delta S$ and $\Delta N$ given by \eqn{rms_sol} minimizes the RMS frequency error.
+The Hessian is positive definite if and only if all of its eigenvalues are positive, and in the case of a $2 \times 2$ real matrix, this holds when the determinant is greater than zero and one of the diagonal elements is positive. It is easy to verify numerically (and with some effort algebraically) that $\Det(H) > 0$ for $n_\text{max} > 1$. Therefore, the solution for $\Delta S$ and $\Delta N$ given by \eqn{rms_sol} minimizes the RMS frequency error.
 
 The setback solution given by \eqn{rms_sol} is valid for a single string, and results like those shown in \tbl{ej45_setbacks} and \fig{shift_alhambra8p_ej45_full} assume that the guitar is built such that each string --- from a particular set of strings --- has a unique saddle and nut setback. Suppose that we'd prefer to engineer a guitar with single, uniform values of both $\Delta S$ and $\Delta N$ that provide reasonable compensation across an entire string set (or an ensemble of strings from a variety of manufacturers). In this case, \eqn{rms_def} becomes
  \begin{equation}\label{eqn:rms_def_m}
