@@ -9,7 +9,7 @@
 
  \section{Compensation by Minimizing RMS Error\label{app:rms}}
 
-The root-mean-square (RMS) frequency error (in cents) averaged over the frets $n \in \{1, n_\text{max}\}$ \emph{of a particular string} is given by
+The root-mean-square (RMS) frequency error (in cents) averaged over the frets $n \in \{1, n_\text{max}\}$ (for $n_\text{max} > 1$) \emph{of a particular string} is given by
  \begin{equation}\label{eqn:rms_def}
 \overline{\Delta \nu}_\text{rms} \equiv \sqrt{\frac{\sum_{n = 1}^{n_\text{max}} \Delta \nu_n^2}{n_\text{max}}}\, ,
  \end{equation}
@@ -45,10 +45,15 @@ where
 \overline{Q}_k &\equiv \sum_{n = 1}^{n_\text{max}} \left(\gamma_n - 1\right)^k\, Q_n\, .
  \end{align}
 We note that
+\begin{equation}
+  g_k \equiv \sum_{n = 1}^{n_\text{max}} \gamma_n^k = \frac{\gamma_k \left(\gamma_{k n_\text{max}} - 1\right)}{\gamma_k - 1}\, ,
+\end{equation}
+and therefore
 \begin{subequations}
   \begin{align}
     \sigma_0 &= n_\text{max}\, ,\\
-    \sigma_1 &= \frac{\gamma_1 \left(\gamma_{n_\text{max}} - 1\right)}{\gamma_1 - 1} - \sigma_0
+    \sigma_1 &= g_1 - n_\text{max}\, , \nd \\
+    \sigma_2 &= g_2 - 2 g_1 + n_\text{max}\, .
   \end{align}
 \end{subequations}
 
@@ -57,10 +62,10 @@ We note that
   \begin{bmatrix}
     \Delta S \\
     \Delta N
-  \end{bmatrix} = \frac{X_0}{\sigma_1^2 - \sigma_0\, \sigma_2}\,
+  \end{bmatrix} = \frac{X_0}{\sigma_0\, \sigma_2 - \sigma_1^2}\,
   \begin{bmatrix}
-    -\sigma_0 & \sigma_1 \\
-    -\sigma_1 & \sigma_2
+    \sigma_0 & -\sigma_1 \\
+    \sigma_1 & -\sigma_2
   \end{bmatrix}\,
   \begin{bmatrix}
     \sigma_2\, B_0 + \half\, \kappa\, \overline{Q}_1 \\
@@ -74,15 +79,15 @@ or
     \label{eqn:rms_sol_dn} \Delta N &= -\frac{\kappa}{2}\, \frac{\sigma_2\, \overline{Q}_0 - \sigma_1\, \overline{Q}_1}{\sigma_0\, \sigma_2 - \sigma_1^2}\, X_0\, .
   \end{align}
 \end{subequations}
-For completeness, the corresponding solution when the quadratic stiffness term is included is given by
+For completeness, the solution when the quadratic stiffness term is included is given by
  \begin{equation}\label{eqn:rms_sol_quad}
 \begin{bmatrix}
   \Delta S \\
   \Delta N
-\end{bmatrix} = \frac{X_0}{\sigma_1^2 - \sigma_0\, \sigma_2}\,
+\end{bmatrix} = \frac{X_0}{\sigma_0\, \sigma_2 - \sigma_1^2}\,
 \begin{bmatrix}
-  -\sigma_0 & \sigma_1 \\
-  -\sigma_1 & \sigma_2
+  \sigma_0 & -\sigma_1 \\
+  \sigma_1 & -\sigma_2
 \end{bmatrix}\,
 \begin{bmatrix}
   \sigma_2\, B_0 + \half \left(1 + \pi^2\right) \left(2 \sigma_2 + \sigma_3\right) B_0^2 + \half\, \kappa\, \overline{Q}_1 \\
@@ -90,7 +95,7 @@ For completeness, the corresponding solution when the quadratic stiffness term i
 \end{bmatrix}\, .
  \end{equation}
 
-The corresponding Hessian matrix for this problem is
+The corresponding Hessian matrix for this problem is the symmetric matrix
  \begin{equation}
 H = \begin{bmatrix}
       \frac{\partial^2 \chi^2}{\partial \Delta S^2} & \frac{\partial^2 \chi^2}{\partial \Delta N\, \partial \Delta S} \\
@@ -101,7 +106,15 @@ H = \begin{bmatrix}
       -\sigma_1 & \sigma_0
     \end{bmatrix}\, .
  \end{equation}
-The Hessian is positive definite if and only if all of its eigenvalues are positive, and in the case of a $2 \times 2$ real matrix, this holds when the determinant is greater than zero and one of the diagonal elements is positive. It is easy to verify numerically (and with some effort algebraically) that $\Det(H) > 0$ for $n_\text{max} > 1$. Therefore, the solution for $\Delta S$ and $\Delta N$ given by \eqn{rms_sol} minimizes the RMS frequency error.
+We can apply the second partial derivative test to the Hessian to determine whether we've found an extremum of $\chi^2$. If the determinant of the Hessian is positive, and (in the case of a $2 \times 2$ matrix) one of the diagonal elements is positive, then we have found a minimum. The second condition is satisfied by $\sigma_0 = n_\text{max} > 0$ when $n_\text{max} \ge 1$. The determinant is given by
+\begin{equation}
+  \Det(H) = \frac{4}{X_0^4} \left(n_\text{max}\, g_2 - g_1^2\right)\, ,
+\end{equation}
+which is indeed greater than 0 for $n_\text{max} > 1$ since the quantity
+\begin{equation}
+  \frac{n_\text{max}\, g_2}{g_1^2} = \frac{n_\text{max} (\gamma_1 - 1)(\gamma_{n_\text{max}} + 1)}{(\gamma_1 + 1)(\gamma_{n_\text{max}} - 1)} \approx 1 + \frac{\ln^2(2)}{12^3} \left(n^2_\text{max} - 1\right) > 1\, .
+\end{equation}
+Therefore, we can be confident that the solution for $\Delta S$ and $\Delta N$ given by \eqn{rms_sol} minimizes the RMS frequency error provided that we are averaging over at least the first two frets.
 
 The setback solution given by \eqn{rms_sol} is valid for a single string, and results like those shown in \tbl{ej45_setbacks} and \fig{shift_alhambra8p_ej45_full} assume that the guitar is built such that each string --- from a particular set of strings --- has a unique saddle and nut setback. Suppose that we'd prefer to engineer a guitar with single, uniform values of both $\Delta S$ and $\Delta N$ that provide reasonable compensation across an entire string set (or an ensemble of strings from a variety of manufacturers). In this case, \eqn{rms_def} becomes
  \begin{equation}\label{eqn:rms_def_m}
