@@ -17,11 +17,17 @@ plt.rc('text', usetex=True)
 plt.rc('font', family='serif')
 plt.rc('text.latex', preamble=r'\usepackage{amsmath,amssymb,amsfonts}')
 
-def file_path(pathname, filename):
+def file_path_old(pathname, filename):
     if (pathname is not None) and (filename is not None):
         return pathname + filename
     else:
         return None
+
+def file_path(pathname, filename):
+    if (pathname is None) or (filename is None):
+        return None
+    else:
+        return pathname + filename
 
 def get_xlim():
     '''
@@ -584,6 +590,10 @@ class Guitar(object):
     def qn(self, fret_list):
         l0 = np.tile(self.l0().reshape(-1, 1), (1, fret_list.size))
         return (self.lmc(fret_list) - l0) / l0
+    
+    def qnx(self, fret_list):
+        retval = ( (self.gamma(fret_list) - 1)/(2 * self._x0**2) ) * ( (self.gamma(fret_list)/(self.gamma(fret_list) - 1)) * self._bn(fret_list) + self._c )**2
+        return retval
     
     def freq_shifts(self, fret_list):
         l_0 = np.tile(self.l0().reshape(-1, 1), (1, fret_list.size))
