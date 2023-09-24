@@ -27,7 +27,7 @@ where we have used the analysis in \sct{model} to determine that
  \end{subequations}
 Therefore, following Byers~\cite{ref:byers1996cgi,ref:varieschi2010icf}, we define the parameter $R$ to be
  \begin{equation}\label{eqn:r_def}
-R \equiv \frac{L}{f}\, \frac{d\, f}{d\, L} = \half\, (\kappa - 1)\, ,
+R \equiv \frac{d\, \ln(f)}{d\, \ln(L)} = \frac{L}{f}\, \frac{d\, f}{d\, L} = \half\, (\kappa - 1)\, ,
  \end{equation}
 which gives
  \begin{equation} \label{eqn:kappa_r}
@@ -38,7 +38,17 @@ With this measurement of $\kappa$, we can estimate the bending stiffness coeffic
 B_0 = \sqrt{\kappa}\, \frac{\rho}{2\, L_0}\, .
  \end{equation}
 
-It is relatively easy to estimate the values of $\kappa$ and $R$ for any guitar string with the aid of a simple device that can measure frequency shifts in cents~\cite{ref:pgtweb}. First, we tune the open string to the correct 12-TET frequency. Then, we select a fret $n$, and measure the frequency deviation $\Delta \nu_n$ of the fretted string while muting the other strings to eliminate sympathetic vibrations. If we solve \eqn{b_0_kappa} for $\kappa$ and then substitute the result into \eqn{error_tot}, we find
+We can estimate the typical value of $R$ for nylon classical guitar strings through a simple observation. On a classical guitar with a scale length of 650~mm, we can usually tune an open string a full step by winding the tuner/machine head three half turns. As we shall see below, this increases or decreases the string length above the first fret by about 3~mm, where the corresponding length of the open string is about 614~mm. Since a full step is (by definition) 200~cents, \eqn{cents_approx} tells us that
+\begin{equation}
+  \frac{\Delta f}{f} \approx \frac{\ln(2)}{1200}\, \Delta \nu = \frac{200}{1731} = 0.116\, .
+\end{equation}
+In this case, we estimate $R$ to be
+\begin{equation}
+  R \approx \frac{614}{3}\, 0.116 = 24\, ,
+\end{equation}
+giving $\kappa \approx 49$ and $\sqrt{\kappa} \approx 7$.
+
+ It is relatively easy to estimate the values of $\kappa$ and $R$ for any guitar string with the aid of a simple device that can measure frequency shifts in cents~\cite{ref:pgtweb}. First, we tune the open string to the correct 12-TET frequency. Then, we select a fret $n$, and measure the frequency deviation $\Delta \nu_n$ of the fretted string while muting the other strings to eliminate sympathetic vibrations. If we solve \eqn{b_0_kappa} for $\kappa$ and then substitute the result into \eqn{error_tot}, we find
 \begin{equation} \label{eqn:root_kappa_quad}
   \alpha\, B_0^2 + \beta\, B_0 - \xi = 0\, ,
 %  \alpha\, \kappa + \beta\, \sqrt{\kappa} - \xi = 0\, ,
