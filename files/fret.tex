@@ -11,12 +11,19 @@
 
 As discussed in \sct{model}, unlike previous studies of guitar intonation and compensation~\cite{ref:byers1996cgi,ref:varieschi2010icf} we have neglected to include a contribution to the incremental change in the length of the fretted string caused by both the depth and the shape of the string under the finger. As the string is initially pressed to the fret, the total length $\mathcal{L}_n$ increases and causes the tension in the string --- which is pinned at the saddle and clamped at the nut --- to increase. As the string is pressed further, does the additional deformation of the string increase its tension (throughout the resonant length $L_n$)? There are at least two purely empirical reasons to doubt this hypothesis. First, we can mark a string (with a fine-point felt pen) above a particular fret and then observe the mark with a magnifying glass. As the string is pressed all the way to the finger board, the mark does not move perceptibly --- it has become \emph{clamped} on the fret. Second, we can use either our ears or a simple tool to measure frequencies~\cite{ref:pgtweb} to listen for a shift as we use different fingers and vary the fretted depth of a string. The apparent modulation is far less than would be obtained by classical vibrato ($\pm15$~cents), so we assume that once the string is minimally fretted the length(s) can be regarded as fixed. (If this were not the case, then fretting by different people or with different fingers, at a single string or with a barre, would cause additional, varying frequency shifts that would be audible and difficult to compensate.)
 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=6.0in]{../figures/fretting_photo}
+    \caption{\label{fig:fretting_photo} Photo of a wound nylon $E_2$ string clamped at the first fret. The shape of the fretted string can be well approximated by two lines intersecting about 5~mm behind the fret.}
+\end{figure}
+
 \begin{figure}
     \centering
     \includegraphics[width=6.0in]{../figures/fretting_schematic}
     \caption{\label{fig:fretting_schematic} A recapitulation of \fig{guitar_schematic} with the addition of a horizontal linear distance $d$ at fret $n$ to represent the slight increase in the distance $L_n^\prime$ caused by a finger.}
-   \end{figure}
-  
+\end{figure}
+
 Here we include this concept in a simple way to determine the effect it could have on the frequency shift due to increased string tension. In \fig{fretting_schematic}, we adopt the schematic of the guitar shown in \fig{guitar_schematic}, but we allow a small, horizontal linear section of string with length $d$ to represent the action of the finger. In this case, the resonant length $L_n$ is unaffected, but the remaining string length becomes
  \begin{equation}
 L^\prime_n = d + \sqrt{\left(X_0 + \Delta N - X_n - d\right)^2 + b^2} \approx X_0 - X_n + \Delta N + \frac{b^2}{2 \left(X_0 + \Delta N - X_n - d\right)}\, .
