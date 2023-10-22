@@ -601,7 +601,7 @@ class Guitar(object):
         b_0, n_2d = np.meshgrid(self._strings.get_stiffness(), fret_list, sparse=False, indexing='ij')
         
         rle = 1200 * np.log2( l_0 / (self.gamma(n_2d) * self.l(fret_list)) )
-        tme = (600/np.log(2.0)) * kappa * self.qn(fret_list)
+        tme =  600 * np.log2( 1 + (kappa + 1) * self.qn(fret_list) )
         bse = 1200 * np.log2( (1 + self.gamma(n_2d) * b_0) / (1 + b_0) )
         bse = 1200 * np.log2( (1 + self.gamma(n_2d) * b_0 + (1.0 + 0.5 * np.pi**2) * (self.gamma(n_2d) * b_0)**2)
                               / (1 + b_0 + (1.0 + 0.5 * np.pi**2) * b_0**2) )

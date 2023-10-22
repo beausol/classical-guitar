@@ -59,20 +59,17 @@ which is clearly largest at the first fret. When $d > 0$, the corresponding incr
 In \fig{fret_disp}, we plot $\Delta Q_1 / Q_1$ as a function of the distance parameter $d$. We see that a narrow finger ($d \approx 5$~mm) introduces a relative change in $Q_1$ --- and therefore a corresponding fractional increase in the frequency shift due to increases in tension --- of approximately 15\%. A large finger that is twice as wide results in a 30\% correction. 
 For a string with $\kappa = 49$, in \fig{fret_shift} we plot $\Delta \nu_n(d) - \Delta \nu_n(0)$ as a function of $d$. In this case, the shift for a finger with $d = 10$~mm is less than 0.5~cents. It is true that we can press the string so hard that it touches the fret board, but the increase in the frequency shift is still less than 1~cent, and this is likely the result of dragging the string over the fret (similar to vibrato) and causing a local change in tension that is inconsistent with the boundary conditions used to derive \eqn{f_m_stiff}.
 
- \begin{figure}
-  \centering
-  \begin{subfigure}[b]{0.8\textwidth}
-   \centering
-   \includegraphics[width=5.0in]{../figures/fret_disp}
-   \caption{Relative displacement $\Delta Q_1 / Q_1$}
-   \label{fig:fret_disp}
-  \end{subfigure}
-  \par\vspace{0.25in}
-  \begin{subfigure}[b]{0.8\textwidth}
-   \centering
-   \includegraphics[width=5.0in]{../figures/fret_shift}
-   \caption{Additional frequency shift for $\kappa = 49$}
-   \label{fig:fret_shift}
-  \end{subfigure}
-  \caption{\label{fig:fret_model} In (a), we plot the relative displacement $\Delta Q_1 / Q_1$ for the first fret as a function of the fretting distance parameter $d$ using \eqn{delta_q_n_approx}. Here the guitar has the same parameters as the ``no-relief'' Alhambra 8P, with normal tension strings. In (b), we show the additional frequency shift given by \eqn{delta_nu_n_d} at the first fret of a string with $\kappa = 49$ as $d$ increases from 0. For $n > 1$, the relative displacement and additional shift are reduced by a factor of approximately $n^2$.}
- \end{figure}
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.8\textwidth}
+        \centering
+        \includegraphics[width=5.0in]{../figures/fret_disp}\caption{Relative displacement $\Delta Q_1 / Q_1$}
+        \label{fig:fret_disp}
+    \end{subfigure}
+    \par\vspace{0.25in}
+    \begin{subfigure}[b]{0.8\textwidth}
+        \centering
+        \includegraphics[width=5.0in]{../figures/fret_shift}\caption{Additional frequency shift for $\kappa = 49$}\label{fig:fret_shift}
+    \end{subfigure}
+    \caption{\label{fig:fret_model} In (a), we plot the relative displacement $\Delta Q_1 / Q_1$ for the first fret as a function of the fretting distance parameter $d$ using \eqn{delta_q_n_approx}. Here the guitar has the same parameters as the ``no-relief'' Alhambra 8P, with normal tension strings. In (b), we show the additional frequency shift given by \eqn{delta_nu_n_d} at the first fret of a string with $\kappa = 49$ as $d$ increases from 0. For $n > 1$, the relative displacement and additional shift are reduced by a factor of approximately $n^2$.}
+\end{figure}
