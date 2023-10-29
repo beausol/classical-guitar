@@ -9,54 +9,23 @@
 
  \section{Experimental Estimate of the String Constant\label{sct:exp}}
 
- \red{Needs to be completely rewritten --- RGB.}
- 
-
  \begin{figure}
   \centering
-  \begin{subfigure}[b]{0.8\textwidth}
+  \begin{subfigure}[b]{0.45\textwidth}
       \centering
-      \includegraphics[width=5.0in]{../figures/comp_ds}
-      \caption{Frequency shifts ($\Delta N = 0$)}
-      \label{fig:exp_dx0}
-  \end{subfigure}
-  \par\vspace{0.25in}
-  \begin{subfigure}[b]{0.8\textwidth}
-      \centering
-      \includegraphics[width=5.0in]{../figures/comp_dn}
-      \caption{Frequency shifts ($\Delta S = 0$)}
+      \includegraphics[width=3.0in]{../figures/exp_dx1.jpg}
+      \caption{$\Delta x_1$}
       \label{fig:exp_dx1}
   \end{subfigure}
-  \caption{\label{fig:exp_dx} In (a), we plot the frequency shifts for our classical guitar for several saddle setbacks with $\Delta N = 0$. Here $R = 24$ and the string radius is 0.5~mm; the corresponding string constant and bending stiffness are $\kappa = 49$ and $B_0 = 0.00268$ respectively. In (b), we set $\Delta S = 0$ and plot the frequency shifts for several nut ``setbacks.''}
+  \hspace{0.25in}
+  \begin{subfigure}[b]{0.45\textwidth}
+      \centering
+      \includegraphics[width=3.04in]{../figures/exp_dx2.jpg}
+      \caption{$\Delta x_2$}
+      \label{fig:exp_dx2}
+  \end{subfigure}
+  \caption{\label{fig:exp_dx} Two examples of displacement measurements of a small deposit of white correction fluid relative to a D'Addario string-depth gauge marked in half-millimeter increments.}
 \end{figure}
-
-
-
-
-
- It is relatively easy to estimate the values of $\kappa$ and $R$ for any guitar string with the aid of a simple device that can measure frequency shifts in cents~\cite{ref:pgtweb}. First, we tune the open string to the correct 12-TET frequency. Then, we select a fret $n$, and measure the frequency deviation $\Delta \nu_n$ of the fretted string while muting the other strings to eliminate sympathetic vibrations. If we solve \eqn{b_0_kappa} for $\kappa$ and then substitute the result into \eqn{error_tot}, we find
-\begin{equation} \label{eqn:root_kappa_quad}
-  \alpha\, B_0^2 + \beta\, B_0 - \xi = 0\, ,
-%  \alpha\, \kappa + \beta\, \sqrt{\kappa} - \xi = 0\, ,
-\end{equation}
-where we have included the quadratic bending stiffness term, and defined the coefficients
-\begin{subequations}
-  \begin{align}
-    % \alpha &\equiv \half \left[ Q_n + \left(\gamma_n^2 - 1\right)\left(1 + \pi^2\right)\left(\frac{\rho}{2\, L_0}\right)^2 \right]\, , \\
-    % \beta &\equiv \left(\gamma_n - 1\right)\, \frac{\rho}{2\, L_0}\, , \nd \\
-    % \xi &\equiv \frac{\ln(2)}{1200}\, \Delta \nu_n + \frac{\left(\gamma_n - 1\right) \Delta S - \Delta N}{X_0}\, .
-    \alpha &\equiv \half \left[ \left(\frac{2\, L_0}{\rho}\right)^2 Q_n + \left(\gamma_n^2 - 1\right)\left(1 + \pi^2\right) \right]\, , \\
-    \beta &\equiv \gamma_n - 1\, , \nd \\
-    \xi &\equiv \frac{\ln(2)}{1200}\, \Delta \nu_n + \frac{\left(\gamma_n - 1\right) \Delta S - \Delta N}{X_0}\, .
-\end{align}
-\end{subequations}
-\Eqn{root_kappa_quad} is quadratic in $B_0$, with the solution
- \begin{equation} \label{eqn:root_kappa_soln}
-B_0 = \frac{\sqrt{\beta^2 + 4\, \alpha\, \xi} - \beta}{2\, \alpha} \approx \frac{\xi}{\beta}\, ,
- \end{equation}
-where we have chosen the positive root to ensure that $B_0 > 0$, and the final approximate expression on the \rhs applies when $\beta^2 \gg 4\, \alpha\, \xi$.
-
-We've used this approach to estimate $\kappa$ and $R$ of different string sets on the Alhambra 8P classical guitar, which has $X_0 = 650$~mm, $c = 3.5$~mm, $\Delta S = 1.5$~mm, and $\Delta N = 0.0$~mm. At the nut, $b = 1.0$~mm, but the height of the fret board decreases roughly linearly further toward the saddle, effectively increasing $b$. We estimate that $d b / d x \approx -0.0034$, so that $b$ has increased to 2.0~mm at the 12$^{\text{th}}$ fret. We show the specifications of a normal-tension classical string set in \tbl{ej45_mks} using metric units\footnote{Note that the correct unit of force in the metric system is Newtons (N), rather than kilograms, which is a unit of mass.}. In \tbl{ej45_props}, we list the frequency deviation from 12-TET at the 12$^{\text{th}}$ fret for each string in this set, as well as the corresponding estimates of $\kappa$, $R$, $E$, and $B_0$, computed from \eqn{root_kappa_soln}, \eqn{r_def}, \eqn{kappa_def}, and \eqn{b_0_kappa}, respectively. The units used for the elastic modulus are gigapascals (1 GPa = $10^9$~N/m$^2$.). Similar measurements and results for other string sets are provided in \app{specs}.
 
 \begin{table}%[htbp]
   \centering
@@ -64,19 +33,45 @@ We've used this approach to estimate $\kappa$ and $R$ of different string sets o
   \input{../files/tbl_ej45_specs}
 \end{table}%
 
+It is relatively easy to measure \emph{in situ} the value of $R$ (and therefore $\kappa$) for any guitar string with the aid of a  device that can measure frequency~\cite{ref:pgtweb}, a simple ruler with fine markings (e.g., a string depth gauge), a camera with a macro mode, and white correction fluid. For example, in \fig{exp_dx} we show photographs of the nylon normal-tension first string on an Alhambra 8P classical guitar. By depositing a small sample of white correction fluid on the string, we can measure small displacements within 0.25~mm against a string-depth gauge marked in half-millimeter increments. Then we can pluck the open string and measure its vibration frequency. We found that significantly stretching a string that had settled into equilibrium could result in a nonlinear reduction in $\Delta f/\Delta L$, so prior to our measurements we tuned each string down one whole step. The string stretches uniformly along its length, so at any position $x$ the relative displacement $\Delta x/x$ should be invariant. We chose to work near the first fret, which is located about 614~mm from the saddle, and we typically made seven measurements of displacement over a 3~mm range, as well as the corresponding frequencies.
+
 \begin{figure}
   \centering
   \includegraphics[width=5.0in]{../figures/fit_ej45}
   \caption{\label{fig:fit_ej45} Results of experiments to measure $R$ for each string in the D'Addario Pro-Arte Nylon Classical Guitar Strings -- Normal Tension (EJ45) set. The points represent the measurement data, while the lines are the results of linear least-squares fits to that data.}
  \end{figure}
 
+For example, we began with a normal-tension nylon classical string set with the specifications listed in \tbl{ej45_mks} using metric units.\footnote{Note that the correct unit of force in the metric system is Newtons (N), rather than kilograms, which is a unit of mass.} In \fig{fit_ej45}, we plot our measurements of $\Delta f$ as a function of the displacement $\Delta x$ relative to the frequency of the string when $\Delta x = 0$. We then performed a least-squares fit to a straight line~\cite{ref:bevington2003dre} (also shown in \fig{fit_ej45}), determined the derivative $\Delta f / \Delta L$, and then computed $R$ using \eqn{r_def} with $L = 614$~mm and $f$ defined as the average frequency over the range. The results are shown in \tbl{ej45_props}. Here $\sigma$ is the covariant (diagonal) uncertainty in $R$ (so that, for example, the first string in the table has $R = 23.6 \pm 0.5$), and $\kappa = 2 R + 1$. We also estimate an effective modulus of elasticity $E$ from \eqn{kappa_def}, expressed in units of gigapascals (1 GPa = $10^9$~N/m$^2$.). Similar measurements and results for other string sets are provided in \app{specs}. Note --- as predicted in \sct{tot_freq_shift} --- the expectation that the guitar will be \emph{tunable} results in $R$ values of manufactured strings that are in the range $20 - 30$. The still more important requirement that the guitar be \emph{playable} leads us to the discussion of compensation in the next section.
+
+% First, we tune the open string to the correct 12-TET frequency. Then, we select a fret $n$, and measure the frequency deviation $\Delta \nu_n$ of the fretted string while muting the other strings to eliminate sympathetic vibrations. If we solve \eqn{b_0_kappa} for $\kappa$ and then substitute the result into \eqn{error_tot}, we find
+% \begin{equation} \label{eqn:root_kappa_quad}
+%   \alpha\, B_0^2 + \beta\, B_0 - \xi = 0\, ,
+% %  \alpha\, \kappa + \beta\, \sqrt{\kappa} - \xi = 0\, ,
+% \end{equation}
+% where we have included the quadratic bending stiffness term, and defined the coefficients
+% \begin{subequations}
+%   \begin{align}
+%     % \alpha &\equiv \half \left[ Q_n + \left(\gamma_n^2 - 1\right)\left(1 + \pi^2\right)\left(\frac{\rho}{2\, L_0}\right)^2 \right]\, , \\
+%     % \beta &\equiv \left(\gamma_n - 1\right)\, \frac{\rho}{2\, L_0}\, , \nd \\
+%     % \xi &\equiv \frac{\ln(2)}{1200}\, \Delta \nu_n + \frac{\left(\gamma_n - 1\right) \Delta S - \Delta N}{X_0}\, .
+%     \alpha &\equiv \half \left[ \left(\frac{2\, L_0}{\rho}\right)^2 Q_n + \left(\gamma_n^2 - 1\right)\left(1 + \pi^2\right) \right]\, , \\
+%     \beta &\equiv \gamma_n - 1\, , \nd \\
+%     \xi &\equiv \frac{\ln(2)}{1200}\, \Delta \nu_n + \frac{\left(\gamma_n - 1\right) \Delta S - \Delta N}{X_0}\, .
+% \end{align}
+% \end{subequations}
+% \Eqn{root_kappa_quad} is quadratic in $B_0$, with the solution
+%  \begin{equation} \label{eqn:root_kappa_soln}
+% B_0 = \frac{\sqrt{\beta^2 + 4\, \alpha\, \xi} - \beta}{2\, \alpha} \approx \frac{\xi}{\beta}\, ,
+%  \end{equation}
+% where we have chosen the positive root to ensure that $B_0 > 0$, and the final approximate expression on the \rhs applies when $\beta^2 \gg 4\, \alpha\, \xi$.
+
+% We've used this approach to estimate $\kappa$ and $R$ of different string sets on the Alhambra 8P classical guitar, which has $X_0 = 650$~mm, $c = 3.5$~mm, $\Delta S = 1.5$~mm, and $\Delta N = 0.0$~mm. At the nut, $b = 1.0$~mm, but the height of the fret board decreases roughly linearly further toward the saddle, effectively increasing $b$. We estimate that $d b / d x \approx -0.0034$, so that $b$ has increased to 2.0~mm at the 12$^{\text{th}}$ fret. . In \tbl{ej45_props}, we list the frequency deviation from 12-TET at the 12$^{\text{th}}$ fret for each string in this set, as well as the corresponding estimates of $\kappa$, $R$, $E$, and $B_0$, computed from \eqn{root_kappa_soln}, \eqn{r_def}, \eqn{kappa_def}, and \eqn{b_0_kappa}, respectively.
 
 \begin{table}%[htbp]
   \centering
   \caption{\label{tbl:ej45_props} Derived physical properties of the D'Addario Pro-Arte Nylon Classical Guitar Strings -- Normal Tension (EJ45). The corresponding scale length is 650 mm.}
   \input{../files/tbl_ej45_props}
 \end{table}%
-
 
 %Recall how we introduced this concept in \sct{model_tension}: increasing the tension by a quantity $\Delta T$ causes a shift in the frequency of a guitar string by $\Delta \nu$ in cents. Although we were considering fretted strings when we derived \eqn{error_def}, the terms in that equation can be generalized to describe the case of an open string that has been stretched longitudinally. Suppose that we continue to clamp the string at the saddle and the nut, but that we tighten the tuning gear to stretch that string's length by an amount $\Delta L$. The change in the string's frequency due to the change in the open resonant length is zero, because $L_0 / \gamma_0 L_0 = 1$. The linear mass density of the string is smaller now because there is less material between the saddle and the nut, causing the frequency shift (in cents)
 % \begin{equation}

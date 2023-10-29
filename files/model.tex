@@ -236,7 +236,7 @@ In \fig{stiffness_test}, we use \eqn{bg_n_def} and \eqn{dnu_bn} to compare the e
   \caption{\label{fig:stiffness_test} A comparison of exact and approximate expressions for (a) bending stiffness, given by \eqn{bg_n_def}, and (b) the corresponding frequency shift, given by \eqn{dnu_bn}. Here the guitar has $b = 1.0$~mm, $c = 3.5$~mm, $\Delta S = 1.75$~mm, $\Delta N = -0.35$~mm, $\kappa = 100$, and a scale length of 650~mm.}
 \end{figure}
 
-\subsection{Total Frequency Shift}
+\subsection{Total Frequency Shift\label{sct:tot_freq_shift}}
 
 Incorporating all of these effects --- and neglecting the term proportional to $B_0^2$ in \eqn{dnu_bn} --- we find that the total frequency shift is given approximately by
 \begin{equation}\label{eqn:error_tot}
@@ -260,10 +260,10 @@ where we have used the analyses above to determine that
  \begin{align}
 \frac{d\, T}{d\, L} &= \frac{T}{L}\, \kappa\, , \\
 \frac{d\, \mu}{d\, L} &= -\frac{\mu}{L}\, , \nd \\
-\frac{d\, B}{d\, L} &= -\frac{B}{L}\, . \\
+\frac{d\, B}{d\, L} &= -\frac{B}{L}\, , \\
  \end{align}
  \end{subequations}
-Therefore, following Byers~\cite{ref:byers1996cgi,ref:varieschi2010icf}, we define the parameter $R$ to be
+and we have again assumed that $B_0 \ll 1$. Therefore, following Byers~\cite{ref:byers1996cgi,ref:varieschi2010icf}, we define the parameter $R$ to be
  \begin{equation}\label{eqn:r_def}
 R \equiv \frac{d\, \ln(f)}{d\, \ln(L)} = \frac{L}{f}\, \frac{d\, f}{d\, L} = \half\, (\kappa - 1)\, ,
  \end{equation}
@@ -271,6 +271,12 @@ which gives
  \begin{equation} \label{eqn:kappa_r}
 \kappa = 2\, R + 1\, .
  \end{equation}
+
+ \begin{figure}
+  \centering
+  \includegraphics[width=5.0in]{../figures/uncomp}
+  \caption{\label{fig:uncomp} The total frequency shift given by \eqn{error_def} for a classical guitar with a scale length of 650~mm, $b = 1.0$~mm, $c = 3.5$~mm, $\Delta S = \Delta N = 0$~mm, and a string with $R = 24$ and a radius $\rho = 0.5$~mm. The corresponding linear string constant and bending stiffness coefficient are $\kappa = 49$ and $B_0 = 0.00268$, respectively.}
+\end{figure}
 
 We can estimate the typical value of $R$ for nylon classical guitar strings through a simple observation. On a classical guitar with a scale length of 650~mm, we can usually tune an open string a full step by winding the tuner/machine head three half turns. As we shall see below, this increases or decreases the string length above the first fret by about 3~mm, where the corresponding length of the open string from the saddle to the first fret is about 614~mm. Since a full step is (by definition) 200~cents, \eqn{cents_approx} tells us that
 \begin{equation}
@@ -281,14 +287,6 @@ In this case, we estimate $R$ to be
   R \approx \frac{614}{3}\, 0.116 = 24\, ,
 \end{equation}
 giving $\kappa \approx 49$ and $\sqrt{\kappa} \approx 7$. In \fig{uncomp}, we plot the total frequency shift given by \eqn{error_def} for a classical guitar with a scale length of 650~mm, $b = 1.0$~mm, $c = 3.5$~mm, $\Delta S = \Delta N = 0$~mm, and a string with $R = 24$ and a radius $\rho = 0.5$~mm. The corresponding linear string constant and bending stiffness coefficient are $\kappa = 49$ and $B_0 = 0.00268$, respectively. Note that the string is sharp at every fret.
-
-\begin{figure}
-  \centering
-  \includegraphics[width=5.0in]{../figures/uncomp}
-  \caption{\label{fig:uncomp} The total frequency shift given by \eqn{error_def} for a classical guitar with a scale length of 650~mm, $b = 1.0$~mm, $c = 3.5$~mm, $\Delta S = \Delta N = 0$~mm, and a string with $R = 24$ and a radius $\rho = 0.5$~mm. The corresponding linear string constant and bending stiffness coefficient are $\kappa = 49$ and $B_0 = 0.00268$, respectively.}
-\end{figure}
-
-\Eqn{error_tot} provides us with a clue on how to modify this guitar to improve the tone of this string. We see that the bending stiffness and the increase in string tension due to fretting sharpen the pitch, but that we can flatten it with a positive saddle setback and negative nut setback. \Fig{comp_dsdn} shows that increasing the saddle setback tends to rotate the pitch curve downward, and increasing the magnitude of the negative nut setback displaces the pitch curve almost uniformly downward. In fact, a simple compensation strategy would be to choose $\Delta S = B_0\, X_0$ to compensate for stiffness, and then select $\Delta N = - \kappa\, X_0\, \overline{Q} / 2$, where $\overline{Q}$ is the relative displacement averaged over a particular set of frets. In the case of the parameters used in \fig{uncomp}, we use this simple approximate approach to estimate $\Delta S = 1.74$~mm and $\Delta N = -0.43$~mm. The pitch curve shown in \fig{comp_est} illustrates the dramatic improvement in tone that can be obtained via classical guitar compensation. We'll rely on a more accurate method for compensation in \sct{comp}, but we'll obtain results that are similar to those found using this basic approach.
 
 \begin{figure}
   \centering
@@ -313,3 +311,5 @@ giving $\kappa \approx 49$ and $\sqrt{\kappa} \approx 7$. In \fig{uncomp}, we pl
   \includegraphics[width=5.0in]{../figures/comp_est}
   \caption{\label{fig:comp_est} The total frequency shift given by \eqn{error_def} for a classical guitar with a scale length of 650~mm, $b = 1.0$~mm, $c = 3.5$~mm, $\Delta S = 1.74$~mm, $\Delta N = -0.43$~mm, and a string with $R = 24$ and a radius $\rho = 0.5$~mm. The corresponding linear string constant and bending stiffness coefficient are $\kappa = 49$ and $B_0 = 0.00268$, respectively. Compared to \fig{uncomp}, this classical guitar has been compensated by incorporating nonzero saddle and nut setbacks.}
 \end{figure}
+
+\Eqn{error_tot} provides us with a clue on how to modify this guitar to improve the tone of this string. We see that the bending stiffness and the increase in string tension due to fretting sharpen the pitch, but that we can flatten it with a positive saddle setback and negative nut setback. \Fig{comp_dsdn} shows that increasing the saddle setback tends to rotate the pitch curve downward, and increasing the magnitude of the negative nut setback displaces the pitch curve almost uniformly downward. In fact, a simple compensation strategy would be to choose $\Delta S = B_0\, X_0$ to compensate for stiffness, and then select $\Delta N = - \kappa\, X_0\, \overline{Q} / 2$, where $\overline{Q}$ is the relative displacement averaged over a particular set of frets. In the case of the parameters used in \fig{uncomp}, we use this simple approximate approach to estimate $\Delta S = 1.74$~mm and $\Delta N = -0.43$~mm. The pitch curve shown in \fig{comp_est} illustrates the dramatic improvement in tone that can be obtained via classical guitar compensation. We'll rely on a more accurate method for compensation in \sct{comp}, but we'll obtain results that are similar to those found using this basic approach.
