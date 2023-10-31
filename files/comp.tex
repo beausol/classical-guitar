@@ -11,6 +11,36 @@
 
 \red{First and second paragraphs need to be rewritten --- RGB.}
 
+
+
+\Eqn{error_tot} provides us with a clue on how to modify this guitar to improve the tone of this string. We see that the bending stiffness and the increase in string tension due to fretting sharpen the pitch, but that we can flatten it with a positive saddle setback and negative nut setback. \Fig{comp_dsdn} shows that increasing the saddle setback tends to rotate the pitch curve downward, and increasing the magnitude of the negative nut setback displaces the pitch curve almost uniformly downward. In fact, a simple compensation strategy would be to choose $\Delta S = B_0\, X_0$ to compensate for stiffness, and then select $\Delta N = - \kappa\, X_0\, \overline{Q} / 2$, where $\overline{Q}$ is the relative displacement averaged over a particular set of frets. In the case of the parameters used in \fig{uncomp}, we use this simple approximate approach to estimate $\Delta S = 1.74$~mm and $\Delta N = -0.43$~mm. The pitch curve shown in \fig{comp_est} illustrates the dramatic improvement in tone that can be obtained via classical guitar compensation. We'll rely on a more accurate method for compensation in \sct{comp}, but we'll obtain results that are similar to those found using this basic approach.
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.8\textwidth}
+        \centering
+        \includegraphics[width=5.0in]{../figures/comp_ds}
+        \caption{Frequency shifts ($\Delta N = 0$)}
+        \label{fig:comp_ds}
+    \end{subfigure}
+    \par\vspace{0.25in}
+    \begin{subfigure}[b]{0.8\textwidth}
+        \centering
+        \includegraphics[width=5.0in]{../figures/comp_dn}
+        \caption{Frequency shifts ($\Delta S = 0$)}
+        \label{fig:comp_dn}
+    \end{subfigure}
+    \caption{\label{fig:comp_dsdn} In (a), we plot the frequency shifts for our classical guitar for several saddle setbacks with $\Delta N = 0$. Here $R = 24$ and the string radius is 0.5~mm; the corresponding string constant and bending stiffness are $\kappa = 49$ and $B_0 = 0.00268$ respectively. In (b), we set $\Delta S = 0$ and plot the frequency shifts for several nut ``setbacks.''}
+  \end{figure}
+  
+  \begin{figure}
+    \centering
+    \includegraphics[width=5.0in]{../figures/comp_est}
+    \caption{\label{fig:comp_est} The total frequency shift given by \eqn{error_def} for a classical guitar with a scale length of 650~mm, $b = 1.0$~mm, $c = 4.0$~mm, $\Delta S = 1.74$~mm, $\Delta N = -0.43$~mm, and a string with $R = 24$ and a radius $\rho = 0.5$~mm. The corresponding linear string constant and bending stiffness coefficient are $\kappa = 49$ and $B_0 = 0.00268$, respectively. Compared to \fig{uncomp}, this classical guitar has been compensated by incorporating nonzero saddle and nut setbacks.}
+  \end{figure}
+  
+
+
 Using the data and results presented in \tbl{ej45_props}, we can explore different approaches to compensating guitar strings for bending stiffness and string tension perturbations. For example, consider the guitar string shown in 
 
 

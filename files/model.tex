@@ -105,7 +105,7 @@ Since we expect that $Q_n \ll 1$, we can approximate the second term in the fina
 \begin{figure}
   \centering
   \includegraphics[width=5.0in]{../figures/qn_test}
-  \caption{\label{fig:qn_test} Comparison of the exact expression for the normalized displacement $Q_n$ as a function of the fret number given by \eqn{q_n_def} with the approximate expression given by \eqn{q_n_approx}. For example, at the first fret with $d = 10$~mm, $Q_n \approx 45 \times 10^{-6}$. Here the guitar has $b = 1.0$~mm, $c = 3.5$~mm, $\Delta S = 1.75$~mm, $\Delta N = -0.25$~mm, and a scale length of 650~mm.}
+  \caption{\label{fig:qn_test} Comparison of the exact expression for the normalized displacement $Q_n$ as a function of the fret number given by \eqn{q_n_def} with the approximate expression given by \eqn{q_n_approx}. For example, at the first fret with $d = 10$~mm, $Q_n \approx 45 \times 10^{-6}$. Here the guitar has $b = 1.0$~mm, $c = 4.0$~mm, $\Delta S = 1.75$~mm, $\Delta N = -0.25$~mm, and a scale length of 650~mm.}
 \end{figure}
 
 % Referring to \fig{guitar_schematic}, we see that $\mathcal{L}_n = L_n + L^\prime_n$, and we calculate $L^\prime_n$ for $n \ge 1$ as
@@ -126,7 +126,7 @@ to first order in $d/X_0$. Therefore
     & \approx \frac{\left[ \gamma_n\, b + (\gamma_n - 1)\, c \right]^2}{2\, (\gamma_n - 1)\, X_0^2} \ \left[ 1 + \gamma_n \sum_{k = 1}^\infty \left(\frac{\gamma_n}{\gamma_n - 1}\, {\frac{d}{X_0}}\right)^k \right]\, ,
   \end{split}
 \end{equation}
-where we have retained $b$ and $c$ to second order, and (in practice) we'll need to keep $d$ to second order as well so that we retain accuracy at the first fret. In \fig{qn_test}, we plot a comparison between the exact expression for the normalized displacement $Q_n$ given by \eqn{q_n_def} with the approximate expression given by \eqn{q_n_approx}. Here the guitar has $b = 1.0$~mm, $c = 3.5$~mm, $\Delta S = 1.75$~mm, $\Delta N = -0.35$~mm, and $X_0 = 650$~mm.
+where we have retained $b$ and $c$ to second order, and (in practice) we'll need to keep $d$ to second order as well so that we retain accuracy at the first fret. In \fig{qn_test}, we plot a comparison between the exact expression for the normalized displacement $Q_n$ given by \eqn{q_n_def} with the approximate expression given by \eqn{q_n_approx}. Here the guitar has $b = 1.0$~mm, $c = 4.0$~mm, $\Delta S = 1.75$~mm, $\Delta N = -0.35$~mm, and $X_0 = 650$~mm.
 
 % We can use this result and \eqn{q_n_approx} to determine the increase in the relative displacement $Q_n$; we find
 %  % \begin{equation} %\label{eqn:delta_q_n_approx}
@@ -194,7 +194,7 @@ In \fig{tn_test}, we compare the exact expression for the frequency shift due to
 \begin{figure}
   \centering
   \includegraphics[width=5.0in]{../figures/tn_test}
-  \caption{\label{fig:tn_test} Comparison of the exact expression for the frequency shift due to tension increases as a function of the fret number given by the \lhs of \eqn{tension_shift} with the approximate expression given by the right-hand side. Here the guitar has $b = 1.0$~mm, $c = 3.5$~mm, $\Delta S = 1.75$~mm, $\Delta N = -0.35$~mm, and a scale length of 650~mm.}
+  \caption{\label{fig:tn_test} Comparison of the exact expression for the frequency shift due to tension increases as a function of the fret number given by the \lhs of \eqn{tension_shift} with the approximate expression given by the right-hand side. Here the guitar has $b = 1.0$~mm, $c = 4.0$~mm, $\Delta S = 1.75$~mm, $\Delta N = -0.35$~mm, and a scale length of 650~mm.}
 \end{figure}
 
 
@@ -233,7 +233,7 @@ In \fig{stiffness_test}, we use \eqn{bg_n_def} and \eqn{dnu_bn} to compare the e
       \caption{Frequency shifts due to stiffness}
       \label{fig:bnu_test}
   \end{subfigure}
-  \caption{\label{fig:stiffness_test} A comparison of exact and approximate expressions for (a) bending stiffness, given by \eqn{bg_n_def}, and (b) the corresponding frequency shift, given by \eqn{dnu_bn}. Here the guitar has $b = 1.0$~mm, $c = 3.5$~mm, $\Delta S = 1.75$~mm, $\Delta N = -0.35$~mm, $\kappa = 100$, and a scale length of 650~mm.}
+  \caption{\label{fig:stiffness_test} A comparison of exact and approximate expressions for (a) bending stiffness, given by \eqn{bg_n_def}, and (b) the corresponding frequency shift, given by \eqn{dnu_bn}. Here the guitar has $b = 1.0$~mm, $c = 4.0$~mm, $\Delta S = 1.75$~mm, $\Delta N = -0.35$~mm, $\kappa = 100$, and a scale length of 650~mm.}
 \end{figure}
 
 \subsection{Total Frequency Shift\label{sct:tot_freq_shift}}
@@ -275,7 +275,7 @@ which gives
  \begin{figure}
   \centering
   \includegraphics[width=5.0in]{../figures/uncomp}
-  \caption{\label{fig:uncomp} The total frequency shift given by \eqn{error_def} for a classical guitar with a scale length of 650~mm, $b = 1.0$~mm, $c = 3.5$~mm, $\Delta S = \Delta N = 0$~mm, and a string with $R = 24$ and a radius $\rho = 0.5$~mm. The corresponding linear string constant and bending stiffness coefficient are $\kappa = 49$ and $B_0 = 0.00268$, respectively.}
+  \caption{\label{fig:uncomp} The total frequency shift given by \eqn{error_def} for a classical guitar with a scale length of 650~mm, $b = 1.0$~mm, $c = 4.0$~mm, $\Delta S = \Delta N = 0$~mm, and a string with $R = 24$ and a radius $\rho = 0.5$~mm.}
 \end{figure}
 
 We can estimate the typical value of $R$ for nylon classical guitar strings through a simple observation. On a classical guitar with a scale length of 650~mm, we can usually tune an open string a full step by winding the tuner/machine head three half turns. As we shall see below, this increases or decreases the string length above the first fret by about 3~mm, where the corresponding length of the open string from the saddle to the first fret is about 614~mm. Since a full step is (by definition) 200~cents, \eqn{cents_approx} tells us that
@@ -286,30 +286,7 @@ In this case, we estimate $R$ to be
 \begin{equation}
   R \approx \frac{614}{3}\, 0.116 = 24\, ,
 \end{equation}
-giving $\kappa \approx 49$ and $\sqrt{\kappa} \approx 7$. In \fig{uncomp}, we plot the total frequency shift given by \eqn{error_def} for a classical guitar with a scale length of 650~mm, $b = 1.0$~mm, $c = 3.5$~mm, $\Delta S = \Delta N = 0$~mm, and a string with $R = 24$ and a radius $\rho = 0.5$~mm. The corresponding linear string constant and bending stiffness coefficient are $\kappa = 49$ and $B_0 = 0.00268$, respectively. Note that the string is sharp at every fret.
+giving $\kappa \approx 49$ and $\sqrt{\kappa} \approx 7$. In \fig{uncomp}, we plot the total frequency shift given by \eqn{error_def} for a classical guitar with a scale length of 650~mm, $b = 1.0$~mm, $c = 4.0$~mm, $\Delta S = \Delta N = 0$~mm, and a string with $R = 24$ and a radius $\rho = 0.5$~mm. The corresponding linear string constant and bending stiffness coefficient are $\kappa = 49$ and $B_0 = 0.00268$, respectively. Note that the string is sharp at every fret.
 
-\begin{figure}
-  \centering
-  \begin{subfigure}[b]{0.8\textwidth}
-      \centering
-      \includegraphics[width=5.0in]{../figures/comp_ds}
-      \caption{Frequency shifts ($\Delta N = 0$)}
-      \label{fig:comp_ds}
-  \end{subfigure}
-  \par\vspace{0.25in}
-  \begin{subfigure}[b]{0.8\textwidth}
-      \centering
-      \includegraphics[width=5.0in]{../figures/comp_dn}
-      \caption{Frequency shifts ($\Delta S = 0$)}
-      \label{fig:comp_dn}
-  \end{subfigure}
-  \caption{\label{fig:comp_dsdn} In (a), we plot the frequency shifts for our classical guitar for several saddle setbacks with $\Delta N = 0$. Here $R = 24$ and the string radius is 0.5~mm; the corresponding string constant and bending stiffness are $\kappa = 49$ and $B_0 = 0.00268$ respectively. In (b), we set $\Delta S = 0$ and plot the frequency shifts for several nut ``setbacks.''}
-\end{figure}
 
-\begin{figure}
-  \centering
-  \includegraphics[width=5.0in]{../figures/comp_est}
-  \caption{\label{fig:comp_est} The total frequency shift given by \eqn{error_def} for a classical guitar with a scale length of 650~mm, $b = 1.0$~mm, $c = 3.5$~mm, $\Delta S = 1.74$~mm, $\Delta N = -0.43$~mm, and a string with $R = 24$ and a radius $\rho = 0.5$~mm. The corresponding linear string constant and bending stiffness coefficient are $\kappa = 49$ and $B_0 = 0.00268$, respectively. Compared to \fig{uncomp}, this classical guitar has been compensated by incorporating nonzero saddle and nut setbacks.}
-\end{figure}
-
-\Eqn{error_tot} provides us with a clue on how to modify this guitar to improve the tone of this string. We see that the bending stiffness and the increase in string tension due to fretting sharpen the pitch, but that we can flatten it with a positive saddle setback and negative nut setback. \Fig{comp_dsdn} shows that increasing the saddle setback tends to rotate the pitch curve downward, and increasing the magnitude of the negative nut setback displaces the pitch curve almost uniformly downward. In fact, a simple compensation strategy would be to choose $\Delta S = B_0\, X_0$ to compensate for stiffness, and then select $\Delta N = - \kappa\, X_0\, \overline{Q} / 2$, where $\overline{Q}$ is the relative displacement averaged over a particular set of frets. In the case of the parameters used in \fig{uncomp}, we use this simple approximate approach to estimate $\Delta S = 1.74$~mm and $\Delta N = -0.43$~mm. The pitch curve shown in \fig{comp_est} illustrates the dramatic improvement in tone that can be obtained via classical guitar compensation. We'll rely on a more accurate method for compensation in \sct{comp}, but we'll obtain results that are similar to those found using this basic approach.
+\Eqn{error_tot} provides us with a clue on how to modify this guitar to improve the tone of this string. We see that the bending stiffness and the increase in string tension due to fretting sharpen the pitch, but that we can reduce these effects with a positive saddle setback and negative nut setback. In fact, a simple compensation strategy would be to choose $\Delta S = B_0\, X_0$ to compensate for stiffness, and then select $\Delta N = - \kappa\, X_0\, \overline{Q} / 2$, where $\overline{Q}$ is the relative displacement averaged over a particular set of frets. In the case of the parameters used in \fig{uncomp}, we use this simple approximate approach to estimate $\Delta S = 1.75$~mm, and $\Delta N = -0.49$~mm when $d = 0$~mm. We'll rely on a more accurate method for compensation in \sct{comp}, but we'll obtain results that are similar to those found using this basic approach.
