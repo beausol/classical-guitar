@@ -545,7 +545,7 @@ class Guitar(object):
             retstr += setback_str[0:-2] + ']\n'
         retstr += 'b: ' + '{:.1f} mm\n'.format(self._b)
         retstr += 'c: ' + '{:.1f} mm\n'.format(self._c)
-        retstr += 'd: ' + '{:.4f}\n'.format(self._d)
+        retstr += 'd: ' + '{:.1f} mm\n'.format(self._d)
         retstr += self._strings.__str__() + "\n"
         # rmsstr = 'RMS Frequency Errors: ['#+ '{:.2f} cents\n'.format(self._rms())
         # template = '{:.{prec}}, '
