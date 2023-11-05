@@ -9,11 +9,7 @@
 
  \section{Classical Guitar Compensation\label{sct:comp}}
 
-\red{First and second paragraphs need to be rewritten --- RGB.}
-
-
-
-\Eqn{error_tot} provides us with a clue on how to modify this guitar to improve the tone of this string. We see that the bending stiffness and the increase in string tension due to fretting sharpen the pitch, but that we can flatten it with a positive saddle setback and negative nut setback. \Fig{comp_dsdn} shows that increasing the saddle setback tends to rotate the pitch curve downward, and increasing the magnitude of the negative nut setback displaces the pitch curve almost uniformly downward. In fact, a simple compensation strategy would be to choose $\Delta S = B_0\, X_0$ to compensate for stiffness, and then select $\Delta N = - \kappa\, X_0\, \overline{Q} / 2$, where $\overline{Q}$ is the relative displacement averaged over a particular set of frets. In the case of the parameters used in \fig{uncomp}, we use this simple approximate approach to estimate $\Delta S = 1.74$~mm and $\Delta N = -0.43$~mm. The pitch curve shown in \fig{comp_est} illustrates the dramatic improvement in tone that can be obtained via classical guitar compensation. We'll rely on a more accurate method for compensation in \sct{comp}, but we'll obtain results that are similar to those found using this basic approach.
+As we discussed in \sct{tot_freq_shift}, \eqn{error_tot} provides a guide to how to modify our prototypical classical guitar to improve the tone of the string shown in \fig{uncomp}. We noted that the bending stiffness and the increase in string tension due to fretting sharpen the pitch, but that we can flatten it with a positive saddle setback and negative nut setback. As in \fig{uncomp}, let's choose $b = 1$~mm, $c = 4$~mm, $R = 24$ and $\rho = 0.5$~mm as in \fig{uncomp}. Then the corresponding string constant and bending stiffness are $\kappa = 49$ and $B_0 = 0.00268$ respectively. In this case, \Fig{comp_dsdn} shows that increasing the saddle setback tends to rotate the pitch curve downward, and increasing the magnitude of the negative nut setback displaces the pitch curve almost uniformly downward. In this context --- referring to \eqn{error_tot} --- we follow \sct{tot_freq_shift} and choose $\Delta S = B_0\, X_0$ to compensate for stiffness, and then select $\Delta N = - \kappa\, X_0\, \overline{Q} / 2$, where $\overline{Q}$ is the relative displacement averaged over a particular set of frets. If we compute this mean over the first $12$ frets, then we estimate $\Delta S = 1.75$~mm, $\Delta N = -0.49$~mm for $d = 0$, and $\Delta N = -0.55$~mm for $d = 10$. The pitch curve shown in \fig{comp_est} illustrates the dramatic improvement in tone that can be obtained via classical guitar compensation.
 
 \begin{figure}
     \centering
@@ -30,47 +26,50 @@
         \caption{Frequency shifts ($\Delta S = 0$)}
         \label{fig:comp_dn}
     \end{subfigure}
-    \caption{\label{fig:comp_dsdn} In (a), we plot the frequency shifts for our classical guitar for several saddle setbacks with $\Delta N = 0$. Here $R = 24$ and the string radius is 0.5~mm; the corresponding string constant and bending stiffness are $\kappa = 49$ and $B_0 = 0.00268$ respectively. In (b), we set $\Delta S = 0$ and plot the frequency shifts for several nut ``setbacks.''}
+    \caption{\label{fig:comp_dsdn} In (a), we plot the frequency shifts for our classical guitar for several saddle setbacks with $\Delta N = 0$. Here $R = 24$ and the string radius is 0.5~mm. In (b), we set $\Delta S = 0$ and plot the frequency shifts for several nut ``setbacks.''}
   \end{figure}
   
   \begin{figure}
     \centering
     \includegraphics[width=5.0in]{../figures/comp_est}
-    \caption{\label{fig:comp_est} The total frequency shift given by \eqn{error_def} for a classical guitar with a scale length of 650~mm, $b = 1.0$~mm, $c = 4.0$~mm, $\Delta S = 1.74$~mm, $\Delta N = -0.43$~mm, and a string with $R = 24$ and a radius $\rho = 0.5$~mm. The corresponding linear string constant and bending stiffness coefficient are $\kappa = 49$ and $B_0 = 0.00268$, respectively. Compared to \fig{uncomp}, this classical guitar has been compensated by incorporating nonzero saddle and nut setbacks.}
+    \caption{\label{fig:comp_est} The total frequency shift given by \eqn{error_def} for a classical guitar with a scale length of 650~mm, $b = 1.0$~mm, $c = 4.0$~mm, and a string with $R = 24$ and a radius $\rho = 0.5$~mm.}
   \end{figure}
-  
 
+% Using the data and results presented in \tbl{ej45_props}, we can explore different approaches to compensating guitar strings for bending stiffness and string tension perturbations. For example, consider the guitar string shown in 
 
-Using the data and results presented in \tbl{ej45_props}, we can explore different approaches to compensating guitar strings for bending stiffness and string tension perturbations. For example, consider the guitar string shown in 
+% For example, in \fig{shift_classicalguitar_ej45_factory}, using \eqn{error_def} we plot the frequency deviation (in cents) from ideal 12-TET for each string at each of the first 12 frets of an Alhambra 8P classical guitar, assuming that the open string has been perfectly tuned to the correct frequency. Recall that the Alhambra 8P is manufactured with a saddle setback of 1.5~mm, presumably to offset the effects of bending stiffness in the strings. For comparison, in \fig{shift_classicalguitar_ej45_null}, we plot the same deviations for the case where $\Delta S = 0$, which increases the error of each string at the 12$^\text{th}$ fret by 3 -- 4 cents. Recall from \sct{model} that we could crudely predict the values of the saddle and nut setbacks by inspecting \eqn{error_tot}. For example, from \tbl{ej45_props}, we estimate $\Delta S \approx B_0\, X_0 = 2.7$~mm and $\Delta N \approx -1.5$~mm for the third (G) string.
 
-
-For example, in \fig{shift_classicalguitar_ej45_factory}, using \eqn{error_def} we plot the frequency deviation (in cents) from ideal 12-TET for each string at each of the first 12 frets of an Alhambra 8P classical guitar, assuming that the open string has been perfectly tuned to the correct frequency. Recall that the Alhambra 8P is manufactured with a saddle setback of 1.5~mm, presumably to offset the effects of bending stiffness in the strings. For comparison, in \fig{shift_classicalguitar_ej45_null}, we plot the same deviations for the case where $\Delta S = 0$, which increases the error of each string at the 12$^\text{th}$ fret by 3 -- 4 cents. Recall from \sct{model} that we could crudely predict the values of the saddle and nut setbacks by inspecting \eqn{error_tot}. For example, from \tbl{ej45_props}, we estimate $\Delta S \approx B_0\, X_0 = 2.7$~mm and $\Delta N \approx -1.5$~mm for the third (G) string.
-
-Instead of this simple approach, we adopt the method described in \app{rms} and adjust the setbacks to minimize the root-mean-squared average of the frequency deviations for each string. This mean (over the first 12 frets) can be computed by squaring the frequency deviations shown in \fig{shift_classicalguitar_ej45_null}, averaging those values, and then taking the square root of the result. The setbacks we obtain are listed in \tbl{ej45_setbacks}, and the corresponding frequency deviations --- obtained with different setbacks for every string --- are shown in \fig{shift_classicalguitar_ej45_full} (assuming that all other aspects of the Alhambra 8P remain unchanged). Note that the saddle setbacks tend to be larger --- and the nut setbacks smaller --- than the simple estimates that we made above. This is easily understood by examining \eqn{error_tot}: the portion of $\Delta S$ that exceeds $B_0\, X_0$ scales with $\gamma_n - 1$, and helps to compensate for tension errors as $n$ increases.
-
- \begin{figure}
+\begin{figure}
   \centering
-  \begin{subfigure}[b]{0.8\textwidth}
-   \centering
-   \includegraphics[width=5.0in]{../figures/shift_classicalguitar_ej45_factory}
-   \caption{Factory guitar}
-   \label{fig:shift_classicalguitar_ej45_factory}
-  \end{subfigure}
-  \par\vspace{0.25in}
-  \begin{subfigure}[b]{0.8\textwidth}
-   \centering
-   \includegraphics[width=5.0in]{../figures/shift_classicalguitar_ej45_null}
-   \caption{Uncompensated}
-   \label{fig:shift_classicalguitar_ej45_null}
-  \end{subfigure}
-  \caption{\label{fig:classicalguitar_ej45} Frequency shifts (in cents) for an Alhambra 8P guitar with normal tension nylon strings (D'Addario EJ45). In (a), we show the deviations of the guitar as manufactured in the factory, completely consistent with our measurements. In (b), we show the same 12-TET errors that would arise if $\Delta S = 0$ for the same guitar.}
- \end{figure}
+  \includegraphics[width=5.0in]{../figures/shift_classicalguitar_ej45_null}
+  \caption{\label{fig:shift_classicalguitar_ej45_null} Frequency errors for an uncompensated classical guitar with a scale length of 650~mm, $b = 1.0$~mm, $c = 4.0$~mm, $d = 0$~mm, and normal tension nylon strings (D'Addario EJ45).}
+\end{figure}
 
- \begin{table}%[htbp]
+\begin{table}%[htbp]
   \centering
   \caption{\label{tbl:ej45_setbacks} Predicted setbacks for the D'Addario Pro-Arte Nylon Classical Guitar Strings -- Normal Tension (EJ45) on the Alhambra 8P classical guitar.}
   \input{../files/tbl_ej45_setbacks}
- \end{table}%
+\end{table}%
+
+As an alternative to this simple approach, we adopt the method described in \app{rms} and adjust the setbacks to minimize the root-mean-squared (RMS) average of the frequency deviations for each string. This mean (over the first 12 frets) can be computed by squaring the frequency deviations shown in \fig{shift_classicalguitar_ej45_null}, averaging those values, and then taking the square root of the result. Using \eqn{rms_sol_quad}, the setbacks we obtain are listed in \tbl{ej45_setbacks}, and the corresponding frequency deviations --- obtained with the listed setback for each string --- are shown in \fig{shift_classicalguitar_ej45_full} (assuming that all other aspects of the guitar remain unchanged). Of course, manufacturing a guitar with unique saddle and nut setbacks for each string (of a particular tension) can be challenging, so we also plot in \fig{shift_classicalguitar_ej45_mean} the shifts obtained by setting single values of $\Delta S$ and $\Delta N$ to the mean of the corresponding column in  \tbl{ej45_setbacks}. Note that the saddle setbacks tend to be larger --- and the nut setbacks smaller --- than the simple estimates that we made above. This is easily understood by examining \eqn{error_tot}: the portion of $\Delta S$ that exceeds $B_0\, X_0$ scales with $\gamma_n - 1$, and helps to compensate for tension errors as $n$ increases.
+
+%  \begin{figure}
+%   \centering
+%   \begin{subfigure}[b]{0.8\textwidth}
+%    \centering
+%    \includegraphics[width=5.0in]{../figures/shift_classicalguitar_ej45_factory}
+%    \caption{Factory guitar}
+%    \label{fig:shift_classicalguitar_ej45_factory}
+%   \end{subfigure}
+%   \par\vspace{0.25in}
+%   \begin{subfigure}[b]{0.8\textwidth}
+%    \centering
+%    \includegraphics[width=5.0in]{../figures/shift_classicalguitar_ej45_null}
+%    \caption{Uncompensated}
+%    \label{fig:shift_classicalguitar_ej45_null}
+%   \end{subfigure}
+%   \caption{\label{fig:classicalguitar_ej45} Frequency shifts (in cents) for an Alhambra 8P guitar with normal tension nylon strings (D'Addario EJ45). In (a), we show the deviations of the guitar as manufactured in the factory, completely consistent with our measurements. In (b), we show the same 12-TET errors that would arise if $\Delta S = 0$ for the same guitar.}
+%  \end{figure}
 
  \begin{figure}
   \centering
@@ -87,7 +86,35 @@ Instead of this simple approach, we adopt the method described in \app{rms} and 
    \caption{Mean compensation}
    \label{fig:shift_classicalguitar_ej45_mean}
   \end{subfigure}
-  \caption{\label{fig:compensation_classicalguitar_ej45} Frequency shifts (in cents) for an ``Alhambra 8P'' guitar with normal tension nylon strings (D'Addario EJ45). Instead of the factory setbacks, in (a) we use the individual values for each string that are listed in \tbl{ej45_setbacks}. In (b), we set $\Delta S$ and $\Delta N$ to the mean of the corresponding column in that table.}
+  \caption{\label{fig:compensation_classicalguitar_ej45} Frequency shifts (in cents) for a classical guitar with normal tension nylon strings (D'Addario EJ45). In (a) we use the individual values for each string that are listed in \tbl{ej45_setbacks}. In (b), we set $\Delta S$ and $\Delta N$ to the mean of the corresponding column in that table.}
  \end{figure}
 
-We close this section with a few comments. First, all of the compensated frequency deviation plots shown in this version of our work are theoretical; in the future, we will present experimental results to determine the efficacy of this compensation approach. Second, it is nontrivial to manufacture a guitar with different setbacks for each string~\cite{ref:byers1996cgi}, and it is unlikely that the exact values listed in \tbl{ej45_setbacks} are applicable to other string sets. We have measured frequency deviations at the 12$^{th}$ fret for three other string sets, and in \app{specs} we have reproduced the compensation procedure for them. There is enough variation in the setbacks across all strings that it would be difficult to find values that could work well for all string sets. Finally, following the analysis of \app{rms}, it is possible to determine a single setback pair $\{\Delta S, \Delta N\}$ that minimizes the RMS frequency errors of an ensemble of strings over a collection of frets simply by computing the mean of the setbacks over all strings, and then using these mean values when manufacturing the guitar. We illustrate this approach in \fig{shift_classicalguitar_ej45_mean}; the frequency deviations are not as small as those in \fig{shift_classicalguitar_ej45_full}, but they are generally less than 5~cents. In the next section, we discuss a method to temper the guitar to reduce these errors further. 
+We close this section with a few comments. First, as mentioned above, it is nontrivial to manufacture a guitar with different setbacks for each string~\cite{ref:byers1996cgi}, and it is unlikely that the exact values listed in \tbl{ej45_setbacks} are applicable to other string sets. We have measured the values of $R$ for five other string sets (with $d = 0$), and in \app{specs} we have reproduced the compensation procedure for them. Although each set exhibits variation between strings (and with respect to other sets) in individual setbacks for each string, they are similar enough that we suspect that there is the potential for great simplification in guitar design. For example, following the analysis of \app{rms}, it is possible to determine a single setback pair $\{\Delta S, \Delta N\}$ that minimizes the RMS frequency errors of an ensemble of strings over a collection of frets simply by computing the mean of the setbacks over all strings, and then using these mean values when manufacturing the guitar. If we consider five of the six string sets we have measured here --- neglecting the light tension strings because of their pathologically high values of $R$ --- we obtain the global mean setbacks $\Delta S = 1.90$~mm and $\Delta N = -0.38$~mm for the saddle and nut, respectively. Note that these results are remarkably similar to the values used in \fig{shift_classicalguitar_ej45_mean}; if we plot the frequency deviations of those five string sets with these particular setback values, then we find that the maximum error always occurs at the twelfth fret, and it is always less than 2~cents. In the next section, we discuss a method to temper the guitar to reduce these errors further.
+
+Second, after paying close attention to the impact of the act of fretting on our approximations in \sct{model}, we have simply set $d = 0$ in this section. This is because nonzero values of $d$ have an impact on the frequency deviation of a string at the first fret, and is otherwise negligible. This tends to increase the required mean value of the nut setback, but does not require a significant change to the saddle setback. As an example, in \fig{dsdnd_ej45}, we plot the mean optimum saddle and nut setbacks for the classical guitar parameters used in \fig{shift_classicalguitar_ej45_mean} with the D'Addario Nylon Normal Tension EJ45 string set as a function of the fretting distance $d$. Paying careful attention to the $y$-axis of these plots, we see that the value of the mean saddle setback \emph{decreases} by less than 5\% as $d$ increases to 10~mm, and the magnitude of the nut setback increases by almost 30\% at the same fretting offset. This behavior is essentially the same for all string sets considered in this work, and can be used by the luthier to determine the optimum setback values for their designs. Note that --- when the RMS approach is used to compute the mean setbacks --- the difference $\Delta S - \Delta N$ (the sum of the saddle setback and the magnitude of the nut setback) is virtually independent of $d$, as shown in \fig{dsnd_ej45}.
+
+\begin{figure}
+  \centering
+  \begin{subfigure}[b]{0.8\textwidth}
+      \centering
+      \includegraphics[width=5.0in]{../figures/dsd_ej45}
+      \caption{Mean saddle setback}
+      \label{fig:dsd_ej45}
+  \end{subfigure}
+  \par\vspace{0.25in}
+  \begin{subfigure}[b]{0.8\textwidth}
+      \centering
+      \includegraphics[width=5.0in]{../figures/dnd_ej45}
+      \caption{Mean nut setback}
+      \label{fig:dnd_ej45}
+  \end{subfigure}
+  \caption{\label{fig:dsdnd_ej45} The mean optimum saddle and nut setbacks for the D'Addario Nylon Normal Tension EJ45 string set as a function of the fretting distance $d$.}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=5.0in]{../figures/dsnd_ej45}
+  \caption{\label{fig:dsnd_ej45} The mean value of $\Delta S - \Delta N$ for the D'Addario Nylon Normal Tension EJ45 string set as a function of the fretting distance $d$.}
+\end{figure}
+
+Finally, many luthiers effectively increase the value of $b$ (particularly for the wound bass strings) as the fret number increases to provide clearance for vibration amplitude at higher volume. In principle, this has an impact on the setbacks, but in practice these effects are not significant. Recall that the primary contribution to the saddle setback is the bending stiffness ($\Delta S \approx B_0\, X_0$), and does not depend on the height of the string above (e.g.) the twelfth fret. The nut setback depends primarily on the height of the string above the first fret, where the relief is minimal. Of course, it is possible to use both \sct{model} and \app{rms} --- along with a map of the effective value of $b$ for each string above each fret --- but it's unlikely that this will result in major changes to the values of either $\Delta S$ or $\Delta N$. 

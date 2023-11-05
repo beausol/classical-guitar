@@ -17,17 +17,19 @@ plt.rc('text', usetex=True)
 plt.rc('font', family='serif')
 plt.rc('text.latex', preamble=r'\usepackage{amsmath,amssymb,amsfonts}')
 
-def file_path_old(pathname, filename):
-    if (pathname is not None) and (filename is not None):
-        return pathname + filename
-    else:
-        return None
-
 def file_path(pathname, filename):
     if (pathname is None) or (filename is None):
         return None
     else:
         return pathname + filename
+
+def classmro(myself):
+    class_str = myself.__class__.__name__
+    for classname in myself.__class__.__mro__[1:-1]:
+        class_str += " : {}".format(classname.__name__)
+    return class_str
+
+
 
 def get_xlim():
     '''
@@ -499,7 +501,7 @@ class GuitarStrings(object):
             print(table_str,  file=open(filepath, 'w'))        
 
 class Guitar(object):
-    def __init__(self, name, string_count, strings, x0, ds, dn, b, c, dbdx = 0.0):
+    def __init__(self, name, string_count, strings, x0, ds, dn, b, c, d=0.0):
         self._name = name
 
         assert string_count == strings.get_count(), "Guitar '{}'".format(self._name) + " requires {} strings, but {} were provided.".format(string_count, strings.get_count())
@@ -512,7 +514,7 @@ class Guitar(object):
 
         self._b = b
         self._c = c
-        self._dbdx = dbdx
+        self._d = d
         
     def __str__(self):
         '''Return a string displaying the attributes of a Guitar object.
@@ -542,8 +544,8 @@ class Guitar(object):
                 setback_str += template.format(self._dn[m], prec = 2)
             retstr += setback_str[0:-2] + ']\n'
         retstr += 'b: ' + '{:.1f} mm\n'.format(self._b)
-        retstr += 'dbdx: ' + '{:.4f}\n'.format(self._dbdx)
         retstr += 'c: ' + '{:.1f} mm\n'.format(self._c)
+        retstr += 'd: ' + '{:.4f}\n'.format(self._d)
         retstr += self._strings.__str__() + "\n"
         # rmsstr = 'RMS Frequency Errors: ['#+ '{:.2f} cents\n'.format(self._rms())
         # template = '{:.{prec}}, '
@@ -554,9 +556,9 @@ class Guitar(object):
 
         return retstr
     
-    def _bn(self, n):
-        g_n = self.gamma(n)
-        return self._b - ((g_n - 1)/g_n) * self._dbdx * self._x0
+    # def _bn(self, n):
+    #     g_n = self.gamma(n)
+    #     return self._b - ((g_n - 1)/g_n) * self._dbdx * self._x0
     
     def _rms(self):
         fret_list = np.arange(1, 13)
@@ -564,6 +566,31 @@ class Guitar(object):
         rms = np.sqrt(np.mean(dnu[:,1:]**2, axis=1))
         
         return rms
+
+    def set_params(self, **kwargs):
+        x0 = kwargs.get('x0')
+        if x0 is None:
+            pass
+        else:
+            self._x0 = x0
+        
+        b = kwargs.get('b')
+        if b is None:
+            pass
+        else:
+            self._b = b
+
+        c = kwargs.get('b')
+        if c is None:
+            pass
+        else:
+            self._c = c
+
+        d = kwargs.get('d')
+        if d is None:
+            pass
+        else:
+            self._d = d
 
     def gamma(self, n):
         return 2.0**(n/12.0)
@@ -574,13 +601,20 @@ class Guitar(object):
 
     def l(self, fret_list):
         ds, n = np.meshgrid(self._ds, fret_list, sparse=False, indexing='ij')
-        #length = np.sqrt( (self._x0/self.gamma(n) + ds)**2 + (self._b + self._c)**2 )
-        length = np.sqrt( (self._x0/self.gamma(n) + ds)**2 + (self._bn(n) + self._c)**2 )
+        length = np.sqrt( (self._x0/self.gamma(n) + ds)**2 + (self._b + self._c)**2 )
         return length
 
     def lp(self, fret_list):
         dn, n = np.meshgrid(self._dn, fret_list, sparse=False, indexing='ij')
-        length = np.sqrt( (dn + self._x0 - self._x0/self.gamma(n))**2 + self._bn(n)**2 )
+        ds, n = np.meshgrid(self._ds, fret_list, sparse=False, indexing='ij')
+        x0 = self._x0
+        xn = x0 / self.gamma(n)
+        b = self._b
+        c = self._c
+        d = self._d
+        #length = np.sqrt( (dn + self._x0 - self._x0/self.gamma(n))**2 + self._bn(n)**2 )
+        length = np.sqrt( (x0 - xn + dn - d)**2 + (b + (b + c) * d / (xn + ds))**2 )
+        length += ( self.l(fret_list) / (xn + ds)  ) * d
         return length
 
     def lmc(self, fret_list):
@@ -591,9 +625,9 @@ class Guitar(object):
         l0 = np.tile(self.l0().reshape(-1, 1), (1, fret_list.size))
         return (self.lmc(fret_list) - l0) / l0
     
-    def qnx(self, fret_list):
-        retval = ( (self.gamma(fret_list) - 1)/(2 * self._x0**2) ) * ( (self.gamma(fret_list)/(self.gamma(fret_list) - 1)) * self._bn(fret_list) + self._c )**2
-        return retval
+    # def qnx(self, fret_list):
+    #     retval = ( (self.gamma(fret_list) - 1)/(2 * self._x0**2) ) * ( (self.gamma(fret_list)/(self.gamma(fret_list) - 1)) * self._bn(fret_list) + self._c )**2
+    #     return retval
     
     def freq_shifts(self, fret_list):
         l_0 = np.tile(self.l0().reshape(-1, 1), (1, fret_list.size))
@@ -601,12 +635,13 @@ class Guitar(object):
         b_0, n_2d = np.meshgrid(self._strings.get_stiffness(), fret_list, sparse=False, indexing='ij')
         
         rle = 1200 * np.log2( l_0 / (self.gamma(n_2d) * self.l(fret_list)) )
-        tme =  600 * np.log2( 1 + (kappa + 1) * self.qn(fret_list) )
-        bse = 1200 * np.log2( (1 + self.gamma(n_2d) * b_0) / (1 + b_0) )
+        mde =  600 * np.log2( 1 + self.qn(fret_list) )
+        tse =  600 * np.log2( 1 + kappa * self.qn(fret_list) )
+        #bse = 1200 * np.log2( (1 + self.gamma(n_2d) * b_0) / (1 + b_0) )
         bse = 1200 * np.log2( (1 + self.gamma(n_2d) * b_0 + (1.0 + 0.5 * np.pi**2) * (self.gamma(n_2d) * b_0)**2)
                               / (1 + b_0 + (1.0 + 0.5 * np.pi**2) * b_0**2) )
         
-        shifts = rle + tme + bse
+        shifts = rle + mde + tse + bse
         
         open_strings = np.array([np.zeros(self._string_list[-1])]).T
         
@@ -742,8 +777,11 @@ class Guitar(object):
         plt.grid(True)
         
         filepath = file_path(savepath, filename)
-        if filepath is not None:
+        if filepath is None:
+            pass
+        else:
             plt.savefig(filepath, bbox_inches='tight')
+            print("Saved {0}\n".format(filepath))
         plt.show()
 
     def plot_harm(self, zero_strings, zero_frets, savepath=None, filename=None):
