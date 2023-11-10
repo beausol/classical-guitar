@@ -88,7 +88,7 @@ Then --- if the guitar has been manufactured such that $X_n = X_0 / \gamma_n$ --
   \end{equation}
 where $\ln$ is the natural logarithm function. If the guitar is uncompensated, so that $\Delta S = \Delta N = 0$, the magnitude of this error is typically less than 0.25~cents, and can be neglected. However, with $\Delta S > 0$ and $\Delta N < 0$, we can significantly flatten the frequency shift --- for example, with $\Delta S = 1.75$~mm and $\Delta N = -0.35$~mm, the contribution of this term to the shift at the 12$^\text{th}$ fret is $-6$~cents. We'll see that this is our primary method of compensation.
 
- \subsection{Linear Mass Density}
+ \subsection{Linear Mass Density\label{sct:model_lmd}}
 As discussed above, the linear mass density $\mu_0$ of an open (unfretted) string is simply the total mass $M$ of the string clamped between the saddle and the nut divided by the length $L_0$. Similarly, the mass density $\mu_n$ of a string held onto fret $N$ is $M/\mathcal{L}_n$. Therefore
  \begin{equation}
 \frac{\mu_0}{\mu_n} = \frac{\mathcal{L}_n}{L_0} \equiv 1 + Q_n\, ,
