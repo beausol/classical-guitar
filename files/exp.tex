@@ -73,6 +73,14 @@ For example, we began with a normal-tension nylon classical string set with the 
   \input{../files/tbl_ej45_props}
 \end{table}%
 
+Adopting these physical properties of the normal string set and applying them to a computation of the frequency deviations for our standard classical guitar, we obtain the predictions shown in \fig{shift_classicalguitar_ej45_null} using \eqn{error_def}. Anticipating our treatment of exact compensation in \sct{comp} and \app{rms}, we compute the root-mean-squared (RMS) average of the frequency deviations for each string. This mean (over the first 12 frets) can be computed by squaring the frequency deviations shown in \fig{shift_classicalguitar_ej45_null}, averaging those values, and then taking the square root of the result.
+\begin{figure}
+  \centering
+  \includegraphics[width=5.0in]{../figures/shift_classicalguitar_ej45_null}
+  \caption{\label{fig:shift_classicalguitar_ej45_null} Frequency errors for an uncompensated classical guitar with a scale length of 650~mm, $b = 1.0$~mm, $c = 4.0$~mm, $d = 0$~mm, and normal tension nylon strings (D'Addario EJ45).}
+\end{figure}
+
+
 %Recall how we introduced this concept in \sct{model_tension}: increasing the tension by a quantity $\Delta T$ causes a shift in the frequency of a guitar string by $\Delta \nu$ in cents. Although we were considering fretted strings when we derived \eqn{error_def}, the terms in that equation can be generalized to describe the case of an open string that has been stretched longitudinally. Suppose that we continue to clamp the string at the saddle and the nut, but that we tighten the tuning gear to stretch that string's length by an amount $\Delta L$. The change in the string's frequency due to the change in the open resonant length is zero, because $L_0 / \gamma_0 L_0 = 1$. The linear mass density of the string is smaller now because there is less material between the saddle and the nut, causing the frequency shift (in cents)
 % \begin{equation}
 %600\, \log_2 \left(  \frac{\mu}{\mu + \Delta \mu} \right) \approx \frac{600}{\ln(2)}\, \frac{\Delta L}{L}\, ,

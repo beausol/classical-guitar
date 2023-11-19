@@ -172,12 +172,15 @@ class GuitarString(object):
     def _comp_kappa(self):
         self._kappa = 2 * self._r + 1
 
-    def _comp_modulus(self):
-        self._modulus = 1.0e-09 * (self._tension / (np.pi * (self._radius/1000)**2)) * self._kappa
-
-    def _comp_stiffness(self):
+    def _comp_stiffness_old(self):
         modulus = 1.0e+09 * self._modulus
         self._stiffness = np.sqrt( np.pi * (self._radius / 1000)**4 * modulus / ( 4 * self._tension * (self._scale_length / 1000)**2 ) )
+
+    def _comp_stiffness(self):
+        self._stiffness = np.sqrt(self._kappa) * (self._radius / 1000) / ( 2 * self._scale_length / 1000)
+
+    def _comp_modulus(self):
+        self._modulus = 1.0e-09 * (self._tension / (np.pi * (self._radius/1000)**2)) * self._kappa
 
     def set_scale_length(self, scale_length, units=None):
         if units == 'IPS':
@@ -417,13 +420,13 @@ class GuitarStrings(object):
     #     return 0.5 * (kappa - 1)
     
     def compensate(self, g_n, q_n):
-        def sigma(g_n, k):
+        def sigma_n(g_n, k):
             return np.sum((g_n - 1)**k)
 
-        sigma_0 = sigma(g_n, 0)
-        sigma_1 = sigma(g_n, 1)
-        sigma_2 = sigma(g_n, 2)
-        sigma_3 = sigma(g_n, 3)
+        sigma_0 = sigma_n(g_n, 0)
+        sigma_1 = sigma_n(g_n, 1)
+        sigma_2 = sigma_n(g_n, 2)
+        sigma_3 = sigma_n(g_n, 3)
         
         sigma = np.array([[sigma_2, -sigma_1], [sigma_1, -sigma_0]])
         sum_qn = 0.5 * np.sum(q_n)

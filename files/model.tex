@@ -244,7 +244,7 @@ Incorporating all of these effects --- and neglecting the term proportional to $
 \end{equation}
 How do we determine the bending stiffness $B_0$ given by \eqn{b_def} and the spring constant $\kappa$ given by \eqn{kappa_def}? It's impractical to assume that the modulus of elasticity of a particular string can be derived from published values of bulk nylon (particularly in the case of a wound string). Instead, let's assume that we know the value of $\kappa$, and then estimate the bending stiffness coefficient by comparing \eqn{kappa_def} and \eqn{b_def}, and writing $B_0$ as
 \begin{equation} \label{eqn:b_0_kappa}
-  B_0 = \sqrt{\kappa}\, \frac{\rho}{2\, L_0}\, .
+  B_0 = \sqrt{\kappa}\, \frac{\rho}{2\, L_0} \approx \sqrt{\kappa}\, \frac{\rho}{2\, X_0}\, .
 \end{equation}
 
 To measure $\kappa$, in \sct{exp} we will conduct an experiment that measures the change in the frequency of an open string --- pinned at one end, and clamped at the other --- as we make slight changes to its length~\cite{ref:byers1996cgi,ref:varieschi2010icf}. From \eqn{f_m_stiff}, the derivative of the fundamental frequency of an open string is
@@ -295,7 +295,7 @@ giving $\kappa \approx 49$ and $\sqrt{\kappa} \approx 7$. In \fig{uncomp}, we pl
     \Delta N &= - \kappa\, X_0\, \overline{Q} / 2\, ,
   \end{align}
 \end{subequations}
-where $\overline{Q}$ is the relative displacement averaged over a particular set of frets, to offset string stiffness and tension, respectively. If we select the first twelve frets, then for $d = 0$~mm
+where $\overline{Q}$ is the relative displacement averaged over a particular set of frets, to offset string stiffness and tension, respectively.  If we select the first twelve frets, then for $d = 0$~mm
 \begin{equation} \label{eqn:qbar_approx}
   \overline{Q} \approx \frac{77.9\, b^2 + 35.6\, b\, c + 5.82\, c^2}{24\, X_0^2}\, .
 \end{equation}

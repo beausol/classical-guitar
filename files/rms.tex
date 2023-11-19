@@ -75,12 +75,14 @@ and therefore
 or
 \begin{subequations} \label{eqn:rms_sol}
   \begin{align}
-    \label{eqn:rms_sol_ds} \Delta S &= \left(B_0 - \frac{\kappa}{2}\, \frac{\sigma_1\, \overline{Q}_0 - \sigma_0\, \overline{Q}_1}{\sigma_0\, \sigma_2 - \sigma_1^2} \right) X_0\, , \nd \\
+    \label{eqn:rms_sol_ds} \Delta S &= \left(B_0 + \frac{\kappa}{2}\, \frac{\sigma_0\, \overline{Q}_1 - \sigma_1\, \overline{Q}_0}{\sigma_0\, \sigma_2 - \sigma_1^2} \right) X_0\, , \nd \\
     \label{eqn:rms_sol_dn} \Delta N &= -\frac{\kappa}{2}\, \frac{\sigma_2\, \overline{Q}_0 - \sigma_1\, \overline{Q}_1}{\sigma_0\, \sigma_2 - \sigma_1^2}\, X_0\, .
   \end{align}
 \end{subequations}
-If we approximate $\overline{Q}_k \approx \sigma_k\, \overline{Q}$, where $\overline{Q}$ is the relative displacement averaged over a particular set of frets, we obtain the estimates given by \eqn{comp_approx}. The corresponding solution when the quadratic stiffness term is included is given by
- \begin{equation}\label{eqn:rms_sol_quad}
+If we approximate $\overline{Q}_k \approx \sigma_k\, \overline{Q}$, where $\overline{Q}$ is the relative displacement averaged over a particular set of frets, we obtain the estimates discussed in \sct{tot_freq_shift}.
+
+The corresponding solution when the quadratic stiffness term is included is given by
+\begin{equation}\label{eqn:rms_sol_quad}
 \begin{bmatrix}
   \Delta S \\
   \Delta N
@@ -94,6 +96,11 @@ If we approximate $\overline{Q}_k \approx \sigma_k\, \overline{Q}$, where $\over
   \sigma_1\, B_0 + \half \left(1 + \pi^2\right) \left(2 \sigma_1 + \sigma_2\right) B_0^2 + \half\, \kappa\, \overline{Q}_0
 \end{bmatrix}\, .
  \end{equation}
+If we choose $n_\text{max} = 12$, then we can compute $\sigma_k$ and $\overline{Q}_k$ in terms of powers of $b$ and $c$ to find
+\begin{align} \label{eqn:rms_sol_comp}
+  \Delta S &= \left[ B_0 + \frac{3}{2} \left(1 + \pi^2\right) B_0^2 \right] X_0 + \frac{\kappa}{4\, X_0} \left( -9.848\, b^2 + 2\, b\, c + c^2 \right)\, , \nd \\
+  \Delta N &= B_0^2\, X_0 - \frac{\kappa}{2\, X_0} \left( 5.633\, b^2 + b\, c \right)\, .
+\end{align}
 
 The corresponding Hessian matrix for this problem is the symmetric matrix
  \begin{equation}
