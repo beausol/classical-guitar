@@ -1,0 +1,1 @@
+{"rule":"NUT_NOT","sentence":"^\\QWe see that the bending stiffness and the increase in string tension due to fretting sharpen the pitch, but that we can reduce these effects with a positive saddle setback and negative nut setback.\\E$"}
