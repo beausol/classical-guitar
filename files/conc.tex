@@ -7,7 +7,7 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
- \section{Conclusion: The Recipeslabel{sct:conc}}
+ \section{Conclusion: The Recipes\label{sct:conc}}
 
  In this work, we have constructed a model of classical guitar intonation that includes the effects of the resonant length of the fretted string, linear mass density, tension, and bending stiffness. We have described a simple experimental approach to estimating the increase in string tension arising from an increase in its length, and then the corresponding mechanical stiffness. This allows us to determine the saddle and nut positions needed to compensate the guitar for a particular string, and we propose a simple approach to find averages of these positions to accommodate a variety of strings. This ``mean'' method benefits further from temperament techniques --- such as harmonic tuning --- that can enhance the intonation of the classical guitar for particular musical pieces.
 
@@ -49,7 +49,7 @@ The quadratic approximation is based on \eqn{rms_sol_comp} (which chooses a 12-f
     \end{align*}
     As $d$ increases, the magnitude of the negative nut setback increases, and the saddle setback decreases because $\Delta N < 0$. 
 \end{enumerate}
-Of course, this quadratic approximation can be simplified further. For example, the terms proportional to $B_0^2$ can be neglected without much loss of accuracy (but without much gain in simplicity), yielding a corresponding linear approximation. Furthermore, the term in $\Delta S$ that is proportional to $\kappa$ can be neglected, but we recall from \sct{comp} that the resulting value of $\Delta S$ will be about  $15 - 20$\% too small.
+Of course, this quadratic approximation can be simplified further. For example, the terms proportional to $B_0^2$ can be neglected without much loss of accuracy (but without much gain in simplicity), yielding a corresponding linear approximation. Furthermore, the term in $\Delta S$ that is proportional to $\kappa$ can be neglected, but we recall from \sct{comp} that the resulting value of $\Delta S$ will be about  $15 - 20$\% too small. But perhaps the simplest reasonably accurate compensation approach is to adopt the results of the of \fig{dsdn_mean}: compute the saddle setback using $\Delta S = 4.4\, \overline{\rho}$, and select the nut setback to be $\Delta N = -0.38 \times (650 \textrm{ mm} / X_0)$~mm, or about $15$~mils for a guitar with a scale length of $650$~mm.
 
 These setback estimates can be averaged across the string set to design compensated nuts and saddles that should be relatively easy to fabricate. Nevertheless, we understand that high-end (concert) guitars that are likely to rely on one or two string sets (and the appropriate value of $d$ for one guitar player) will benefit from the full, more accurate treatment of individual string setbacks.
 
