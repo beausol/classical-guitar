@@ -97,7 +97,7 @@ In the discussion that follows, we'll test our approximations for a prototypical
     Parameter & Description & Default Value \\
     \midrule
     $\rho$ & String radius in mm & $0.43$ \\
-    $R$ & Linear frequency shift parameter & $24$ \\
+    $R$ & Linear frequency shift parameter & $25$ \\
     $\kappa$ & String tension constant & $51$ \\
     $B_0$ & Open-string bending stiffness & $0.00236$ \\
     \bottomrule
@@ -305,12 +305,6 @@ which gives
 \kappa = 2\, R + 1\, .
  \end{equation}
 
- \begin{figure}
-  \centering
-  \includegraphics[width=5.0in]{../figures/uncomp}
-  \caption{\label{fig:uncomp} The total frequency shift given by \eqn{error_def} for the Classical Guitar specified by \tbl{mcg_specs} with $\Delta S = \Delta N = 0$~mm, and a string with the parameters listed in \tbl{string_specs}.}
-\end{figure}
-
 We can estimate the typical value of $R$ for nylon classical guitar strings through a simple observation. On a classical guitar with a scale length of 650~mm, we can usually tune an open string a full step by winding the tuner/machine head three half turns. As we shall see below, this increases or decreases the string length above the first fret by about 3~mm, where the corresponding length of the open string from the saddle to the first fret is about 614~mm. Since a full step is (by definition) 200~cents, \eqn{cents_approx} tells us that
 \begin{equation}
   \frac{\Delta f}{f} \approx \frac{\ln(2)}{1200}\, \Delta \nu = \frac{200}{1731} = 0.116\, .
@@ -320,6 +314,12 @@ In this case, we estimate $R$ to be
   R \approx \frac{614}{3}\, 0.116 = 24\, ,
 \end{equation}
 giving $\kappa \approx 49$, close to the values listed in \tbl{string_specs}. The corresponding open-string bending stiffness is computed using \eqn{b_0_kappa} with the scale length given in \tbl{mcg_specs}. In \fig{uncomp}, we plot the total frequency shift given by \eqn{error_def} for this string on the Classical Guitar with $\Delta S = \Delta N = 0$~mm. Note that the string is sharp at every fret, but even a large nonzero value of $d$ is only important at the first fret.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=5.0in]{../figures/uncomp}
+  \caption{\label{fig:uncomp} The total frequency shift given by \eqn{error_def} for the Classical Guitar specified by \tbl{mcg_specs} with $\Delta S = \Delta N = 0$~mm, and a string with the parameters listed in \tbl{string_specs}.}
+\end{figure}
 
 \Eqn{error_tot} provides us with a clue on how to modify this guitar to improve the tone of this string. We see that the bending stiffness and the increase in string tension due to fretting sharpen the pitch, but that we can reduce these effects with a positive saddle setback and negative nut setback. In fact, a simple compensation strategy would be to choose
 \begin{subequations} \label{eqn:comp_approx}
@@ -332,4 +332,4 @@ where we have applied \eqn{b_0_kappa} and defined $\overline{Q}$ as the relative
 \begin{equation} \label{eqn:qbar_approx}
   \overline{Q} \approx \frac{77.9\, b^2 + 35.6\, b\, c + 5.82\, c^2}{24\, X_0^2}\, .
 \end{equation}
-In the case of the parameters used in \fig{uncomp}, we follow this simple approximate approach to estimate $\Delta S = 1.75$~mm, and $\Delta N = -0.49$~mm. We'll rely on a more accurate method for compensation in \sct{comp}, but we'll obtain results that are similar to those found using this basic approach. In particular, since a \emph{tunable} guitar string has $\sqrt{\kappa} \approx 7 \pm 1$, the saddle setback is primarily determined by the radius of the string.
+In the case of the parameters used in \fig{uncomp}, we follow this simple approximate approach to estimate $\Delta S = 1.54$~mm, and $\Delta N = -0.51$~mm. We'll rely on a more accurate method for compensation in \sct{comp}, but we'll obtain results that are similar to those found using this basic approach. In particular, since a \emph{tunable} guitar string has $\sqrt{\kappa} \approx 7.1 \pm 0.3$, the saddle setback is primarily determined by the radius of the string.
