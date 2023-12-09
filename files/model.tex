@@ -97,7 +97,7 @@ In the discussion that follows, we'll test our approximations for a prototypical
     Parameter & Description & Default Value \\
     \midrule
     $\rho$ & String radius in mm & $0.43$ \\
-    $R$ & Linear frequency shift parameter & $25$ \\
+    $R$ & Linear frequency shift parameter & $24$ \\
     $\kappa$ & String tension constant & $51$ \\
     $B_0$ & Open-string bending stiffness & $0.00236$ \\
     \bottomrule
@@ -321,7 +321,7 @@ In this case, we estimate $R$ to be
 \end{equation}
 giving $\kappa \approx 49$, close to the values listed in \tbl{string_specs}. The corresponding open-string bending stiffness is computed using \eqn{b_0_kappa} with the scale length given in \tbl{mcg_specs}. In \fig{uncomp}, we plot the total frequency shift given by \eqn{error_def} for this string on the Classical Guitar with $\Delta S = \Delta N = 0$~mm. Note that the string is sharp at every fret, but even a large nonzero value of $d$ is only important at the first fret.
 
-\Eqn{error_tot} provides us with a idea on how to modify this guitar to improve the tone of this string. We see that the bending stiffness and the increase in string tension due to fretting sharpen the pitch, but that we can reduce these effects with a positive saddle setback and negative nut setback. In fact, a simple compensation strategy would be to choose
+\Eqn{error_tot} provides us with a clue on how to modify this guitar to improve the tone of this string. We see that the bending stiffness and the increase in string tension due to fretting sharpen the pitch, but that we can reduce these effects with a positive saddle setback and negative nut setback. In fact, a simple compensation strategy would be to choose
 \begin{subequations} \label{eqn:comp_approx}
   \begin{align}
     \Delta S &= B_0\, X_0 \approx \frac{\sqrt{\kappa}}{2}\, \rho\, , \nd \\
