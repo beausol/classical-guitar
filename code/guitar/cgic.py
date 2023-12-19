@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 from IPython.display import display
 from scipy.optimize import curve_fit
 
+# Define a reasonable set of matplotlib parameters compatible
+#  with Jupyter notebooks
 labelsize = 18
 fontsize = 24
 font = {'family' : 'serif',
@@ -16,17 +18,29 @@ plt.rc('text', usetex=True)
 plt.rc('font', family='serif')
 plt.rc('text.latex', preamble=r'\usepackage{amsmath,amssymb,amsfonts}')
 
+
 def file_path(pathname, filename):
+    '''
+    Return a fully qualified path to a named file.
+    
+    Parameters
+    ----------
+    pathname : str
+        A valid path to a directory / folder, or None.
+    filename : str
+        A va;lid file name (including an extension where needed),
+        or None.
+    
+    Returns
+    ----------
+    retval : str
+        If neither pathname nor filename is None, then
+        pathname + filename; otherwise None.
+    '''
     if (pathname is None) or (filename is None):
         return None
     else:
         return pathname + filename
-
-def classmro(myself):
-    class_str = myself.__class__.__name__
-    for classname in myself.__class__.__mro__[1:-1]:
-        class_str += " : {}".format(classname.__name__)
-    return class_str
 
 
 def get_xlim():
@@ -101,8 +115,8 @@ class GuitarString(object):
             or 'A#_4'
         scale_length : numpy.float64
             The scale length of the guitar string (2x the distance measured
-            from the inside edge of the nut to the twelfth fret) in inches
-            if units='IPS' or millimeters otherwise
+            from the inside edge of the nut to the center of the twelfth
+            fret) in inches if units='IPS' or millimeters otherwise
         diameter : numpy.float64
             The diameter of the guitar string in inches if units='IPS'
             or millimeters otherwise
@@ -121,13 +135,11 @@ class GuitarString(object):
         '''
         if units == 'IPS':
             in_to_mm = 25.4
- #           lb_to_kg = 1.0 / 2.204
             lb_to_mg = 453592.37
             lb_to_nt = 4.4482216153 #9.81 / 2.204
             
             scale_length *= in_to_mm
             diameter *= in_to_mm
-#            linear_mass_density *= (lb_to_kg/in_to_mm)
             linear_mass_density *= (lb_to_mg/in_to_mm)
             tension *= lb_to_nt
 
@@ -165,7 +177,7 @@ class GuitarString(object):
         return 440.0 * 2**( int(note[1], 10) - notes[note[0]]/12.0 )
 
     def _comp_tension(self):
-        mu = self._density_lin / 1000    # Convert mg/mm to kg/m
+        mu = self._density_lin / 1000       # Convert mg/mm to kg/m
         x0 = self._scale_length / 1000      # Convert mm to m
         self._tension = mu * (2 * x0 * self._freq)**2
 
@@ -267,15 +279,6 @@ class GuitarStrings(object):
                 string.set_scale_length(scale_length)
             self._strings.append(string)
             
-        #self._labelsize = 18
-        #self._fontsize = 24
-        #self._font = {'family' : 'serif',
-        #        'color'  : 'black',
-        #        'weight' : 'normal',
-        #        'size'   : self._fontsize,
-        #        }
-
-
     def __str__(self):
         '''Return a string displaying the attributes of a GuitarStrings object.
     
