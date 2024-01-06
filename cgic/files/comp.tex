@@ -15,14 +15,14 @@ As we discussed in \sct{tot_freq_shift}, \eqn{error_tot} provides a guide to how
     \centering
     \begin{subfigure}[b]{0.8\textwidth}
         \centering
-        \includegraphics[width=5.0in]{../figures/comp_ds}
+        \includegraphics[width=5.0in]{figures/comp_ds}
         \caption{Frequency shifts ($\Delta N = 0$)}
         \label{fig:comp_ds}
     \end{subfigure}
     \par\vspace{0.25in}
     \begin{subfigure}[b]{0.8\textwidth}
         \centering
-        \includegraphics[width=5.0in]{../figures/comp_dn}
+        \includegraphics[width=5.0in]{figures/comp_dn}
         \caption{Frequency shifts ($\Delta S = 0$)}
         \label{fig:comp_dn}
     \end{subfigure}
@@ -33,14 +33,14 @@ As we discussed in \sct{tot_freq_shift}, \eqn{error_tot} provides a guide to how
   %   \centering
   %   \begin{subfigure}[b]{0.8\textwidth}
   %       \centering
-  %       \includegraphics[width=5.0in]{../figures/comp_est}
+  %       \includegraphics[width=5.0in]{figures/comp_est}
   %       \caption{Approximate compensation}
   %       \label{fig:comp_est}
   %   \end{subfigure}
   %   \par\vspace{0.25in}
   %   \begin{subfigure}[b]{0.8\textwidth}
   %       \centering
-  %       \includegraphics[width=5.0in]{../figures/comp_exact}
+  %       \includegraphics[width=5.0in]{figures/comp_exact}
   %       \caption{Exact compensation}
   %       \label{fig:comp_exact}
   %   \end{subfigure}
@@ -49,7 +49,7 @@ As we discussed in \sct{tot_freq_shift}, \eqn{error_tot} provides a guide to how
 
 \begin{figure}
   \centering
-  \includegraphics[width=5.0in]{../figures/comp_est}
+  \includegraphics[width=5.0in]{figures/comp_est}
   \caption{\label{fig:comp_est} The total frequency shift given by \eqn{error_def} for a classical guitar and string with the parameters listed in \tbl{mcg_specs} and \tbl{string_specs}, respectively.}
 \end{figure}
 
@@ -63,14 +63,14 @@ As an improvement over this simple approach, we adopt the method described in \a
 %   \centering
 %   \begin{subfigure}[b]{0.8\textwidth}
 %    \centering
-%    \includegraphics[width=5.0in]{../figures/shift_classicalguitar_ej45_factory}
+%    \includegraphics[width=5.0in]{figures/shift_classicalguitar_ej45_factory}
 %    \caption{Factory guitar}
 %    \label{fig:shift_classicalguitar_ej45_factory}
 %   \end{subfigure}
 %   \par\vspace{0.25in}
 %   \begin{subfigure}[b]{0.8\textwidth}
 %    \centering
-%    \includegraphics[width=5.0in]{../figures/shift_classicalguitar_ej45_null}
+%    \includegraphics[width=5.0in]{figures/shift_classicalguitar_ej45_null}
 %    \caption{Uncompensated}
 %    \label{fig:shift_classicalguitar_ej45_null}
 %   \end{subfigure}
@@ -81,14 +81,14 @@ As an improvement over this simple approach, we adopt the method described in \a
   \centering
   \begin{subfigure}[b]{0.8\textwidth}
    \centering
-   \includegraphics[width=5.0in]{../figures/shift_classicalguitar_ej45_full}
+   \includegraphics[width=5.0in]{figures/shift_classicalguitar_ej45_full}
    \caption{Full compensation}
    \label{fig:shift_classicalguitar_ej45_full}
   \end{subfigure}
   \par\vspace{0.25in}
   \begin{subfigure}[b]{0.8\textwidth}
    \centering
-   \includegraphics[width=5.0in]{../figures/shift_classicalguitar_ej45_mean}
+   \includegraphics[width=5.0in]{figures/shift_classicalguitar_ej45_mean}
    \caption{Mean compensation}
    \label{fig:shift_classicalguitar_ej45_mean}
   \end{subfigure}
@@ -98,7 +98,7 @@ As an improvement over this simple approach, we adopt the method described in \a
  \begin{table}[htbp]
   \centering
   \caption{\label{tbl:ej45_setbacks} Predicted setbacks for the D'Addario Pro-Arte Nylon Classical Guitar Strings -- Normal Tension (EJ45) on the Classical Guitar.}
-  \input{../files/tbl_ej45_setbacks}
+  \input{files/tbl_ej45_setbacks}
 \end{table}%
 
 There are several other aspects of classical guitar compensation that are notable. First, as mentioned above, it is nontrivial to manufacture a guitar with different setbacks for each string~\cite{ref:byers1996cgi}, and it is unlikely that the exact values listed in \tbl{ej45_setbacks} are applicable to other string sets. We have measured the values of $R$ for five other string sets, and in \app{specs} we have reproduced the exact compensation procedure for them that we performed above for normal tension strings (with $d = 0$). Although each set exhibits variation between strings (and with respect to other sets) in individual setbacks for each string, they are similar enough that we suspect that there is the potential for great simplification in guitar design. For example, following the analysis of \app{rms}, it is possible to determine a single setback pair $\{\Delta S, \Delta N\}$ that minimizes the RMS frequency errors of an ensemble of strings over a collection of frets simply by computing the mean of the setbacks over all strings, and then using these mean values when manufacturing the guitar. If we consider five of the six string sets we have measured here --- neglecting the light tension strings because of their pathologically high values of $R$ --- we can plot the exact setback predictions shown in \fig{dsdn_mean}, and then use these results to predict the mean values. In \fig{fit_ds}, we see that the saddle setbacks are reasonably well described in terms of the string radius $\rho$ by the expression
@@ -111,14 +111,14 @@ Therefore, we can either compute the mean of the saddle setbacks directly, or us
   \centering
   \begin{subfigure}[b]{0.8\textwidth}
    \centering
-   \includegraphics[width=5.0in]{../figures/fit_ds}
+   \includegraphics[width=5.0in]{figures/fit_ds}
    \caption{Five-set saddle setback data with fit}
    \label{fig:fit_ds}
   \end{subfigure}
   \par\vspace{0.25in}
   \begin{subfigure}[b]{0.8\textwidth}
    \centering
-   \includegraphics[width=5.0in]{../figures/hist_dn}
+   \includegraphics[width=5.0in]{figures/hist_dn}
    \caption{Five-set nut setback data with mean}
    \label{fig:hist_dn}
   \end{subfigure}
@@ -136,14 +136,14 @@ As $d$ increases, the magnitude of the negative nut setback increases, and the s
   \centering
   \begin{subfigure}[b]{0.8\textwidth}
       \centering
-      \includegraphics[width=5.0in]{../figures/dsd_ej45}
+      \includegraphics[width=5.0in]{figures/dsd_ej45}
       \caption{Mean saddle setback}
       \label{fig:dsd_ej45}
   \end{subfigure}
   \par\vspace{0.25in}
   \begin{subfigure}[b]{0.8\textwidth}
       \centering
-      \includegraphics[width=5.0in]{../figures/dnd_ej45}
+      \includegraphics[width=5.0in]{figures/dnd_ej45}
       \caption{Mean nut setback}
       \label{fig:dnd_ej45}
   \end{subfigure}
@@ -152,19 +152,19 @@ As $d$ increases, the magnitude of the negative nut setback increases, and the s
 
 \begin{figure}
   \centering
-  \includegraphics[width=5.0in]{../figures/dsnd_ej45}
+  \includegraphics[width=5.0in]{figures/dsnd_ej45}
   \caption{\label{fig:dsnd_ej45} The mean value of $\Delta S - \Delta N$ for the D'Addario Nylon Normal Tension EJ45 string set as a function of the fretting distance $d$.}
 \end{figure}
 
 \begin{figure}
   \centering
-  \includegraphics[width=5.0in]{../figures/comp_exact}
+  \includegraphics[width=5.0in]{figures/comp_exact}
   \caption{\label{fig:comp_exact} The total frequency shift given by \eqn{error_def} for a classical guitar with setbacks computed using both \eqn{rms_sol_quad} with \emph{no} approximations (``exact'') and \eqn{rms_sol_comp} with \eqn{comp_d_poly} (``approx'').}
 \end{figure}
 
 \begin{figure}
   \centering
-  \includegraphics[width=5.0in]{../figures/japan_guitar_ej45_shifts}
+  \includegraphics[width=5.0in]{figures/japan_guitar_ej45_shifts}
   \caption{\label{fig:japan_guitar_ej45_shifts} Frequency shifts for a classical guitar using normal-tension nylon strings with $b = 1.4$~mm, $c = 5.5$~mm, $d = 10$~mm, $X_0 = 652$~mm, $\Delta S = -3.5$~mm, and $\Delta N = 0$~mm. The points represent the measurement data, while the lines are predictions made using \eqn{error_def}.}
 \end{figure}
 
