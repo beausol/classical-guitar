@@ -109,7 +109,7 @@ The length $L_0$ of the open (unfretted) guitar string can be calculated quickly
  \begin{equation}  \label{eqn:l_0_def}
 L_0 = \sqrt{\left(X_0 + \Delta S + \Delta N\right)^2 + c^2} \approx X_0 + \Delta S + \Delta N + \frac{c^2}{2\, X_0}\, ,
  \end{equation}
-where the approximation arises from the Taylor series that applies since $c^2 \ll X_0^2$. Similarly, since $(b + c)^2 \ll X_0^2$, the resonant length $L_n$ is given by
+where the approximation arising from the Taylor series is valid to second order in all small distances since $\{\Delta S, \Delta N, b, c\} \ll X_0^2$. Similarly, the resonant length $L_n$ is given by
  \begin{equation}  \label{eqn:l_n_def}
 L_n = \sqrt{\left(X_n + \Delta S\right)^2 + (b + c)^2} \approx X_n + \Delta S + \frac{(b + c)^2}{2\, X_n}\, .
  \end{equation}
@@ -117,10 +117,15 @@ Then --- if the guitar has been manufactured such that $X_n = X_0 / \gamma_n$ --
 %  \begin{equation}
 %  1200\, \log_2 \left( \frac{L_0}{\gamma_n\, L_n} \right) \approx -\frac{1200}{\ln(2)} \left[ \frac{\left(\gamma_n - 1\right) \Delta S - \Delta N}{X_0} + \frac{\gamma_n^2 (b + c)^2 - c^2}{2\, X_0^2}\right]
 %  \end{equation}
-  \begin{equation} \label{eqn:rle_approx}
-  1200\, \log_2 \left( \frac{L_0}{\gamma_n\, L_n} \right) \approx \frac{1200}{\ln(2)} \left[ \frac{\Delta N - \left(\gamma_n - 1\right) \Delta S}{X_0} - \frac{\gamma_n^2 (b + c)^2 - c^2}{2\, X_0^2}\right]\, .
-  \end{equation}
-If the guitar is uncompensated, so that $\Delta S = \Delta N = 0$, the magnitude of this error on our Classical Guitar is only $-0.17$~cents, and can be neglected. However,, we'll see that choosing $\Delta S > 0$ and $\Delta N < 0$ will allow us to substantially compensate for frequency shift contributions from other effects.
+\begin{equation} \label{eqn:rle_taylor}
+  \begin{split}
+    1200\, \log_2 \left( \frac{L_0}{\gamma_n\, L_n} \right) &\approx \frac{1200}{\ln(2)} \left[ \frac{\Delta N - \left(\gamma_n - 1\right) \Delta S}{X_0} - \frac{(\Delta N + \Delta S)^2 - \gamma_n^2\, \Delta S^2}{2\, X_0^2}\right. \\ &\qquad\qquad - \left. \frac{\gamma_n^2 (b + c)^2 - c^2}{2\, X_0^2}\right]\, .
+  \end{split}
+\end{equation}
+If the guitar is uncompensated, so that $\Delta S = \Delta N = 0$, the magnitude of this error on our Classical Guitar can be neglected. However, we'll see that choosing $\Delta S > 0$ and $\Delta N < 0$ will allow us to substantially compensate for frequency shift contributions from other effects. In this case, we note that the three terms inside the bracket on the \rhs of \eqn{rle_taylor} are $\{-3.5 \times 10^{-3}, 1.4 \times 10^{-5}, -1.0 \times 10^{-4}\}$, respectively, for the parameter values given by \tbl{mcg_specs}, corresponding to frequency shifts of $\{-6.05, 0.02, -0.17\}$~cents. Therefore, the second two terms are negligible compared to the first, and we can approximate the resonant length error --- for the purposes of estimating setbacks --- as
+\begin{equation} \label{eqn:rle_approx}
+  1200\, \log_2 \left( \frac{L_0}{\gamma_n\, L_n} \right) \approx \frac{1200}{\ln(2)} \left[ \frac{\Delta N - \left(\gamma_n - 1\right) \Delta S}{X_0}\right]\, .
+\end{equation}
 
  \subsection{Linear Mass Density\label{sct:model_lmd}}
 As discussed above, the linear mass density $\mu_0$ of an open (unfretted) string is simply the total mass $M$ of the string clamped between the saddle and the nut divided by the length $L_0$. Similarly, the mass density $\mu_n$ of a string held onto fret $N$ is $M/\mathcal{L}_n$. Therefore

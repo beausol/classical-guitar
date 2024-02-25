@@ -10,14 +10,37 @@
  \section{Compensation by Minimizing RMS Error\label{app:rms}}
 
 The root-mean-square (RMS) frequency error (in cents) averaged over the frets $n \in \{1, n_\text{max}\}$ (for $n_\text{max} > 1$) \emph{of a particular string} is given by
- \begin{equation}\label{eqn:rms_def}
-\overline{\Delta \nu}_\text{rms} \equiv \sqrt{\frac{\sum_{n = 1}^{n_\text{max}} \Delta \nu_n^2}{n_\text{max}}}\, ,
- \end{equation}
-where $\Delta \nu_n$ is given by \eqn{error_tot}. Here we will vary both $\Delta S$ and $\Delta N$ to minimize $\overline{\Delta \nu}_\text{rms}$. In this case, it is sufficient to minimize the quantity
+\begin{equation}\label{eqn:rms_def}
+  \overline{\Delta \nu}_\text{rms} \equiv \sqrt{\frac{\sum_{n = 1}^{n_\text{max}} \Delta \nu_n^2}{n_\text{max}}}\, ,
+\end{equation}
+where $\Delta \nu_n$ is given by \eqn{error_def}. Here we will vary both $\Delta S$ and $\Delta N$ to minimize $\overline{\Delta \nu}_\text{rms}$. In this case, it is sufficient to minimize the quantity
  \begin{equation}\label{eqn:chi2_def}
 \chi^2 = \sum_{n = 1}^{n_\text{max}} \left[\frac{\ln(2)}{1200}\, \Delta \nu_n\right]^2
  \end{equation}
-such that the gradient of $\chi^2$ with respect to $\Delta S$ and $\Delta N$ vanishes. The components of this gradient are
+such that the gradient of $\chi^2$ with respect to $\Delta S$ and $\Delta N$ vanishes. Let's rewrite \eqn{error_def} as
+\begin{equation}
+  \frac{\ln(2)}{1200}\, \Delta \nu_n = W_n + Z_n\, ,
+\end{equation}
+where
+\begin{subequations}
+  \begin{align}
+    W_n &= \ln \left( \frac{L_0}{\gamma_n\, L_n} \right)\, , \nd \\
+    Z_n &= \ln \left[ \sqrt{\frac{\mu_0}{\mu_n}\, \frac{T_n}{T_0}}\, \frac{1 + B_n + (1 + \pi^2/2)\, B_n^2}{1 + B_0 + (1 + \pi^2/2)\, B_0^2} \right]\, .
+  \end{align}
+\end{subequations}
+In \sct{model}, we determined that --- for the purposes of estimating the values of the setbacks --- that $W_n$ could be represented accurately by
+\begin{equation}
+  W_n \approx \frac{\Delta N - \left(\gamma_n - 1\right) \Delta S}{X_0}\, .
+\end{equation}
+Furthermore, we discovered that $Z_n$ does not depend even to second order on either $\Delta S$ or $\Delta N$. 
+
+Therefore, the components of the gradient of $\chi^2$ are
+\begin{subequations}
+  \begin{align}
+    \frac{\partial}{\partial \Delta S}\, \chi^2 &= 2 \sum_n \left(W_n + Z_n\right)\frac{\partial W_n}{\partial \Delta S} = -\frac{2}{X_0}\, \sum_n (\gamma_n - 1) \left(W_n + Z_n\right)\, , \nd \\
+    \frac{\partial}{\partial \Delta N}\, \chi^2 &= 2 \sum_n \left(W_n + Z_n\right)\frac{\partial W_n}{\partial \Delta S} = \frac{2}{X_0}\, \sum_n \left(W_n + Z_n\right)\, .
+  \end{align}
+\end{subequations}
  \begin{subequations}\label{chi2_grad}
  \begin{align}
 \frac{\partial}{\partial \Delta S}\, \chi^2 &= -\frac{2}{X_0}\, \sum_n (\gamma_n - 1)\left[ (\gamma_n - 1) \left(B_0 - \frac{\Delta S}{X_0}\right) + \frac{\Delta N}{X_0} + \frac{\kappa}{2}\, Q_n \right]\, , \nd \\
