@@ -132,14 +132,20 @@ As discussed above, the linear mass density $\mu_0$ of an open (unfretted) strin
  \begin{equation}
 \frac{\mu_0}{\mu_n} = \frac{\mathcal{L}_n}{L_0} \equiv 1 + Q_n\, ,
  \end{equation}
-where we have followed Byers and defined~\cite{ref:byers1996cgi,ref:varieschi2010icf}
+where we have followed Byers and defined the normalized relative displacement~\cite{ref:byers1996cgi,ref:varieschi2010icf}
  \begin{equation} \label{eqn:q_n_def}
-Q_n \equiv \frac{\mathcal{L}_n - L_0}{L_0}\, .
+Q_n \equiv \frac{\mathcal{L}_n - L_0}{L_0}\, ,
  \end{equation}
-Since we expect that $Q_n \ll 1$, we can approximate the second term in the final line of \eqn{error_def} as
- \begin{equation} \label{eqn:lmd_error}
-600\, \log_2 \left(  \frac{\mu_0}{\mu_n} \right) \approx \frac{600}{\ln(2)}\, Q_n\, .
- \end{equation}
+where $\mathcal{L}_n = L_n + L_n^\prime$. After judicious use of similar triangles and the Pythagorean Theorem we calculate $L^\prime_n$ for $n \ge 1$ as
+\begin{equation} \label{eqn:l_p_def}
+  L^\prime_n = \frac{L_n}{X_n + \Delta S}\, d + \sqrt{\left(X_0 - X_n + \Delta N - d\right)^2 + \left(b + \frac{b + c}{X_n + \Delta S}\, d\right)^2}\, .
+\end{equation}
+In this case, we won't bother with a Taylor series expansion that includes $d \ne 0$, because it isn't significantly more illuminating than \eqn{l_p_def}.
+
+% Since we expect that $Q_n \ll 1$, we can approximate the second term in the final line of \eqn{error_def} as
+%  \begin{equation} \label{eqn:lmd_error}
+% 600\, \log_2 \left(  \frac{\mu_0}{\mu_n} \right) \approx \frac{600}{\ln(2)}\, Q_n\, .
+%  \end{equation}
 
 
 % Referring to \fig{guitar_schematic}, we see that $\mathcal{L}_n = L_n + L^\prime_n$, and we calculate $L^\prime_n$ for $n \ge 1$ as
@@ -147,21 +153,18 @@ Since we expect that $Q_n \ll 1$, we can approximate the second term in the fina
 % L^\prime_n = \sqrt{\left(X_0 - X_n + \Delta N\right)^2 + b^2} \approx X_0 - X_n + \Delta N + \frac{b^2}{2 \left(X_0 - X_n\right)}\, ,
 %  \end{equation}
 
-After judicious use of similar triangles and the Pythagorean Theorem we calculate $L^\prime_n$ for $n \ge 1$ as
-\begin{equation} \label{eqn:l_p_def}
-    \begin{split}
-        L^\prime_n &= \frac{L_n}{X_n + \Delta S}\, d + \sqrt{\left(X_0 - X_n + \Delta N - d\right)^2 + \left(b + \frac{b + c}{X_n + \Delta S}\, d\right)^2} \\
-        &\approx X_0 - X_n + \Delta N + \frac{b^2}{2 \left(X_0 - X_n\right)} + \frac{\left[(b + c)\, X_0 - c\, X_n\right]^2}{2 (X_0 - X_n)^2 X_n^2}\, d
-    \end{split}
-\end{equation}
-to first order in $d/X_0$. Therefore
+However, when $d = 0$, $Q_n$ is approximately
+% \begin{equation}
+%     \begin{split}
+%         L^\prime_n &= \frac{L_n}{X_n + \Delta S}\, d + \sqrt{\left(X_0 - X_n + \Delta N - d\right)^2 + \left(b + \frac{b + c}{X_n + \Delta S}\, d\right)^2} \\
+%         &\approx X_0 - X_n + \Delta N + \frac{b^2}{2 \left(X_0 - X_n\right)} + \frac{\left[(b + c)\, X_0 - c\, X_n\right]^2}{2 (X_0 - X_n)^2 X_n^2}\, d
+%     \end{split}
+% \end{equation}
+% to first order in $d/X_0$. Therefore
 \begin{equation} \label{eqn:q_n_approx}
-  \begin{split}
-    Q_n &= \frac{L_n + L_n^\prime - L_0}{L_0} \\
-    & \approx \frac{\left[ \gamma_n\, b + (\gamma_n - 1)\, c \right]^2}{2\, (\gamma_n - 1)\, X_0^2} \ \left[ 1 + \gamma_n \sum_{k = 1}^\infty \left(\frac{\gamma_n}{\gamma_n - 1}\, {\frac{d}{X_0}}\right)^k \right]\, ,
-  \end{split}
+  Q_n \approx \frac{\left[ \gamma_n\, b + (\gamma_n - 1)\, c \right]^2}{2\, (\gamma_n - 1)\, X_0^2}\, ,
 \end{equation}
-where we have retained $b$ and $c$ to second order, and (in practice) we'll need to keep $d$ to second order as well so that we retain accuracy at the first fret. In \fig{qn_test}, we plot a comparison between the exact expression for the normalized displacement $Q_n$ given by \eqn{q_n_def} with the approximate expression given by \eqn{q_n_approx}. Here the guitar has the specifications listed in \tbl{mcg_specs}; the exact expression uses $\Delta S = 1.9$~mm and $\Delta N = -0.37$~mm, and the approximate curve ignores the setbacks entirely. We have scaled the relative displacement by a factor of $10^6$; for example, at the first fret with $d = 10$~mm, $Q_n \approx 47 \times 10^{-6}$. 
+accurate to second order in all small distances. This result suggests that the relative displacement does not depend significantly on the setbacks $\Delta S$ and $\Delta N$. In \fig{qn_test}, we plot a comparison between the exact expression for the normalized displacement $Q_n$ given by \eqn{q_n_def} with the approximate expression given by \eqn{q_n_approx} for $d = 0$. Here the guitar has the specifications listed in \tbl{mcg_specs}: the exact expression uses $\Delta S = 1.9$~mm and $\Delta N = -0.37$~mm, and the approximate curve ignores the setbacks entirely. We have also compared \eqn{q_n_def} with both these nonzero and zero setbacks when $d = 10$~mm, and again we see that the dependence of $Q_n$ on the setback values is minimal. We have scaled the relative displacement by a factor of $10^6$ for convenience. For example, at the first fret with $d = 10$~mm, $Q_1 \approx 47 \times 10^{-6}$. This value corresponds to a net stretch of the string at the first fret of $Q_1\, L_0 = 0.03$~mm. Ignoring the setbacks at the $12^{\textrm{th}}$ fret increases $Q_{12}$ by 1\%, a completely negligible amount. For the same parameters, when $d = 10$~mm, $\Delta \nu_{1} \approx 0.04$~cents, and is smaller at all other frets. Therefore, in general the shift due to linear mass density can be neglected without significant loss of accuracy.
 
 % We can use this result and \eqn{q_n_approx} to determine the increase in the relative displacement $Q_n$; we find
 %  % \begin{equation} %\label{eqn:delta_q_n_approx}
@@ -194,7 +197,7 @@ where we have retained $b$ and $c$ to second order, and (in practice) we'll need
 %   \end{split}
 % \end{equation}
 
-Although it is arguable whether the approximation given by \eqn{q_n_approx} is simpler than the exact expression given by \eqn{q_n_def}, it is quite clear from both \eqn{q_n_approx} and \fig{qn_test} that $Q_n$ \emph{does not depend significantly on the setbacks} $\Delta S$ or $\Delta N$. For the same parameters, when $d = 10$~mm, $\Delta \nu_{1} \approx 0.04$~cents, and is smaller at all other frets. Therefore, in general the shift due to linear mass density can be neglected without significant loss of accuracy.
+% Although it is arguable whether the approximation given by \eqn{q_n_approx} is simpler than the exact expression given by \eqn{q_n_def}, it is quite clear from both \eqn{q_n_approx} and \fig{qn_test} that $Q_n$ \emph{does not depend significantly on the setbacks} $\Delta S$ or $\Delta N$. For the same parameters, when $d = 10$~mm, $\Delta \nu_{1} \approx 0.04$~cents, and is smaller at all other frets. Therefore, in general the shift due to linear mass density can be neglected without significant loss of accuracy.
 
 %If we add this shift due to the linear mass density to the residual quadratic resonant length shift given by \eqn{rle_approx}, then we find the total error
 % \begin{equation} \label{eqn:quad_shift}
