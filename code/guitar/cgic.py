@@ -730,7 +730,7 @@ class Guitar(object):
             plt.savefig(filepath, bbox_inches='tight')
         plt.show()
 
-    def plot_shifts(self, max_fret=12, harm=[], savepath=None, filename=None):
+    def plot_shifts(self, max_fret=12, show=True, harm=[], savepath=None, filename=None):
         fret_list = np.arange(0, max_fret + 1)
         shifts = self.freq_shifts(fret_list[1:])
         if harm:
@@ -785,7 +785,10 @@ class Guitar(object):
         else:
             plt.savefig(filepath, bbox_inches='tight')
             print("Saved {0}\n".format(filepath))
-        plt.show()
+        if show:
+            plt.show()
+        else:
+            plt.close()
 
     # def plot_harm(self, zero_strings, zero_frets, savepath=None, filename=None):
     #     fret_list = np.arange(0, 13)
