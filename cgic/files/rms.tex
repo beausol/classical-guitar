@@ -18,7 +18,7 @@ where $\Delta \nu_n$ is given by \eqn{error_def}. Here we will vary both $\Delta
 \chi^2 = \sum_{n = 1}^{n_\text{max}} \left[\frac{\ln(2)}{1200}\, \Delta \nu_n\right]^2
  \end{equation}
 such that the gradient of $\chi^2$ with respect to $\Delta S$ and $\Delta N$ vanishes. Let's rewrite \eqn{error_def} as
-\begin{equation}
+\begin{equation}\label{eqn:rms_dnuwz}
   \frac{\ln(2)}{1200}\, \Delta \nu_n = W_n + Z_n\, ,
 \end{equation}
 where
@@ -28,83 +28,60 @@ where
     Z_n &= \ln \left[ \sqrt{\frac{\mu_0}{\mu_n}\, \frac{T_n}{T_0}}\, \frac{1 + B_n + (1 + \pi^2/2)\, B_n^2}{1 + B_0 + (1 + \pi^2/2)\, B_0^2} \right]\, .
   \end{align}
 \end{subequations}
-In \sct{model}, we determined that --- for the purposes of estimating the values of the setbacks --- that $W_n$ could be represented accurately by
+
+In \sct{model}, we determined that --- for the purposes of estimating the values of the setbacks --- $W_n$ could be represented accurately by
 \begin{equation}
   W_n \approx \frac{\Delta N - \left(\gamma_n - 1\right) \Delta S}{X_0}\, .
 \end{equation}
-Furthermore, we discovered that $Z_n$ does not depend even to second order on either $\Delta S$ or $\Delta N$. 
-
-Therefore, the components of the gradient of $\chi^2$ are
-\begin{subequations}
+Furthermore, we discovered that $Z_n$ does not depend even to second order on either $\Delta S$ or $\Delta N$. Therefore, the components of the gradient of $\chi^2$ are
+\begin{subequations} \label{chi2_grad}
   \begin{align}
     \frac{\partial}{\partial \Delta S}\, \chi^2 &= 2 \sum_n \left(W_n + Z_n\right)\frac{\partial W_n}{\partial \Delta S} = -\frac{2}{X_0}\, \sum_n (\gamma_n - 1) \left(W_n + Z_n\right)\, , \nd \\
     \frac{\partial}{\partial \Delta N}\, \chi^2 &= 2 \sum_n \left(W_n + Z_n\right)\frac{\partial W_n}{\partial \Delta S} = \frac{2}{X_0}\, \sum_n \left(W_n + Z_n\right)\, .
   \end{align}
 \end{subequations}
- \begin{subequations}\label{chi2_grad}
- \begin{align}
-\frac{\partial}{\partial \Delta S}\, \chi^2 &= -\frac{2}{X_0}\, \sum_n (\gamma_n - 1)\left[ (\gamma_n - 1) \left(B_0 - \frac{\Delta S}{X_0}\right) + \frac{\Delta N}{X_0} + \frac{\kappa}{2}\, Q_n \right]\, , \nd \\
-\frac{\partial}{\partial \Delta N}\, \chi^2 &= \frac{2}{X_0}\, \sum_n \left[ (\gamma_n - 1) \left(B_0 - \frac{\Delta S}{X_0}\right) + \frac{\Delta N}{X_0} + \frac{\kappa}{2}\, Q_n \right]\, .
- \end{align}
- \end{subequations}
-Setting both of these expressions to zero, we can rewrite them as the matrix equation
- \begin{equation} \label{eqn:rms_mat}
-\begin{bmatrix}
-  \sigma_2 & -\sigma_1 \\
-  \sigma_1 & -\sigma_0
-\end{bmatrix}\,
-\begin{bmatrix}
-  \Delta S \\
-  \Delta N
-\end{bmatrix} = X_0
-\begin{bmatrix}
-  \sigma_2\, B_0 +  \half\, \kappa\, \overline{Q}_1 \\
-  \sigma_1\, B_0 +  \half\, \kappa\, \overline{Q}_0
-\end{bmatrix}\, ,
- \end{equation}
-where
- \begin{align}
-\sigma_k &\equiv \sum_{n = 1}^{n_\text{max}} \left(\gamma_n - 1\right)^k\, , \nd \\
-\overline{Q}_k &\equiv \sum_{n = 1}^{n_\text{max}} \left(\gamma_n - 1\right)^k\, Q_n\, .
- \end{align}
-We note that
-\begin{equation}
-  g_k \equiv \sum_{n = 1}^{n_\text{max}} \gamma_n^k = \frac{\gamma_k \left(\gamma_{k n_\text{max}} - 1\right)}{\gamma_k - 1}\, ,
-\end{equation}
-and therefore
-\begin{subequations}
-  \begin{align}
-    \sigma_0 &= n_\text{max}\, ,\\
-    \sigma_1 &= g_1 - n_\text{max}\, , \nd \\
-    \sigma_2 &= g_2 - 2 g_1 + n_\text{max}\, .
-  \end{align}
-\end{subequations}
-
- \Eqn{rms_mat} has the straightforward analytic solution
-\begin{equation}
-  \begin{bmatrix}
-    \Delta S \\
-    \Delta N
-  \end{bmatrix} = \frac{X_0}{\sigma_0\, \sigma_2 - \sigma_1^2}\,
-  \begin{bmatrix}
-    \sigma_0 & -\sigma_1 \\
-    \sigma_1 & -\sigma_2
-  \end{bmatrix}\,
-  \begin{bmatrix}
-    \sigma_2\, B_0 + \half\, \kappa\, \overline{Q}_1 \\
-    \sigma_1\, B_0 + \half\, \kappa\, \overline{Q}_0
-  \end{bmatrix}\, ,
-\end{equation}
-or
+Setting each of these expressions to zero and solving them for $\Delta S$ and $\Delta N$, we obtain
 \begin{subequations} \label{eqn:rms_sol}
   \begin{align}
-    \label{eqn:rms_sol_ds} \Delta S &= \left(B_0 + \frac{\kappa}{2}\, \frac{\sigma_0\, \overline{Q}_1 - \sigma_1\, \overline{Q}_0}{\sigma_0\, \sigma_2 - \sigma_1^2} \right) X_0\, , \nd \\
-    \label{eqn:rms_sol_dn} \Delta N &= -\frac{\kappa}{2}\, \frac{\sigma_2\, \overline{Q}_0 - \sigma_1\, \overline{Q}_1}{\sigma_0\, \sigma_2 - \sigma_1^2}\, X_0\, .
+    \label{eqn:rms_sol_ds} \Delta S &= \frac{\sigma_0\, \overline{\mathcal{Z}}_1 - \sigma_1\, \overline{\mathcal{Z}}_0}{\sigma_0\, \sigma_2 - \sigma_1^2}\, X_0\, , \nd \\
+    \label{eqn:rms_sol_dn} \Delta N &= -\frac{\sigma_2\, \overline{\mathcal{Z}}_0 - \sigma_1\, \overline{\mathcal{Z}}_1}{\sigma_0\, \sigma_2 - \sigma_1^2}\, X_0\, ,
   \end{align}
 \end{subequations}
-If we approximate $\overline{Q}_k \approx \sigma_k\, \overline{Q}$, where $\overline{Q}$ is the relative displacement averaged over a particular set of frets, we obtain the estimates discussed in \sct{tot_freq_shift}.
+where
+\begin{align}
+  \sigma_k &\equiv \sum_{n = 1}^{n_\text{max}} \left(\gamma_n - 1\right)^k\, , \nd \\
+  \overline{\mathcal{Z}}_k &\equiv \sum_{n = 1}^{n_\text{max}} \left(\gamma_n - 1\right)^k\, Z_n\, .
+\end{align}
 
-The corresponding solution when the quadratic stiffness term is included is given by
+The corresponding Hessian matrix for this problem is the symmetric matrix
+ \begin{equation}
+H = \begin{bmatrix}
+      \frac{\partial^2 \chi^2}{\partial \Delta S^2} & \frac{\partial^2 \chi^2}{\partial \Delta N\, \partial \Delta S} \\
+      \frac{\partial^2 \chi^2}{\partial \Delta S\, \partial \Delta N} & \frac{\partial^2 \chi^2}{\partial \Delta N^2}
+    \end{bmatrix}
+  = \frac{2}{X_0^2} \begin{bmatrix}
+      \sigma_2 & -\sigma_1 \\
+      -\sigma_1 & \sigma_0
+    \end{bmatrix}\, .
+ \end{equation}
+We can apply the second partial derivative test to the Hessian to determine whether we've found an extremum of $\chi^2$. If the determinant of the Hessian is positive, and (in the case of a $2 \times 2$ matrix) one of the diagonal elements is positive, then we have found a minimum. The determinant is greater than zero for $n_\text{max} \ge 2$, and the second condition is satisfied by $\sigma_0 = n_\text{max} > 0$ when $n_\text{max} \ge 1$. Therefore, we can be confident that the solution for $\Delta S$ and $\Delta N$ given by \eqn{rms_sol} minimizes the RMS frequency error provided that we are averaging over at least the first two frets.
+
+Again, to guide our intuition, we follow the logic used to develop \eqn{error_tot} and approximate $Z_n$ as
+\begin{equation}
+  Z_n \approx \half\, \kappa\, Q_n + \left(\gamma_n - 1\right) B_0\, .
+\end{equation}
+Then our estimates for the setbacks become
+\begin{subequations}
+  \begin{align}
+    \Delta S &= \left(B_0 + \frac{\kappa}{2}\, \frac{\sigma_0\, \overline{\mathcal{Q}}_1 - \sigma_1\, \overline{\mathcal{Q}}_0}{\sigma_0\, \sigma_2 - \sigma_1^2} \right) X_0\, , \nd \\
+    \Delta N &= -\frac{\kappa}{2}\, \frac{\sigma_2\, \overline{\mathcal{Q}}_0 - \sigma_1\, \overline{\mathcal{Q}}_1}{\sigma_0\, \sigma_2 - \sigma_1^2}\, X_0\, ,
+  \end{align}
+\end{subequations}
+where
+\begin{equation}
+  \overline{\mathcal{Q}}_k \equiv \sum_{n = 1}^{n_\text{max}} \left(\gamma_n - 1\right)^k\, Q_n\, .
+\end{equation}
+If we approximate $\overline{\mathcal{Q}}_k \approx \sigma_k\, \overline{Q}$, where $\overline{Q}$ is the relative displacement averaged over a particular set of frets, we obtain the estimates discussed in \sct{tot_freq_shift}: $\Delta S \approx B_0\, X_0$, and $\Delta N \approx -\kappa\, \overline{Q}\, X_0 / 2$. The corresponding solution when the quadratic stiffness term is included is given in matrix form by
 \begin{equation}\label{eqn:rms_sol_quad}
 \begin{bmatrix}
   \Delta S \\
@@ -125,59 +102,117 @@ If we choose $n_\text{max} = 12$, then when $d = 0$ we can compute $\sigma_k$ an
   \Delta N &= B_0^2\, X_0 - \frac{\kappa}{2\, X_0} \left( 5.633\, b^2 + b\, c \right)\, .
 \end{align}
 
-The corresponding Hessian matrix for this problem is the symmetric matrix
- \begin{equation}
-H = \begin{bmatrix}
-      \frac{\partial^2 \chi^2}{\partial \Delta S^2} & \frac{\partial^2 \chi^2}{\partial \Delta N\, \partial \Delta S} \\
-      \frac{\partial^2 \chi^2}{\partial \Delta S\, \partial \Delta N} & \frac{\partial^2 \chi^2}{\partial \Delta N^2}
-    \end{bmatrix}
-  = \frac{2}{X_0^2} \begin{bmatrix}
-      \sigma_2 & -\sigma_1 \\
-      -\sigma_1 & \sigma_0
-    \end{bmatrix}\, .
- \end{equation}
-We can apply the second partial derivative test to the Hessian to determine whether we've found an extremum of $\chi^2$. If the determinant of the Hessian is positive, and (in the case of a $2 \times 2$ matrix) one of the diagonal elements is positive, then we have found a minimum. The second condition is satisfied by $\sigma_0 = n_\text{max} > 0$ when $n_\text{max} \ge 1$. The determinant is given by
-\begin{equation}
-  \Det(H) = \frac{4}{X_0^4} \left(n_\text{max}\, g_2 - g_1^2\right)\, ,
-\end{equation}
-which is indeed greater than 0 for $n_\text{max} > 1$ since the quantity
-\begin{equation}
-  \frac{n_\text{max}\, g_2}{g_1^2} = \frac{n_\text{max} (\gamma_1 - 1)(\gamma_{n_\text{max}} + 1)}{(\gamma_1 + 1)(\gamma_{n_\text{max}} - 1)} \approx 1 + \frac{\ln^2(2)}{12^3} \left(n^2_\text{max} - 1\right) > 1\, .
-\end{equation}
-Therefore, we can be confident that the solution for $\Delta S$ and $\Delta N$ given by \eqn{rms_sol} minimizes the RMS frequency error provided that we are averaging over at least the first two frets.
+
+%  \begin{subequations}
+%  \begin{align}
+% \frac{\partial}{\partial \Delta S}\, \chi^2 &= -\frac{2}{X_0}\, \sum_n (\gamma_n - 1)\left[ (\gamma_n - 1) \left(B_0 - \frac{\Delta S}{X_0}\right) + \frac{\Delta N}{X_0} + \frac{\kappa}{2}\, Q_n \right]\, , \nd \\
+% \frac{\partial}{\partial \Delta N}\, \chi^2 &= \frac{2}{X_0}\, \sum_n \left[ (\gamma_n - 1) \left(B_0 - \frac{\Delta S}{X_0}\right) + \frac{\Delta N}{X_0} + \frac{\kappa}{2}\, Q_n \right]\, .
+%  \end{align}
+%  \end{subequations}
+% Setting both of these expressions to zero, we can rewrite them as the matrix equation
+%  \begin{equation}% \label{eqn:rms_mat}
+% \begin{bmatrix}
+%   \sigma_2 & -\sigma_1 \\
+%   \sigma_1 & -\sigma_0
+% \end{bmatrix}\,
+% \begin{bmatrix}
+%   \Delta S \\
+%   \Delta N
+% \end{bmatrix} = X_0
+% \begin{bmatrix}
+%   \sigma_2\, B_0 +  \half\, \kappa\, \overline{Q}_1 \\
+%   \sigma_1\, B_0 +  \half\, \kappa\, \overline{Q}_0
+% \end{bmatrix}\, ,
+%  \end{equation}
+% where
+%  \begin{align}
+% \sigma_k &\equiv \sum_{n = 1}^{n_\text{max}} \left(\gamma_n - 1\right)^k\, , \nd \\
+% \overline{Q}_k &\equiv \sum_{n = 1}^{n_\text{max}} \left(\gamma_n - 1\right)^k\, Q_n\, .
+%  \end{align}
+% We note that
+% \begin{equation}
+%   g_k \equiv \sum_{n = 1}^{n_\text{max}} \gamma_n^k = \frac{\gamma_k \left(\gamma_{k n_\text{max}} - 1\right)}{\gamma_k - 1}\, ,
+% \end{equation}
+% and therefore
+% \begin{subequations}
+%   \begin{align}
+%     \sigma_0 &= n_\text{max}\, ,\\
+%     \sigma_1 &= g_1 - n_\text{max}\, , \nd \\
+%     \sigma_2 &= g_2 - 2 g_1 + n_\text{max}\, .
+%   \end{align}
+% \end{subequations}
+
+%  \Eqn{rms_mat} has the straightforward analytic solution
+% \begin{equation}
+%   \begin{bmatrix}
+%     \Delta S \\
+%     \Delta N
+%   \end{bmatrix} = \frac{X_0}{\sigma_0\, \sigma_2 - \sigma_1^2}\,
+%   \begin{bmatrix}
+%     \sigma_0 & -\sigma_1 \\
+%     \sigma_1 & -\sigma_2
+%   \end{bmatrix}\,
+%   \begin{bmatrix}
+%     \sigma_2\, B_0 + \half\, \kappa\, \overline{Q}_1 \\
+%     \sigma_1\, B_0 + \half\, \kappa\, \overline{Q}_0
+%   \end{bmatrix}\, ,
+% \end{equation}
+% or
+% \begin{subequations}
+%   \begin{align}
+%     \Delta S &= \left(B_0 + \frac{\kappa}{2}\, \frac{\sigma_0\, \overline{Q}_1 - \sigma_1\, \overline{Q}_0}{\sigma_0\, \sigma_2 - \sigma_1^2} \right) X_0\, , \nd \\
+%     \Delta N &= -\frac{\kappa}{2}\, \frac{\sigma_2\, \overline{Q}_0 - \sigma_1\, \overline{Q}_1}{\sigma_0\, \sigma_2 - \sigma_1^2}\, X_0\, .
+%   \end{align}
+% \end{subequations}
+% If we approximate $\overline{Q}_k \approx \sigma_k\, \overline{Q}$, where $\overline{Q}$ is the relative displacement averaged over a particular set of frets, we obtain the estimates discussed in \sct{tot_freq_shift}.
 
 The setback solution given by \eqn{rms_sol} is valid for a single string, and results like those shown in \tbl{ej45_setbacks} and \fig{shift_classicalguitar_ej45_full} assume that the guitar is built such that each string --- from a particular set of strings --- has a unique saddle and nut setback. Suppose that we'd prefer to engineer a guitar with single, uniform values of both $\Delta S$ and $\Delta N$ that provide reasonable compensation across an entire string set (or an ensemble of strings from a variety of manufacturers). In this case, \eqn{rms_def} becomes
  \begin{equation}\label{eqn:rms_def_m}
 \overline{\Delta \nu}_\text{rms} \equiv \sqrt{\frac{\sum_{m = 1}^{m_\text{max}} \sum_{n = 1}^{n_\text{max}} \left[\Delta \nu^{(m)}_{n}\right]^2}{m_\text{max}\, n_\text{max}}}\, ,
  \end{equation}
-where $m$ labels the strings in the set, and \eqn{error_tot} has been updated to become
- \begin{equation}\label{eqn:error_tot_m}
-\Delta \nu^{(m)}_n \approx \frac{1200}{\ln(2)}\, \left\{ \left(\gamma_n - 1\right) \left[B_0^{(m)} - \frac{\Delta S}{X_0}\right] + \frac{\Delta N}{X_0} + \half\, \kappa^{(m)}\, Q_n \right\}\, .
- \end{equation}
+where $m$ labels the strings in the set, and \eqn{rms_dnuwz} has been updated to become
+%  \begin{equation}\label{eqn:error_tot_m}
+% \Delta \nu^{(m)}_n \approx \frac{1200}{\ln(2)}\, \left\{ \left(\gamma_n - 1\right) \left[B_0^{(m)} - \frac{\Delta S}{X_0}\right] + \frac{\Delta N}{X_0} + \half\, \kappa^{(m)}\, Q_n \right\}\, .
+%  \end{equation}
+\begin{equation}%\label{rms_dnuwz}
+  \frac{\ln(2)}{1200}\, \Delta \nu^{(m)}_n = W^{(m)}_n + Z^{(m)}_n\, ,
+\end{equation}
 If we rigorously follow the same approach that we used to arrive at \eqn{rms_sol}, in the multi-string case we obtain
- \begin{equation}\label{eqn:rms_sol_multi}
-\begin{bmatrix}
-  \Delta S \\
-  \Delta N
-\end{bmatrix} = \frac{1}{m_\text{max}}\, 
-\begin{bmatrix}
-  \sum_{m = 1}^{m_\text{max}} \Delta S^{(m)} \\
-  \sum_{m = 1}^{m_\text{max}} \Delta N^{(m)}
-\end{bmatrix}\, ,
- \end{equation}
+\begin{subequations}
+  \begin{align}
+    \Delta S &= \frac{1}{m_\text{max}}\, \sum_{m = 1}^{m_\text{max}} \Delta S^{(m)}\, , \nd \\
+    \Delta N &= \frac{1}{m_\text{max}}\, \sum_{m = 1}^{m_\text{max}} \Delta N^{(m)}\, ,
+  \end{align}
+\end{subequations}
+% \begin{equation}\label{eqn:rms_sol_multi}
+% \begin{bmatrix}
+%   \Delta S \\
+%   \Delta N
+% \end{bmatrix} = \frac{1}{m_\text{max}}\, 
+% \begin{bmatrix}
+%   \sum_{m = 1}^{m_\text{max}} \Delta S^{(m)} \\
+%   \sum_{m = 1}^{m_\text{max}} \Delta N^{(m)}
+% \end{bmatrix}\, ,
+%  \end{equation}
 where
- \begin{equation}\label{eqn:rms_sol_uni}
-\begin{bmatrix}
-  \Delta S^{(m)} \\
-  \Delta N^{(m)}
-\end{bmatrix} = \frac{X_0}{\sigma_1^2 - \sigma_0\, \sigma_2}\,
-\begin{bmatrix}
-  -\sigma_0 & \sigma_1 \\
-  -\sigma_1 & \sigma_2
-\end{bmatrix}\,
-\begin{bmatrix}
-  \sigma_2\, B_0^{(m)} + \half\, \kappa^{(m)}\, \overline{Q}_1 \\
-  \sigma_1\, B_0^{(m)} + \half\, \kappa^{(m)}\, \overline{Q}_0
-\end{bmatrix}\, .
- \end{equation}
-In other words, we can find the optimum values for both $\Delta S$ and $\Delta N$ simply by averaging the corresponding setbacks over a commercially interesting collection of string sets. 
+\begin{subequations}% \label{eqn:rms_sol}
+  \begin{align}
+    \Delta S^{(m)} &= \frac{\sigma_0\, \overline{\mathcal{Z}}^{(m)}_1 - \sigma_1\, \overline{\mathcal{Z}}^{(m)}_0}{\sigma_0\, \sigma_2 - \sigma_1^2}\, X_0\, , \nd \\
+    \Delta N^{(m)} &= -\frac{\sigma_2\, \overline{\mathcal{Z}}^{(m)}_0 - \sigma_1\, \overline{\mathcal{Z}}^{(m)}_1}{\sigma_0\, \sigma_2 - \sigma_1^2}\, X_0\, ,
+  \end{align}
+\end{subequations}
+% \begin{equation}\label{eqn:rms_sol_uni}
+% \begin{bmatrix}
+%   \Delta S^{(m)} \\
+%   \Delta N^{(m)}
+% \end{bmatrix} = \frac{X_0}{\sigma_1^2 - \sigma_0\, \sigma_2}\,
+% \begin{bmatrix}
+%   -\sigma_0 & \sigma_1 \\
+%   -\sigma_1 & \sigma_2
+% \end{bmatrix}\,
+% \begin{bmatrix}
+%   \sigma_2\, B_0^{(m)} + \half\, \kappa^{(m)}\, \overline{Q}_1 \\
+%   \sigma_1\, B_0^{(m)} + \half\, \kappa^{(m)}\, \overline{Q}_0
+% \end{bmatrix}\, .
+%  \end{equation}
+reflecting the unique values of $\kappa^{(m)}$ and $B_0^{(m)}$ for each string in each set. In other words, we can find the optimum values for both $\Delta S$ and $\Delta N$ simply by averaging the corresponding setbacks over a commercially interesting collection of string sets. 
