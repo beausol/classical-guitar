@@ -279,10 +279,20 @@ In \fig{stiffness_test}, we use \eqn{bg_n_def} and \eqn{dnu_bn} to compare the e
 
 \subsection{Total Frequency Shift\label{sct:tot_freq_shift}}
 
-Incorporating all of these effects --- and neglecting the term proportional to $B_0^2$ in \eqn{dnu_bn} --- we find that the total frequency shift is given approximately by
+Let's guide our intuition by relying on Taylor series expansions for all the effects described above. First, we'll ignore all quadratic terms in the resonant length error and adopt \eqn{rle_approx}. Next, we'll neglect the small reduction in linear mass density caused by fretting, and then rely on the approximation to the frequency shift caused by tension increases given by \eqn{tension_shift}. Finally, we'll describe the effects of bending stiffness using \eqn{dnu_bn}, \emph{neglecting} the term proportional to $B_0^2$. Incorporating all of these effects, we find that the total frequency shift is given approximately by
 \begin{equation}\label{eqn:error_tot}
   \Delta \nu_n \approx \frac{1200}{\ln(2)}\, \left[ \left(\gamma_n - 1\right) \left(B_0 - \frac{\Delta S}{X_0}\right) + \frac{\Delta N}{X_0} + \half\, \kappa\, Q_n \right]\, .
 \end{equation}
+As shown in \fig{tfe_test}, this approximation is remarkably accurate for the Classical Guitar specified by \tbl{mcg_specs} (with nonzero setbacks) and a string with the parameters listed in \tbl{string_specs}.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=5.0in]{figures/tfe_test}
+  \caption{\label{fig:tfe_test} A comparison of the total frequency shift given by \eqn{error_def} and \eqn{error_tot} for the Classical Guitar specified by \tbl{mcg_specs} with nonzero setbacks and a string with the parameters listed in \tbl{string_specs}.}
+\end{figure}
+
+
+
 How do we determine the bending stiffness $B_0$ given by \eqn{b_def} and the spring constant $\kappa$ given by \eqn{kappa_def}? It's impractical to assume that the modulus of elasticity of a particular string can be derived from published values of bulk nylon (particularly in the case of a wound string). Instead, let's assume that we know the value of $\kappa$, and then estimate the bending stiffness coefficient by comparing \eqn{b_def} and \eqn{kappa_def}, and writing $B_0$ as
 \begin{equation} \label{eqn:b_0_kappa}
   B_0 = \sqrt{\kappa}\, \frac{\rho}{2\, L_0} \approx \sqrt{\kappa}\, \frac{\rho}{2\, X_0}\, .
