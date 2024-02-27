@@ -515,8 +515,8 @@ class Guitar(object):
 
         self.setbacks(ds, dn)
 
-        self._b = b
-        self._c = c
+        self._b = self._setarr(b)
+        self._c = self._setarr(c)
         self._d = d
         
     def __str__(self):
@@ -562,7 +562,7 @@ class Guitar(object):
     # def _bn(self, n):
     #     g_n = self.gamma(n)
     #     return self._b - ((g_n - 1)/g_n) * self._dbdx * self._x0
-    def setarr(self, x):
+    def _setarr(self, x):
         string_count = self._strings.get_count()
         if isinstance(x, np.ndarray):
             assert x.shape == (string_count,), 'Input array has shape {}, not {}.'.format(x.shape, (string_count,))
@@ -575,6 +575,12 @@ class Guitar(object):
                 return np.array(x)
         else:
             return np.array(string_count * [x])
+
+    def _grid_strings(self, x):
+        return np.tile(x, (self._strings.get_count(), 1))
+    
+    def _grid_frets(self, x, fret_list):
+        return np.tile(x, (fret_list.size, 1)).T
     
     def _rms(self):
         fret_list = np.arange(1, 13)
@@ -594,13 +600,13 @@ class Guitar(object):
         if b is None:
             pass
         else:
-            self._b = b
+            self._b = self._setarr(b)
 
-        c = kwargs.get('b')
+        c = kwargs.get('c')
         if c is None:
             pass
         else:
-            self._c = c
+            self._c = self._setarr(c)
 
         d = kwargs.get('d')
         if d is None:
@@ -616,11 +622,30 @@ class Guitar(object):
         return length
 
     def l(self, fret_list):
-        ds, n = np.meshgrid(self._ds, fret_list, sparse=False, indexing='ij')
-        length = np.sqrt( (self._x0/self.gamma(n) + ds)**2 + (self._b + self._c)**2 )
+#        ds, n = np.meshgrid(self._ds, fret_list, sparse=False, indexing='ij')
+        ds = self._grid_frets(self._ds, fret_list)
+        b = self._grid_frets(self._b, fret_list)
+        c = self._grid_frets(self._c, fret_list)
+        n = self._grid_strings(fret_list)
+#        length = np.sqrt( (self._x0/self.gamma(n) + ds)**2 + (self._b + self._c)**2 )
+        length = np.sqrt( (self._x0/self.gamma(n) + ds)**2 + (b + c)**2 )
         return length
 
     def lp(self, fret_list):
+        x0 = self._x0
+        ds = self._grid_frets(self._ds, fret_list)
+        dn = self._grid_frets(self._dn, fret_list)
+        b = self._grid_frets(self._b, fret_list)
+        c = self._grid_frets(self._c, fret_list)
+        d = self._d
+        n = self._grid_strings(fret_list)
+        xn = x0 / self.gamma(n)
+        #length = np.sqrt( (dn + self._x0 - self._x0/self.gamma(n))**2 + self._bn(n)**2 )
+        length = np.sqrt( (x0 - xn + dn - d)**2 + (b + (b + c) * d / (xn + ds))**2 )
+        length += ( self.l(fret_list) / (xn + ds)  ) * d
+        return length
+
+    def lp_old(self, fret_list):
         dn, n = np.meshgrid(self._dn, fret_list, sparse=False, indexing='ij')
         ds, n = np.meshgrid(self._ds, fret_list, sparse=False, indexing='ij')
         x0 = self._x0
@@ -638,7 +663,8 @@ class Guitar(object):
         return length
     
     def qn(self, fret_list):
-        l0 = np.tile(self.l0().reshape(-1, 1), (1, fret_list.size))
+#        l0 = np.tile(self.l0().reshape(-1, 1), (1, fret_list.size))
+        l0 = self._grid_frets(self.l0(), fret_list)
         return (self.lmc(fret_list) - l0) / l0
     
     # def qnx(self, fret_list):
