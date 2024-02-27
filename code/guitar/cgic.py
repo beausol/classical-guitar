@@ -562,6 +562,19 @@ class Guitar(object):
     # def _bn(self, n):
     #     g_n = self.gamma(n)
     #     return self._b - ((g_n - 1)/g_n) * self._dbdx * self._x0
+    def setarr(self, x):
+        string_count = self._strings.get_count()
+        if isinstance(x, np.ndarray):
+            assert x.shape == (string_count,), 'Input array has shape {}, not {}.'.format(x.shape, (string_count,))
+            return x
+        elif isinstance(x, list):
+            if len(x) == 1:
+                return np.array(string_count * x)
+            else:
+                assert len(x) == string_count, 'Input list has length {}, not {}.'.format(len(x), string_count)
+                return np.array(x)
+        else:
+            return np.array(string_count * [x])
     
     def _rms(self):
         fret_list = np.arange(1, 13)
