@@ -504,20 +504,34 @@ class GuitarStrings(object):
         
 
 class Guitar(object):
-    def __init__(self, name, string_count, strings, x0, ds, dn, b, c, d=0.0):
+    def __init__(self, name, string_count, strings, x0, ds, dn, b, c, d=0.0, rgx=1.0):
         self._name = name
 
         assert string_count == strings.get_count(), "Guitar '{}'".format(self._name) + " requires {} strings, but {} were provided.".format(string_count, strings.get_count())
         self._string_list = np.arange(1, string_count + 1)
         self._strings = strings
     
-        self._x0 = x0
+        # self._x0 = x0
 
-        self.setbacks(ds, dn)
+        # self.setbacks(ds, dn)
 
-        self._b = self._setarr(b)
-        self._c = self._setarr(c)
-        self._d = d
+        # self._b = self._setarr(b)
+        # self._c = self._setarr(c)
+        # self._d = d
+        
+        # self._rgx = self._setarr(rgx)
+        
+        self.set_vars(
+            x0 = x0,
+            ds = ds,
+            dn = dn,
+            b = b,
+            c = c,
+            d = d,
+            rgx = rgx
+        )
+        
+
         
     def __str__(self):
         '''Return a string displaying the attributes of a Guitar object.
@@ -533,22 +547,36 @@ class Guitar(object):
         if np.all(np.abs(self._ds - self._ds[0]) < 1.0e-06):
             retstr += 'Saddle Setback: ' + '{:.2f} mm\n'.format(self._ds[0])
         else:
-            setback_str = 'Saddle Setback: ['
-            template = '{:.{prec}}, '
-            for m in np.arange(self._ds.size):
-                setback_str += template.format(self._ds[m], prec = 3)
-            retstr += setback_str[0:-2] + ']\n'
+            retstr += 'Saddle Setback: ' + np.array2string(self._ds[0], precision=2, floatmode='fixed', separator=', ') + ' mm\n'
+            # setback_str = 'Saddle Setback: ['
+            # template = '{:.{prec}}, '
+            # for m in np.arange(self._ds.size):
+            #     setback_str += template.format(self._ds[m], prec = 3)
+            # retstr += setback_str[0:-2] + ']\n'
         if np.all(np.abs(self._dn - self._dn[0]) < 1.0e-06):
             retstr += 'Nut Setback: ' + '{:.2f} mm\n'.format(self._dn[0])
         else:
-            setback_str = 'Nut Setback: ['
-            template = '{:.{prec}}, '
-            for m in np.arange(self._dn.size):
-                setback_str += template.format(self._dn[m], prec = 2)
-            retstr += setback_str[0:-2] + ']\n'
-        retstr += 'b: ' + '{:.1f} mm\n'.format(self._b)
-        retstr += 'c: ' + '{:.1f} mm\n'.format(self._c)
+            retstr += 'Nut Setback: ' + np.array2string(self._dn[0], precision=2, floatmode='fixed', separator=', ') + ' mm\n'
+            # setback_str = 'Nut Setback: ['
+            # template = '{:.{prec}}, '
+            # for m in np.arange(self._dn.size):
+            #     setback_str += template.format(self._dn[m], prec = 2)
+            # retstr += setback_str[0:-2] + ']\n'
+        if np.all(np.abs(self._b - self._b[0]) < 1.0e-06):
+            retstr += 'b: ' + '{:.2f} mm\n'.format(self._b[0])
+        else:
+            retstr += 'b: ' + np.array2string(self._b, precision=2, floatmode='fixed', separator=', ') + ' mm\n'
+        # retstr += 'c: ' + '{:.1f} mm\n'.format(self._c)
+        # retstr += 'd: ' + '{:.1f} mm\n'.format(self._d)
+        if np.all(np.abs(self._c - self._c[0]) < 1.0e-06):
+            retstr += 'c: ' + '{:.2f} mm\n'.format(self._c[0])
+        else:
+            retstr += 'c: ' + np.array2string(self._c, precision=2, floatmode='fixed', separator=', ') + ' mm\n'
         retstr += 'd: ' + '{:.1f} mm\n'.format(self._d)
+        if np.all(np.abs(self._rgx - self._rgx[0]) < 1.0e-06):
+            retstr += 's: ' + '{:.2f}\n'.format(self._rgx[0])
+        else:
+            retstr += 's: ' + np.array2string(self._rgx, precision=2, floatmode='fixed', separator=', ') + '\n'
         retstr += self._strings.__str__() + "\n"
         # rmsstr = 'RMS Frequency Errors: ['#+ '{:.2f} cents\n'.format(self._rms())
         # template = '{:.{prec}}, '
@@ -576,10 +604,10 @@ class Guitar(object):
         else:
             return np.array(string_count * [x])
 
-    def _grid_strings(self, x):
+    def _tile_strings(self, x):
         return np.tile(x, (self._strings.get_count(), 1))
     
-    def _grid_frets(self, x, fret_list):
+    def _tile_frets(self, x, fret_list):
         return np.tile(x, (fret_list.size, 1)).T
     
     def _rms(self):
@@ -589,13 +617,25 @@ class Guitar(object):
         
         return rms
 
-    def set_params(self, **kwargs):
+    def set_vars(self, **kwargs):
         x0 = kwargs.get('x0')
         if x0 is None:
             pass
         else:
             self._x0 = x0
         
+        ds = kwargs.get('ds')
+        if ds is None:
+            pass
+        else:
+            self._ds = self._setarr(ds)
+
+        dn = kwargs.get('dn')
+        if dn is None:
+            pass
+        else:
+            self._dn = self._setarr(dn)
+
         b = kwargs.get('b')
         if b is None:
             pass
@@ -614,6 +654,12 @@ class Guitar(object):
         else:
             self._d = d
 
+        rgx = kwargs.get('rgx')
+        if rgx is None:
+            pass
+        else:
+            self._rgx = self._setarr(rgx)
+
     def gamma(self, n):
         return 2.0**(n/12.0)
 
@@ -623,22 +669,22 @@ class Guitar(object):
 
     def l(self, fret_list):
 #        ds, n = np.meshgrid(self._ds, fret_list, sparse=False, indexing='ij')
-        ds = self._grid_frets(self._ds, fret_list)
-        b = self._grid_frets(self._b, fret_list)
-        c = self._grid_frets(self._c, fret_list)
-        n = self._grid_strings(fret_list)
+        ds = self._tile_frets(self._ds, fret_list)
+        b = self._tile_frets(self._b, fret_list)
+        c = self._tile_frets(self._c, fret_list)
+        n = self._tile_strings(fret_list)
 #        length = np.sqrt( (self._x0/self.gamma(n) + ds)**2 + (self._b + self._c)**2 )
         length = np.sqrt( (self._x0/self.gamma(n) + ds)**2 + (b + c)**2 )
         return length
 
     def lp(self, fret_list):
         x0 = self._x0
-        ds = self._grid_frets(self._ds, fret_list)
-        dn = self._grid_frets(self._dn, fret_list)
-        b = self._grid_frets(self._b, fret_list)
-        c = self._grid_frets(self._c, fret_list)
+        ds = self._tile_frets(self._ds, fret_list)
+        dn = self._tile_frets(self._dn, fret_list)
+        b = self._tile_frets(self._b, fret_list)
+        c = self._tile_frets(self._c, fret_list)
         d = self._d
-        n = self._grid_strings(fret_list)
+        n = self._tile_strings(fret_list)
         xn = x0 / self.gamma(n)
         #length = np.sqrt( (dn + self._x0 - self._x0/self.gamma(n))**2 + self._bn(n)**2 )
         length = np.sqrt( (x0 - xn + dn - d)**2 + (b + (b + c) * d / (xn + ds))**2 )
@@ -664,7 +710,7 @@ class Guitar(object):
     
     def qn(self, fret_list):
 #        l0 = np.tile(self.l0().reshape(-1, 1), (1, fret_list.size))
-        l0 = self._grid_frets(self.l0(), fret_list)
+        l0 = self._tile_frets(self.l0(), fret_list)
         return (self.lmc(fret_list) - l0) / l0
     
     # def qnx(self, fret_list):
@@ -672,16 +718,26 @@ class Guitar(object):
     #     return retval
     
     def freq_shifts(self, fret_list):
-        l_0 = np.tile(self.l0().reshape(-1, 1), (1, fret_list.size))
-        kappa, n_2d = np.meshgrid(self._strings.get_kappa(), fret_list, sparse=False, indexing='ij')
-        b_0, n_2d = np.meshgrid(self._strings.get_stiffness(), fret_list, sparse=False, indexing='ij')
+        l_0 = self._tile_frets(self.l0(), fret_list)
+        kappa = self._tile_frets(self._strings.get_kappa(), fret_list)
+        b_0 = self._tile_frets(self._strings.get_stiffness() * self._rgx , fret_list)
+        n = self._tile_strings(fret_list)
         
-        rle = 1200 * np.log2( l_0 / (self.gamma(n_2d) * self.l(fret_list)) )
+        # l_0 = np.tile(self.l0().reshape(-1, 1), (1, fret_list.size))
+        # kappa, n_2d = np.meshgrid(self._strings.get_kappa(), fret_list, sparse=False, indexing='ij')
+        # b_0, n_2d = np.meshgrid(self._strings.get_stiffness(), fret_list, sparse=False, indexing='ij')
+        
+        # rle = 1200 * np.log2( l_0 / (self.gamma(n_2d) * self.l(fret_list)) )
+        # mde =  600 * np.log2( 1 + self.qn(fret_list) )
+        # tse =  600 * np.log2( 1 + kappa * self.qn(fret_list) )
+        # #bse = 1200 * np.log2( (1 + self.gamma(n_2d) * b_0) / (1 + b_0) )
+        # bse = 1200 * np.log2( (1 + self.gamma(n_2d) * b_0 + (1.0 + 0.5 * np.pi**2) * (self.gamma(n_2d) * b_0)**2)
+        #                       / (1 + b_0 + (1.0 + 0.5 * np.pi**2) * b_0**2) )
+        rle = 1200 * np.log2( l_0 / (self.gamma(n) * self.l(fret_list)) )
         mde =  600 * np.log2( 1 + self.qn(fret_list) )
         tse =  600 * np.log2( 1 + kappa * self.qn(fret_list) )
-        #bse = 1200 * np.log2( (1 + self.gamma(n_2d) * b_0) / (1 + b_0) )
-        bse = 1200 * np.log2( (1 + self.gamma(n_2d) * b_0 + (1.0 + 0.5 * np.pi**2) * (self.gamma(n_2d) * b_0)**2)
-                              / (1 + b_0 + (1.0 + 0.5 * np.pi**2) * b_0**2) )
+        bse = 1200 * np.log2( (1 + self.gamma(n) * b_0 + (1.0 + 0.5 * np.pi**2) * (self.gamma(n) * b_0)**2)
+                            / (1 + b_0 + (1.0 + 0.5 * np.pi**2) * b_0**2) )
         
         shifts = rle + mde + tse + bse
         
@@ -709,16 +765,16 @@ class Guitar(object):
         
         return self._ds, self._dn
 
-    def setbacks(self, ds, dn):
-        string_count = self._strings.get_count()
-        if len(ds) == 1:
-            self._ds = np.array(ds * string_count)
-        else:
-            self._ds = np.array(ds)
-        if len(dn) == 1:
-            self._dn = np.array(dn * string_count)
-        else:
-            self._dn = np.array(dn)
+    # def setbacks(self, ds, dn):
+    #     string_count = self._strings.get_count()
+    #     if len(ds) == 1:
+    #         self._ds = np.array(ds * string_count)
+    #     else:
+    #         self._ds = np.array(ds)
+    #     if len(dn) == 1:
+    #         self._dn = np.array(dn * string_count)
+    #     else:
+    #         self._dn = np.array(dn)
 
     def plot_shifts_old(self, max_fret=12, savepath=None, filename=None):
         fret_list = np.arange(0, max_fret + 1)
