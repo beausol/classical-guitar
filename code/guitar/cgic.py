@@ -408,7 +408,7 @@ class GuitarStrings(object):
             stiffness.append(string.get_stiffness())
         return np.array(stiffness)
 
-    def compensate(self, g_n, q_n):
+    def compensate(self, g_n, q_n, s):
         def sigma_n(g_n, k):
             return np.sum((g_n - 1)**k)
 
@@ -423,7 +423,7 @@ class GuitarStrings(object):
 
         idx_list = np.arange(0, self.get_count())
         kappa = self.get_kappa()
-        b0 = self.get_stiffness()
+        b0 = self.get_stiffness() * s
         ds = np.zeros(self.get_count())
         dn = np.zeros(self.get_count())
 #        for string, idx in zip(self._strings, idx_list):
@@ -759,7 +759,7 @@ class Guitar(object):
         g_n = self.gamma(fret_list)
         q_n = self.qn(fret_list)[0]
 
-        ds, dn = self._strings.compensate(g_n, q_n)
+        ds, dn = self._strings.compensate(g_n, q_n, self._rgx)
         self._ds = self._x0 * ds
         self._dn = self._x0 * dn
         
