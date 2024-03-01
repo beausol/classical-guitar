@@ -751,7 +751,7 @@ class Guitar(object):
     #     r = self._strings.estimate_r(delta_nu, g, q, self._ds, self._dn, self._x0)
     #     return r
     
-    def compensate(self, max_fret:int):
+    def compensate_old(self, max_fret:int):
         self._ds = np.array([0.0] * self._strings.get_count())
         self._dn = np.array([0.0] * self._strings.get_count())
         
@@ -764,6 +764,60 @@ class Guitar(object):
         self._dn = self._x0 * dn
         
         return self._ds, self._dn
+
+    def compensate(self, max_fret:int):
+        fret_list = np.arange(1, max_fret + 1)
+
+        n = self._tile_strings(fret_list)
+
+        self._ds = np.zeros(n.shape)
+        self._dn = np.zeros(n.shape)
+
+        kappa = self._tile_frets(self._strings.get_kappa(), fret_list)
+        b_0 = self._tile_frets(self._strings.get_stiffness() * self._rgx , fret_list)
+
+        mde =  600 * np.log2( 1 + self.qn(fret_list) )
+        tse =  600 * np.log2( 1 + kappa * self.qn(fret_list) )
+        bse = 1200 * np.log2( (1 + self.gamma(n) * b_0 + (1.0 + 0.5 * np.pi**2) * (self.gamma(n) * b_0)**2)
+                            / (1 + b_0 + (1.0 + 0.5 * np.pi**2) * b_0**2) )
+        
+        z_n = mde + tse + bse
+        
+        def sigma_k(fret_list, k):
+            return np.sum((self.gamma(fret_list) - 1)**k)
+
+        sigma_0 = max_fret
+        sigma_1 = sigma_k(fret_list, 1)
+        sigma_2 = sigma_k(fret_list, 2)
+        
+        zbar_0 = np.sum(z_n, axis=1)
+        zbar_1 = np.sum((self.gamma(fret_list) - 1) * z_n, axis=1)
+        
+        det = sigma_0 * sigma_2 - sigma_1**2
+        ds =  ( sigma_0 * zbar_1 - sigma_1 * zbar_0 ) * self._x0 / det
+        dn = -( sigma_2 * zbar_0 - sigma_1 * zbar_1 ) * self._x0 / det
+
+        self._ds = ds
+        self._dn = dn
+        
+        return ds, dn
+
+    def approximate(self, max_fret:int):
+        x_0 = self._x0
+        b = self._b
+        c = self._c
+        d = self._d
+        kappa = self._strings.get_kappa()
+        b_0 = self._strings.get_stiffness() * self._rgx
+
+        fret_d = kappa * (2*b + c)**2 * d / x_0**2
+        ds = b_0 * x_0 + kappa * ( (b + c)**2 - 4 * b**2 ) / (4 * x_0) - fret_d
+        dn = -(kappa/2) * (7 * b**2 + 2*b*c)/(2 * x_0) - fret_d
+
+        self._ds = ds
+        self._dn = dn
+        
+        return ds, dn
 
     # def setbacks(self, ds, dn):
     #     string_count = self._strings.get_count()
