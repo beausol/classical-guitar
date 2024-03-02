@@ -766,6 +766,9 @@ class Guitar(object):
         return self._ds, self._dn
 
     def compensate(self, max_fret:int):
+        def sigma_k(fret_list, k):
+            return np.sum((self.gamma(fret_list) - 1)**k)
+
         fret_list = np.arange(1, max_fret + 1)
 
         n = self._tile_strings(fret_list)
@@ -783,9 +786,6 @@ class Guitar(object):
         
         z_n = mde + tse + bse
         
-        def sigma_k(fret_list, k):
-            return np.sum((self.gamma(fret_list) - 1)**k)
-
         sigma_0 = max_fret
         sigma_1 = sigma_k(fret_list, 1)
         sigma_2 = sigma_k(fret_list, 2)
