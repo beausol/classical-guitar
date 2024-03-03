@@ -140,7 +140,12 @@ where $\mathcal{L}_n = L_n + L_n^\prime$. After judicious use of similar triangl
 \begin{equation} \label{eqn:l_p_def}
   L^\prime_n = \frac{L_n}{X_n + \Delta S}\, d + \sqrt{\left(X_0 - X_n + \Delta N - d\right)^2 + \left(b + \frac{b + c}{X_n + \Delta S}\, d\right)^2}\, .
 \end{equation}
-In this case, we won't bother with a Taylor series expansion that includes $d \ne 0$, because it isn't significantly more illuminating than \eqn{l_p_def}.
+When $d \ll X_0$, we can expand $Q_n$ to third order in all small distances and find
+\begin{equation} \label{eqn:q_n_approx}
+  Q_n \approx \frac{\left[ \gamma_n\, b + (\gamma_n - 1)\, c \right]^2}{2\, (\gamma_n - 1)\, X_0^2} \left( 1 + \frac{\gamma_n^2}{\gamma_n - 1}\, \frac{d}{X_0} \right)\, ,
+\end{equation}
+Although it is arguable whether this approximation is simpler than the exact expression given by \eqn{q_n_def}, it is quite clear that $Q_n$ does not depend significantly on the setbacks $\Delta S$ or $\Delta N$.
+% In this case, we won't bother with a Taylor series expansion that includes $d \ne 0$, because it isn't significantly more illuminating than \eqn{l_p_def}.
 
 % Since we expect that $Q_n \ll 1$, we can approximate the second term in the final line of \eqn{error_def} as
 %  \begin{equation} \label{eqn:lmd_error}
@@ -153,7 +158,28 @@ In this case, we won't bother with a Taylor series expansion that includes $d \n
 % L^\prime_n = \sqrt{\left(X_0 - X_n + \Delta N\right)^2 + b^2} \approx X_0 - X_n + \Delta N + \frac{b^2}{2 \left(X_0 - X_n\right)}\, ,
 %  \end{equation}
 
-However, when $d = 0$, $Q_n$ is approximately
+Many luthiers provide ``relief'' to enlarge the effective height of the string (particularly for the wound bass strings) as the fret number grows to provide clearance for vibration amplitude at higher volume. In practice, this is accomplished by pivoting the fret board shown in \fig{guitar_schematic} clockwise about $x = X_0$, increasing the height of the string above fret $n$ by an amount
+\begin{equation}
+  \begin{split}
+    \Delta y_n &= m \left(X_0 - X_n\right) \\
+    &= \frac{\gamma_n - 1}{\gamma_n}\, m\, X_0 \\
+    &= \frac{\gamma_n - 1}{\gamma_n}\, 2\, \Delta y_{12}\, ,
+  \end{split}
+\end{equation}
+where $\Delta y_{12}$ is the relief at the twelfth fret and $m = 2\, \Delta y_{12} / X_0 \ge 0$ is the downward slope of the fret board. If we update \eqn{l_n_def} and \eqn{l_p_def} (with $d = 0$), then we obtain
+\begin{subequations}
+  \begin{align}
+    L_n &= \sqrt{\left(X_n + \Delta S\right)^2 + (b + \Delta y_n + c)^2}\, , \nd \\
+    L^\prime_n &= \sqrt{\left(X_0 - X_n + \Delta N\right)^2 + \left(b + \Delta y_n\right)^2}\, .
+  \end{align}
+\end{subequations}
+These equations indicate that we could modify the approximation for $Q_n$ given by \eqn{q_n_approx} by replacing $b \longrightarrow b + \Delta y_n$, which results in the numerator
+\begin{equation}
+  \gamma_n\, b + (\gamma_n - 1)\, c \longrightarrow \gamma_n\, b + (\gamma_n - 1) \left(c + 2\, \Delta y_{12}\right)\, ,
+\end{equation}
+indicating that the intuitive substitution $c \longrightarrow c + 2\, \Delta y_{12}$ captures the effect of relief. (Note that this should \emph{not} be done when computing the length $L_0$ of the open string!)
+
+%However, when $d = 0$, $Q_n$ is approximately
 % \begin{equation}
 %     \begin{split}
 %         L^\prime_n &= \frac{L_n}{X_n + \Delta S}\, d + \sqrt{\left(X_0 - X_n + \Delta N - d\right)^2 + \left(b + \frac{b + c}{X_n + \Delta S}\, d\right)^2} \\
@@ -161,10 +187,9 @@ However, when $d = 0$, $Q_n$ is approximately
 %     \end{split}
 % \end{equation}
 % to first order in $d/X_0$. Therefore
-\begin{equation} \label{eqn:q_n_approx}
-  Q_n \approx \frac{\left[ \gamma_n\, b + (\gamma_n - 1)\, c \right]^2}{2\, (\gamma_n - 1)\, X_0^2}\, ,
-\end{equation}
-accurate to second order in all small distances. This result suggests that the relative displacement does not depend significantly on the setbacks $\Delta S$ and $\Delta N$. In \fig{qn_test}, we plot a comparison between the exact expression for the normalized displacement $Q_n$ given by \eqn{q_n_def} with the approximate expression given by \eqn{q_n_approx} for $d = 0$. Here the guitar has the specifications listed in \tbl{mcg_specs}: the exact expression uses $\Delta S = 1.9$~mm and $\Delta N = -0.37$~mm, and the approximate curve ignores the setbacks entirely. We have also compared \eqn{q_n_def} with both these nonzero and zero setbacks when $d = 10$~mm, and again we see that the dependence of $Q_n$ on the setback values is minimal. We have scaled the relative displacement by a factor of $10^6$ for convenience. For example, at the first fret with $d = 10$~mm, $Q_1 \approx 47 \times 10^{-6}$. This value corresponds to a net stretch of the string at the first fret of $Q_1\, L_0 = 0.03$~mm. Ignoring the setbacks at the $12^{\textrm{th}}$ fret increases $Q_{12}$ by 1\%, a completely negligible amount. For the same parameters, when $d = 10$~mm, $\Delta \nu_{1} \approx 0.04$~cents, and is smaller at all other frets. Therefore, in general the shift due to linear mass density can be neglected without significant loss of accuracy.
+% accurate to second order in all small distances. This result suggests that the relative displacement does not depend significantly on the setbacks $\Delta S$ and $\Delta N$.
+
+In \fig{qn_test}, we plot a comparison between the exact expression for the normalized displacement $Q_n$ given by \eqn{q_n_def} with the approximate expression given by \eqn{q_n_approx} for two values of $d$. Here the guitar has the specifications listed in \tbl{mcg_specs}: the exact curves use $\Delta S = 1.9$~mm and $\Delta N = -0.37$~mm, and the approximate curves ignore the setbacks entirely. The slight difference between the exact and approximate values of $Q_n$ for $d = 10$~mm at the first fret can be eliminated if we include a term quadratic in $d$ in \eqn{q_n_approx}. As predicted above, we see that the dependence of $Q_n$ on the setback values is minimal. We have scaled the relative displacement by a factor of $10^6$ for convenience. For example, at the first fret with $d = 10$~mm, $Q_1 \approx 47 \times 10^{-6}$. This value corresponds to a net stretch of the string at the first fret of $Q_1\, L_0 = 0.03$~mm. Ignoring the setbacks at the $12^{\textrm{th}}$ fret increases $Q_{12}$ by 1\%, a completely negligible amount. For the same parameters, when $d = 10$~mm, $\Delta \nu_{1} \approx 0.04$~cents, and is smaller at all other frets. Therefore, in general the shift due to linear mass density can be neglected without significant loss of accuracy.
 
 % We can use this result and \eqn{q_n_approx} to determine the increase in the relative displacement $Q_n$; we find
 %  % \begin{equation} %\label{eqn:delta_q_n_approx}
@@ -279,26 +304,26 @@ In \fig{stiffness_test}, we use \eqn{bg_n_def} and \eqn{dnu_bn} to compare the e
 
 \subsection{Total Frequency Shift\label{sct:tot_freq_shift}}
 
-Let's guide our intuition by relying on Taylor series expansions for all the effects described above. First, we'll ignore all quadratic terms in the resonant length error and adopt \eqn{rle_approx}. Next, we'll neglect the small reduction in linear mass density caused by fretting, and then rely on the approximation to the frequency shift caused by tension increases given by \eqn{tension_shift}. Finally, we'll describe the effects of bending stiffness using \eqn{dnu_bn}, \emph{neglecting} the term proportional to $B_0^2$. Incorporating all of these effects, we find that the total frequency shift is given approximately by
+Let's guide our intuition and prepare for the development of approximate expressions for $\Delta S$ and $\Delta N$ by relying on Taylor series expansions for all the effects described above. First, we'll ignore all quadratic terms in the resonant length error and adopt \eqn{rle_approx}. Next, we'll neglect the small reduction in linear mass density caused by fretting, and then rely on the approximation to the frequency shift caused by tension increases given by \eqn{tension_shift}. Finally, we'll describe the effects of bending stiffness using \eqn{dnu_bn}, \emph{neglecting} the term proportional to $B_0^2$. Incorporating all of these terms, we find that the total frequency shift is given approximately by
 \begin{equation}\label{eqn:error_tot}
   \Delta \nu_n \approx \frac{1200}{\ln(2)}\, \left[ \left(\gamma_n - 1\right) \left(B_0 - \frac{\Delta S}{X_0}\right) + \frac{\Delta N}{X_0} + \half\, \kappa\, Q_n \right]\, .
 \end{equation}
-As shown in \fig{tfe_test}, this approximation is remarkably accurate for the Classical Guitar specified by \tbl{mcg_specs} (with nonzero setbacks) and a string with the parameters listed in \tbl{string_specs}.
+But how do we determine the bending stiffness $B_0$ given by \eqn{b_def} and the spring constant $\kappa$ given by \eqn{kappa_def} for a particular string?
+% As shown in \fig{tfe_test}, this approximation is remarkably accurate for the Classical Guitar specified by \tbl{mcg_specs} (with nonzero setbacks) and a string with the parameters listed in \tbl{string_specs}.
 
-\begin{figure}
-  \centering
-  \includegraphics[width=5.0in]{figures/tfe_test}
-  \caption{\label{fig:tfe_test} A comparison of the total frequency shift given by \eqn{error_def} and \eqn{error_tot} for the Classical Guitar specified by \tbl{mcg_specs} (with nonzero setbacks) and a string with the parameters listed in \tbl{string_specs}.}
-\end{figure}
+% \begin{figure}
+%   \centering
+%   \includegraphics[width=5.0in]{figures/tfe_test}
+%   \caption{\label{fig:tfe_test} A comparison of the total frequency shift given by \eqn{error_def} and \eqn{error_tot} for the Classical Guitar specified by \tbl{mcg_specs} (with nonzero setbacks) and a string with the parameters listed in \tbl{string_specs}.}
+% \end{figure}
 
 
 
-How do we determine the bending stiffness $B_0$ given by \eqn{b_def} and the spring constant $\kappa$ given by \eqn{kappa_def}? It's impractical to assume that the modulus of elasticity of a particular string can be derived from published values of bulk nylon (particularly in the case of a wound string). Instead, let's assume that we know the value of $\kappa$, and then estimate the bending stiffness coefficient by comparing \eqn{b_def} and \eqn{kappa_def}, and writing $B_0$ as
+It's impractical to assume that the modulus of elasticity of a particular string can be derived from published values of bulk nylon (particularly in the case of a wound string). Instead, let's assume that we know the value of $\kappa$, and then estimate the bending stiffness coefficient by comparing \eqn{b_def} and \eqn{kappa_def}, and writing $B_0$ as
 \begin{equation} \label{eqn:b_0_kappa}
   B_0 = \sqrt{\kappa}\, \frac{\rho}{2\, L_0} \approx \sqrt{\kappa}\, \frac{\rho}{2\, X_0}\, .
 \end{equation}
-
-To measure $\kappa$, in \sct{exp} we will conduct an experiment that measures the change in the frequency of an open string --- pinned at one end, and clamped at the other --- as we make slight changes to its length~\cite{ref:byers1996cgi,ref:varieschi2010icf}. From \eqn{f_m_stiff}, the derivative of the fundamental frequency of an open string is
+To measure $\kappa$, in \sct{exp} we will conduct an experiment that measures the change in the frequency of an open string as we make slight changes to its length~\cite{ref:byers1996cgi,ref:varieschi2010icf}. From \eqn{f_m_stiff}, the derivative of the fundamental frequency of an open string is
  \begin{equation}
  \begin{split}
 \frac{d\, f}{d\, L} &= \frac{f}{L} \left( -1 + \frac{L}{2\, T}\, \frac{d\, T}{d\, L} - \frac{L}{2\, \mu}\, \frac{d\, \mu}{d\, L} + \frac{L}{1 + B}\, \frac{d\, B}{d\, L} \right) \\
@@ -316,14 +341,14 @@ where we have used the analyses above to determine that
  \end{subequations}
 and we have again assumed that $B_0 \ll 1$. Therefore, following Byers~\cite{ref:byers1996cgi,ref:varieschi2010icf}, we define the parameter $R$ to be
  \begin{equation}\label{eqn:r_def}
-R \equiv \frac{d\, \ln(f)}{d\, \ln(L)} = \frac{L}{f}\, \frac{d\, f}{d\, L} = \half\, (\kappa - 1)\, ,
+R \equiv \frac{L}{f}\, \frac{d\, f}{d\, L} = \half\, (\kappa - 1)\, ,
  \end{equation}
 which gives
  \begin{equation} \label{eqn:kappa_r}
 \kappa = 2\, R + 1\, .
  \end{equation}
 
-We can estimate the typical value of $R$ for nylon classical guitar strings through a simple observation. On a classical guitar with a scale length of 650~mm, we can usually tune an open string a full step by winding the tuner/machine head three half turns. As we shall see below, this increases or decreases the string length above the first fret by about 3~mm, where the corresponding length of the open string from the saddle to the first fret is about 614~mm. Since a full step is (by definition) 200~cents, \eqn{cents_approx} tells us that
+We can anticipate the typical value of $R$ for a nylon classical guitar string through a simple observation. On a classical guitar with a scale length of 650~mm, we can usually tune an open string a full step by winding the tuner/machine head three half turns. As we shall see below, this increases or decreases the string length above the first fret by about 3~mm, where the corresponding length of the open string from the saddle to the first fret is about 614~mm. Since a full step is (by definition) 200~cents, \eqn{cents_approx} tells us that
 \begin{equation}
   \frac{\Delta f}{f} \approx \frac{\ln(2)}{1200}\, \Delta \nu = \frac{200}{1731} = 0.116\, .
 \end{equation}
@@ -331,23 +356,23 @@ In this case, we estimate $R$ to be
 \begin{equation}
   R \approx \frac{614}{3}\, 0.116 = 24\, ,
 \end{equation}
-giving $\kappa \approx 49$, close to the values listed in \tbl{string_specs}. The corresponding open-string bending stiffness is computed using \eqn{b_0_kappa} with the scale length given in \tbl{mcg_specs}. In \fig{uncomp}, we plot the total frequency shift given by \eqn{error_def} for this string on the Classical Guitar with $\Delta S = \Delta N = 0$~mm. Note that the string is sharp at every fret, but even a large nonzero value of $d$ is only important at the first fret.
+giving $\kappa \approx 49$, close to the values listed in \tbl{string_specs}. The corresponding open-string bending stiffness is computed using \eqn{b_0_kappa} with the scale length given in \tbl{mcg_specs}. In \fig{uncomp}, we compare the total frequency shifts predicted by \eqn{error_def} and \eqn{error_tot} for this string on the Classical Guitar with $\Delta S = \Delta N = 0$~mm at two different values of $d$. Note that the string is sharp at every fret, but even a large nonzero value of $d$ is only important at the first fret. The bending stiffness is negligible at the first fret, but accounts for 65\% of the shift at the 12$^\textrm{th}$ fret.S The close agreement between the exact and approximate expressions for the frequency shifts gives us confidence that the expressions we derive for the setbacks in \sct{comp} will be useful.
 
 \begin{figure}
   \centering
   \includegraphics[width=5.0in]{figures/uncomp}
-  \caption{\label{fig:uncomp} The total frequency shift given by \eqn{error_def} for the Classical Guitar specified by \tbl{mcg_specs} with $\Delta S = \Delta N = 0$~mm, and a string with the parameters listed in \tbl{string_specs}.}
+  \caption{\label{fig:uncomp} The total frequency shifts predicted by \eqn{error_def} and \eqn{error_tot} for the Classical Guitar specified by \tbl{mcg_specs} with $\Delta S = \Delta N = 0$~mm, and a string with the parameters listed in \tbl{string_specs}.}
 \end{figure}
 
-\Eqn{error_tot} provides us with a clue on how to modify this guitar to improve the tone of this string. We see that the bending stiffness and the increase in string tension due to fretting sharpen the pitch, but that we can reduce these effects with a positive saddle setback and negative nut setback. In fact, a simple compensation strategy would be to choose
-\begin{subequations} \label{eqn:comp_approx}
-  \begin{align}
-    \Delta S &= B_0\, X_0 \approx \frac{\sqrt{\kappa}}{2}\, \rho\, , \nd \\
-    \Delta N &= - \kappa\, X_0\, \overline{Q} / 2\, ,
-  \end{align}
-\end{subequations}
-where we have applied \eqn{b_0_kappa} and defined $\overline{Q}$ as the relative displacement averaged over a particular set of frets to offset string stiffness and tension, respectively.  If we select the first twelve frets, then from \eqn{q_n_approx} with $d = 0$~mm we obtain
-\begin{equation} \label{eqn:qbar_approx}
-  \overline{Q} \approx \frac{77.9\, b^2 + 35.6\, b\, c + 5.82\, c^2}{24\, X_0^2}\, .
-\end{equation}
-In the case of the parameters used in \fig{uncomp}, we follow this simple approximate approach to estimate $\Delta S = 1.54$~mm, and $\Delta N = -0.51$~mm. We'll rely on a more accurate method for compensation in \sct{comp}, but we'll obtain results that are similar to those found using this basic approach. In particular, since a \emph{tunable} guitar string has $\sqrt{\kappa} \approx 7.1 \pm 0.3$, we'll discover that the saddle setback is primarily determined by the radius of the string.
+% \Eqn{error_tot} provides us with a clue on how to modify this guitar to improve the tone of this string. We see that the bending stiffness and the increase in string tension due to fretting sharpen the pitch, but that we can reduce these effects with a positive saddle setback and negative nut setback. In fact, a simple compensation strategy would be to choose
+% \begin{subequations} \label{eqn:comp_approx}
+%   \begin{align}
+%     \Delta S &= B_0\, X_0 \approx \frac{\sqrt{\kappa}}{2}\, \rho\, , \nd \\
+%     \Delta N &= - \kappa\, X_0\, \overline{Q} / 2\, ,
+%   \end{align}
+% \end{subequations}
+% where we have applied \eqn{b_0_kappa} and defined $\overline{Q}$ as the relative displacement averaged over a particular set of frets to offset string stiffness and tension, respectively.  If we select the first twelve frets, then from \eqn{q_n_approx} with $d = 0$~mm we obtain
+% \begin{equation} \label{eqn:qbar_approx}
+%   \overline{Q} \approx \frac{77.9\, b^2 + 35.6\, b\, c + 5.82\, c^2}{24\, X_0^2}\, .
+% \end{equation}
+% In the case of the parameters used in \fig{uncomp}, we follow this simple approximate approach to estimate $\Delta S = 1.54$~mm, and $\Delta N = -0.51$~mm. We'll rely on a more accurate method for compensation in \sct{comp}, but we'll obtain results that are similar to those found using this basic approach. In particular, since a \emph{tunable} guitar string has $\sqrt{\kappa} \approx 7.1 \pm 0.3$, we'll discover that the saddle setback is primarily determined by the radius of the string.
