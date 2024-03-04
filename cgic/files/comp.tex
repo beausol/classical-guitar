@@ -44,13 +44,13 @@ We'll use \eqn{error_tot} and the approximation for $Q_n$ given by \eqn{q_n_appr
   B_0 - \frac{\Delta S}{X_0} + \frac{\kappa}{4\, X_0^2} \left[ (b + c)^2 - \frac{b^2}{(\gamma_n - 1)^2} \right] = 0\, .
 \end{equation}
 The average value of $(\gamma_n - 1)^{-2}$ over the 3$^\textrm{rd}$ through 12$^\textrm{th}$ frets is about $7$. Adopting this value, we substitute the resulting solution for $\Delta S$ back into \eqn{error_tot} with $n = 12$ and $d \ne 0$, and solve for $\Delta N$. We finally obtain
-\begin{subequations}
+\begin{subequations} \label{eqn:comp_approx}
   \begin{align}
-    \Delta S &= B_0\, X_0 + \frac{\kappa}{4\, X_0} \left[(b + c)^2 - 7\, b^2\right] - \frac{2\, \kappa}{X_0^2}\, (2\, b + c)^2\, d\, , \nd \\
-    \Delta N &= -\frac{\kappa}{2\, X_0}\, (5\, b + c)\, b - \frac{2\, \kappa}{X_0^2}\, (2\, b + c)^2\, d\, .
+    \label{eqn:comp_approx_ds} \Delta S &= B_0\, X_0 + \frac{\kappa}{4\, X_0} \left[(b + c)^2 - 7\, b^2\right] - \frac{2\, \kappa}{X_0^2}\, (2\, b + c)^2\, d\, , \nd \\
+    \label{eqn:comp_approx_dn} \Delta N &= -\frac{\kappa}{2\, X_0}\, (5\, b + c)\, b - \frac{2\, \kappa}{X_0^2}\, (2\, b + c)^2\, d\, .
   \end{align}
 \end{subequations}
-Note that we have subtracted the same correction for $d \ne 0$ in $\Delta N$ to $\Delta S$, because in our numerical studies using \eqn{error_def} and the RMS + BFGS method we found that $\Delta S - \Delta N$ had the constant value $B_0\, X_0 + (\kappa/4\, X_0)\, (2 b + c)^2$ across all of our string sets for $0 \le d \le 10$~mm. These approximations are remarkably accurate given their origin: when $d = 0$~mm, the values of the setbacks they predict are within 1\% of the numerical predictions, and when $d = 10$~mm they are within 2\%.
+Note that we have subtracted the same correction for $d \ne 0$ in $\Delta N$ from $\Delta S$, because in our numerical studies using \eqn{error_def} and the RMS + BFGS method we found that $\Delta S - \Delta N$ had a constant value of approximately $B_0\, X_0 + (\kappa/4\, X_0)\, (2 b + c)^2$ across all of our string sets for $0 \le d \le 10$~mm. These approximations are remarkably accurate for our string sets given their origin: even when $d = 10$~mm, they predict values of the saddle setback that differ from the numerical predictions by less than $0.15$~mm (with a mean error of $0.07$~mm), and for the nut setback the maximum error is $0.04$~mm. Therefore, we can rely on \eqn{comp_approx} to adjust the setbacks for nonzero values of $d$; it is also clear from \eqn{comp_approx_dn} that the nut setback can be reduced significantly by choosing a relatively small value of $b$.
 
 % In this context --- referring to \eqn{error_tot} --- we follow \eqn{comp_approx} and choose $\Delta S = B_0\, X_0$ to compensate for stiffness, and then select $\Delta N = - \kappa\, X_0\, \overline{Q} / 2$, where $\overline{Q}$ is the average relative displacement over the first 12 frets. In this case, we estimate $\Delta S = 1.54$~mm, $\Delta N = -0.51$~mm for $d = 0$, and $\Delta N = -0.57$~mm for $d = 10$. The frequency shifts shown in \fig{comp_est} illustrate the dramatic improvement in tone that can be obtained via classical guitar compensation.
 
@@ -123,7 +123,7 @@ As mentioned above, it is nontrivial to manufacture a guitar with different setb
 \begin{equation}
   \Delta S = (4.4 \pm 0.2)\, \rho\, .
 \end{equation}
-Therefore, we can either compute the mean of the saddle setbacks directly, or using the average value of the string lengths ($\overline{\rho} = 0.43 \pm 0.08$~mm). Either way, we obtain $\overline{\Delta S} = 1.9 \pm 0.4$~mm. Similarly, in \fig{hist_dn}, we show a histogram of the values of the nut setbacks, and compute the mean value $\Delta N = -0.37 \pm 0.03$~mm, which we recall is proportional to the scale length $X_0$. Note that these results are remarkably similar to the values used in \fig{shift_classicalguitar_ej45_mean}; if we plot the frequency deviations of those five string sets with these particular mean setback values, then we find that the maximum error always occurs at the twelfth fret, and it is always less than 1~cent. In the next section, we discuss a method to temper the guitar to reduce these errors further.
+Therefore, we can either compute the mean of the saddle setbacks directly, or using the average value of the string lengths ($\overline{\rho} = 0.43 \pm 0.08$~mm). Either way, we obtain $\overline{\Delta S} = 1.8 \pm 0.4$~mm. Similarly, in \fig{hist_dn}, we show a histogram of the values of the nut setbacks, and compute the mean value $\Delta N = -0.38 \pm 0.03$~mm, which we recall is proportional to the scale length $X_0$. Note that these results are remarkably similar to the values used in \fig{shift_classicalguitar_ej45_mean}; if we plot the frequency deviations of those five string sets with these particular mean setback values, then we find that the maximum error always occurs at the twelfth fret, and it is always less than 1~cent. In the next section, we discuss a method to temper the guitar to reduce these errors further.
 
 \begin{figure}
   \centering
