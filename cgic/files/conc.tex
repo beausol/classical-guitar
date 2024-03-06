@@ -11,7 +11,9 @@
 
  In this work, we have constructed a model of classical guitar intonation that includes the effects of the resonant length of the fretted string, linear mass density, tension, and bending stiffness. We have described a simple experimental approach to estimating the increase in string tension arising from an increase in its length, and then the corresponding mechanical stiffness. This allows us to determine the saddle and nut positions needed to compensate the guitar for a particular string, and we propose a simple approach to find averages of these positions to accommodate a variety of strings. This ``mean'' method benefits further from temperament techniques --- such as harmonic tuning --- that can enhance the intonation of the classical guitar for particular musical pieces.
 
-Our calculations have relied on \eqn{f_m_stiff}, which was derived by noting that the string was pinned to the saddle rather than clamped. We then separated the contributions to the frequency deviations from ideal values caused by fretting by measuring these differences using the definition of logarithmic ``cents'' given by \eqn{cents_def}. This approach has allowed us to determine Taylor series approximations to each of these contributions that are valid when the height of a string above each fret is small compared to the scale length. From these approximations, we have been able to create two arithmetic ``recipes'' --- the RMS method and a quadratic (in $B_0$) approximation --- that predict saddle and nut setbacks that enable the guitar to compensate for the frequency effects of fretting. Applying any one of these algorithms to a particular guitar design always begins with the same five steps:
+Our calculations have relied on \eqn{f_m_stiff}, which was derived by compromising for empirical reasons on symmetric boundary conditions and assuming that the string was pinned to the saddle rather than clamped. We then separated the contributions to the frequency deviations from ideal values caused by fretting by expressing these differences using the definition of logarithmic ``cents'' given by \eqn{cents_def}, resulting in the analytically exact expression for nonideal frequency shifts given by \eqn{error_def}. We have used this equation to plot frequency errors at each of the first twelve frets for a prototypical Classical Guitar with a variety of compensation strategies based on the RMS + BFGS method described in \app{rms}. Because the height of each string above the frets is small compared to the scale length, there are Taylor series approximations of the terms in \eqn{error_def} that we used to derive \eqn{error_tot} to guide our understanding of the underlying principles of guitar compensation. This intuition led us to approximate estimates of the ideal values of the saddle and nut setbacks given by \eqn{comp_approx}.
+
+From these results, we have been able to create two ``recipes'' --- based on the RMS + BFGS method and the Taylor-series-based approximation --- that predict saddle and nut setbacks that enable the guitar to compensate for the frequency effects of fretting. Applying any one of these algorithms to a particular guitar design always begins with the same five steps:
 \begin{enumerate}
     \item Determine the scale length of the guitar by doubling the distance between the inside edge of the nut and the center of the $12^\textrm{th}$ fret. 
     \item Using \fig{guitar_schematic} as a guide, carefully measure the values of $b$ and $c$. It is possible that the luthier has selected a saddle with vertical curvature, resulting in different values of $c$ for each string.
@@ -22,37 +24,17 @@ Our calculations have relied on \eqn{f_m_stiff}, which was derived by noting tha
 The most accurate algorithm then adds one more step:
 \begin{enumerate}
     \setcounter{enumi}{5}
-    \item Using \eqn{rms_sol_quad} and the first line of \eqn{q_n_approx} --- with $L_0$, $L_n$, and $L_n^\prime$ computed using the exact forms of \eqn{l_0_def}, \eqn{l_n_def}, and \eqn{l_p_def}, respectively --- determine the saddle and nut setbacks for the selected string set.
+    \item Using \eqn{rms_sol} to provide input values to the BFGS minimization algorithm, determine the saddle and nut setbacks for the selected string set.
 \end{enumerate}
-
-The quadratic approximation is based on \eqn{rms_sol_comp} (which chooses a 12-fret RMS average) and  is accessible using a hand calculator. In this case, Step 6 is updated and a Step 7 is added to adjust the setbacks for a nonzero value of $d$:
+Alternatively, a promising approximate approach can be followed:
 \begin{enumerate}
     \setcounter{enumi}{5}
-    \item Compute the setbacks for $d = 0$~mm using \eqn{rms_sol_comp}:
-    \begin{align*}
-        \Delta S &\approx \left[ B_0 + \frac{3}{2} \left(1 + \pi^2\right) B_0^2 \right] X_0 + \frac{\kappa}{4\, X_0} \left( -9.848\, b^2 + 2\, b\, \tilde{c} + \tilde{c}^2 \right)\, , \nd \\
-        \Delta N &\approx B_0^2\, X_0 - \frac{\kappa}{2\, X_0} \left( 5.633\, b^2 + b\, \tilde{c} \right)\, .
-    \end{align*}
-    % \item Compute the mean value of $Q$ for $d = 0$~mm using \eqn{qbar_approx}:
-    % \begin{equation*}
-    %     \overline{Q} \approx \frac{77.9\, b^2 + 35.6\, b\, \tilde{c} + 5.82\, \tilde{c}^{2}}{24\, X_0^2}\, .
-    % \end{equation*}
-    % Then compute the setbacks for $d = 0$~mm using \eqn{comp_approx}:
-    % \begin{align*}
-    %     \Delta S &\approx B_0\, X_0\, , \nd \\
-    %     \Delta N &\approx - \kappa\, X_0\, \overline{Q} / 2\, ,
-    % \end{align*}
-    \item Choose a fretting distance $d$. Then adjust the setbacks computed in the previous step using
-    \begin{align*}
-        \Delta N^\prime &\approx \Delta N \left[ 1 + 13\, (d/X_0) + 280\, (d/X_0)^2 \right]\, , \nd \\
-        \Delta S^\prime &\approx \Delta S + \Delta N \left[13\, (d/X_0) + 280\, (d/X_0)^2 \right]\, .
-    \end{align*}
-    As $d$ increases, the magnitude of the negative nut setback increases, and the saddle setback decreases because $\Delta N < 0$. 
+    \item Use \eqn{comp_approx} to compute the saddle and nut setbacks for the selected string set.
 \end{enumerate}
-Of course, this quadratic approximation can be simplified further. For example, the terms proportional to $B_0^2$ can be neglected without much loss of accuracy (but without much gain in simplicity), yielding a corresponding linear approximation. Furthermore, the term in $\Delta S$ that is proportional to $\kappa$ can be neglected, but we recall from \sct{comp} that the resulting value of $\Delta S$ will be about  $15 - 20$\% too small. But perhaps the simplest reasonably accurate compensation approach is to adopt the results of \fig{dsdn_mean}: compute the saddle setback using $\Delta S = 4.4\, \overline{\rho}$, and select the nut setback to be $\Delta N = -0.37 \times (650 \textrm{ mm} / X_0)$~mm, or about $15$~mils for a guitar with a scale length of $650$~mm.
+But perhaps the simplest reasonably accurate compensation approach is to adopt the results of \fig{dsdn_mean}: compute the saddle setback using $\Delta S = 4.4\, \overline{\rho}$, and select the nut setback to be $\Delta N = -0.38 \times (650 \textrm{ mm} / X_0)$~mm, or about $15$~mils for a guitar with a scale length of $650$~mm.
 
 These setback estimates can be averaged across the string set to design compensated nuts and saddles that should be relatively easy to fabricate. Nevertheless, we understand that high-end (concert) guitars that are likely to rely on one or two string sets (and the appropriate value of $d$ for one guitar player) will benefit from the full, more accurate treatment of individual string setbacks.
 
-Throughout this work, it has become clear that the frequency errors at the first fret are difficult to eliminate. Increasing the magnitude of the nut setback will also increase the frequency errors at all other frets. The only obvious solution to this problem is also sacrilegious (and may result in string ``buzzing''): raise the height of the first fret to meet the string. Perhaps a clever luthier will discover a more acceptable method for accomplishing this objective.
+% Throughout this work, it has become clear that the frequency errors at the first fret are difficult to eliminate. Increasing the magnitude of the nut setback will also increase the frequency errors at all other frets. The only obvious solution to this problem is also sacrilegious (and may result in string ``buzzing''): raise the height of the first fret to meet the string. Perhaps a clever luthier will discover a more acceptable method for accomplishing this objective.
 
 We have placed the text of this manuscript (as well as the computational tools needed to reproduce our numerical results and all the graphs presented here) online~\cite{ref:github2024rgb} to invite comment and contributions from and collaboration with interested luthiers and musicians.

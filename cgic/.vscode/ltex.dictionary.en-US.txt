@@ -4,3 +4,4 @@ unfretted
 monofilament
 Addario
 Pro-Arte
+nonideal
