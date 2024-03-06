@@ -64,43 +64,45 @@ H = \begin{bmatrix}
       -\sigma_1 & \sigma_0
     \end{bmatrix}\, .
  \end{equation}
-We can apply the second partial derivative test to the Hessian to determine whether we've found an extremum of $\chi^2$. If the determinant of the Hessian is positive, and (in the case of a $2 \times 2$ matrix) one of the diagonal elements is positive, then we have found a minimum. The determinant is greater than zero for $n_\text{max} \ge 2$, and the second condition is satisfied by $\sigma_0 = n_\text{max} > 0$ when $n_\text{max} \ge 1$. Therefore, we can be confident that the solution for $\Delta S$ and $\Delta N$ given by \eqn{rms_sol} minimizes the RMS frequency error provided that we are averaging over at least the first two frets.
+We can apply the second partial derivative test to the Hessian to determine whether we've found an extremum of $\chi^2$. If the determinant of the Hessian is positive, and (in the case of a $2 \times 2$ matrix) one of the diagonal elements is positive, then we have found a minimum. The determinant is greater than zero for $n_\text{max} \ge 2$, and the second condition is satisfied by $\sigma_0 = n_\text{max} > 0$ when $n_\text{max} \ge 1$. Therefore, we can be confident that the solution for $\Delta S$ and $\Delta N$ given by \eqn{rms_sol} minimizes $\chi^2$ accurately to first order in $\Delta S$ and $\Delta N$ provided that we are averaging over at least the first two frets.
 
-Again, to guide our intuition, we follow the logic used to develop \eqn{error_tot} and approximate $Z_n$ as
-\begin{equation}
-  Z_n \approx \half\, \kappa\, Q_n + \left(\gamma_n - 1\right) B_0\, .
-\end{equation}
-Then our estimates for the setbacks become
-\begin{subequations}
-  \begin{align}
-    \Delta S &= \left(B_0 + \frac{\kappa}{2}\, \frac{\sigma_0\, \overline{\mathcal{Q}}_1 - \sigma_1\, \overline{\mathcal{Q}}_0}{\sigma_0\, \sigma_2 - \sigma_1^2} \right) X_0\, , \nd \\
-    \Delta N &= -\frac{\kappa}{2}\, \frac{\sigma_2\, \overline{\mathcal{Q}}_0 - \sigma_1\, \overline{\mathcal{Q}}_1}{\sigma_0\, \sigma_2 - \sigma_1^2}\, X_0\, ,
-  \end{align}
-\end{subequations}
-where
-\begin{equation}
-  \overline{\mathcal{Q}}_k \equiv \sum_{n = 1}^{n_\text{max}} \left(\gamma_n - 1\right)^k\, Q_n\, .
-\end{equation}
-If we approximate $\overline{\mathcal{Q}}_k \approx \sigma_k\, \overline{Q}$, where $\overline{Q}$ is the relative displacement averaged over a particular set of frets, we obtain the estimates discussed in \sct{tot_freq_shift}: $\Delta S \approx B_0\, X_0$, and $\Delta N \approx -\kappa\, \overline{Q}\, X_0 / 2$. The corresponding solution when the quadratic stiffness term is included is given in matrix form by
-\begin{equation}\label{eqn:rms_sol_quad}
-\begin{bmatrix}
-  \Delta S \\
-  \Delta N
-\end{bmatrix} = \frac{X_0}{\sigma_0\, \sigma_2 - \sigma_1^2}\,
-\begin{bmatrix}
-  \sigma_0 & -\sigma_1 \\
-  \sigma_1 & -\sigma_2
-\end{bmatrix}\,
-\begin{bmatrix}
-  \sigma_2\, B_0 + \half \left(1 + \pi^2\right) \left(2 \sigma_2 + \sigma_3\right) B_0^2 + \half\, \kappa\, \overline{Q}_1 \\
-  \sigma_1\, B_0 + \half \left(1 + \pi^2\right) \left(2 \sigma_1 + \sigma_2\right) B_0^2 + \half\, \kappa\, \overline{Q}_0
-\end{bmatrix}\, .
- \end{equation}
-If we choose $n_\text{max} = 12$, then when $d = 0$ we can compute $\sigma_k$ and $\overline{Q}_k$ in terms of powers of $b$ and $c$ to find
-\begin{align} \label{eqn:rms_sol_comp}
-  \Delta S &= \left[ B_0 + \frac{3}{2} \left(1 + \pi^2\right) B_0^2 \right] X_0 + \frac{\kappa}{4\, X_0} \left( -9.848\, b^2 + 2\, b\, c + c^2 \right)\, , \nd \\
-  \Delta N &= B_0^2\, X_0 - \frac{\kappa}{2\, X_0} \left( 5.633\, b^2 + b\, c \right)\, .
-\end{align}
+We can further refine the predicted values of these setbacks to accommodate second-order terms in $\Delta S$ and $\Delta N$ arising in both the resonant length error and the normalized relative displacement $Q_n$. Relying on \eqn{error_def} as the exact expression for the frequency error $\Delta \nu_n$, we can use \eqn{rms_sol} to provide initial values for a nonlinear minimization of $\sum_n\, \Delta \nu_n^2$ over the first 12 frets. We adopt the quasi-Newton algorithm of Broyden, Fletcher, Goldfarb, and Shanno~\cite{ref:nocedal2006no}, a second-order algorithm for numerical optimization. We'll refer to this approach as the ``RMS + BFGS method,'' and we use it throughout this work to compute the setbacks for each string under study. Note that the approximate equations given by \eqn{comp_approx} also can be used to compute initial values for the nonlinear minimization.
+
+% Again, to guide our intuition, we follow the logic used to develop \eqn{error_tot} and approximate $Z_n$ as
+% \begin{equation}
+%   Z_n \approx \half\, \kappa\, Q_n + \left(\gamma_n - 1\right) B_0\, .
+% \end{equation}
+% Then our estimates for the setbacks become
+% \begin{subequations}
+%   \begin{align}
+%     \Delta S &= \left(B_0 + \frac{\kappa}{2}\, \frac{\sigma_0\, \overline{\mathcal{Q}}_1 - \sigma_1\, \overline{\mathcal{Q}}_0}{\sigma_0\, \sigma_2 - \sigma_1^2} \right) X_0\, , \nd \\
+%     \Delta N &= -\frac{\kappa}{2}\, \frac{\sigma_2\, \overline{\mathcal{Q}}_0 - \sigma_1\, \overline{\mathcal{Q}}_1}{\sigma_0\, \sigma_2 - \sigma_1^2}\, X_0\, ,
+%   \end{align}
+% \end{subequations}
+% where
+% \begin{equation}
+%   \overline{\mathcal{Q}}_k \equiv \sum_{n = 1}^{n_\text{max}} \left(\gamma_n - 1\right)^k\, Q_n\, .
+% \end{equation}
+% If we approximate $\overline{\mathcal{Q}}_k \approx \sigma_k\, \overline{Q}$, where $\overline{Q}$ is the relative displacement averaged over a particular set of frets, we obtain the estimates discussed in \sct{tot_freq_shift}: $\Delta S \approx B_0\, X_0$, and $\Delta N \approx -\kappa\, \overline{Q}\, X_0 / 2$. The corresponding solution when the quadratic stiffness term is included is given in matrix form by
+% \begin{equation}\label{eqn:rms_sol_quad}
+% \begin{bmatrix}
+%   \Delta S \\
+%   \Delta N
+% \end{bmatrix} = \frac{X_0}{\sigma_0\, \sigma_2 - \sigma_1^2}\,
+% \begin{bmatrix}
+%   \sigma_0 & -\sigma_1 \\
+%   \sigma_1 & -\sigma_2
+% \end{bmatrix}\,
+% \begin{bmatrix}
+%   \sigma_2\, B_0 + \half \left(1 + \pi^2\right) \left(2 \sigma_2 + \sigma_3\right) B_0^2 + \half\, \kappa\, \overline{Q}_1 \\
+%   \sigma_1\, B_0 + \half \left(1 + \pi^2\right) \left(2 \sigma_1 + \sigma_2\right) B_0^2 + \half\, \kappa\, \overline{Q}_0
+% \end{bmatrix}\, .
+%  \end{equation}
+% If we choose $n_\text{max} = 12$, then when $d = 0$ we can compute $\sigma_k$ and $\overline{Q}_k$ in terms of powers of $b$ and $c$ to find
+% \begin{align} \label{eqn:rms_sol_comp}
+%   \Delta S &= \left[ B_0 + \frac{3}{2} \left(1 + \pi^2\right) B_0^2 \right] X_0 + \frac{\kappa}{4\, X_0} \left( -9.848\, b^2 + 2\, b\, c + c^2 \right)\, , \nd \\
+%   \Delta N &= B_0^2\, X_0 - \frac{\kappa}{2\, X_0} \left( 5.633\, b^2 + b\, c \right)\, .
+% \end{align}
 
 
 %  \begin{subequations}
