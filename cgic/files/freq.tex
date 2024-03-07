@@ -11,15 +11,15 @@
 
 Here we outline the calculation of the normal mode frequencies of a vibrating stiff string with non-symmetric boundary conditions. We begin with the wave equation~\cite{ref:fletcher1964nvf}
  \begin{equation}
-\mu\, \frac{\partial^2}{\partial t^2}\, y(x) = T\, \frac{\partial^2}{\partial x^2}\, y(x) - E\, S\, \mathcal{K}^2\, \frac{\partial^4}{\partial x^4}\, y (x)\, ,
+\mu\, \frac{\partial^2}{\partial t^2}\, y(x) = T\, \frac{\partial^2}{\partial x^2}\, y(x) - E\, \mathcal{A}\, s^2\, \frac{\partial^4}{\partial x^4}\, y (x)\, ,
  \end{equation}
-where $\mu$ and $T$ are respectively the linear mass density and the tension of the string, $E$ is its Young's modulus (or the modulus of elasticity), $S$ is the cross-sectional area, and $\mathcal{K}$ is the radius of gyration of the string. (For a uniform cylindrical string/wire with radius $\rho$, $S = \pi \rho^2$ and $\mathcal{K} = \rho/2$.) If we scale $x$ by the length $L$ of the string, and $t$ by $1/\omega_0 \equiv  (L/\pi) \sqrt{\mu/T}$, then we obtain the dimensionless wave equation
+where $\mu$ and $T$ are respectively the linear mass density and the tension of the string, $E$ is its Young's modulus (or the modulus of elasticity), $\mathcal{A}$ is the cross-sectional area, and $s$ is the radius of gyration of the string. (For a uniform cylindrical string/wire with radius $\rho$, $\mathcal{A} = \pi \rho^2$ and $s = \rho/2$.) If we scale $x$ by the length $L$ of the string, and $t$ by $1/\omega_0 \equiv  (L/\pi) \sqrt{\mu/T}$, then we obtain the dimensionless wave equation
  \begin{equation} \label{eqn:wave_eqn_dim}
 \pi^2\, \frac{\partial^2}{\partial t^2}\, y(x) = \frac{\partial^2}{\partial x^2}\, y(x) - B^2\, \frac{\partial^4}{\partial x^2}\, y (x)\, ,
  \end{equation}
 where $B$ is the ``bending stiffness parameter'' given by
  \begin{equation}
-B \equiv \sqrt{\frac{E\, S\, \mathcal{K}^2}{L^2 T}}\, .
+B \equiv \sqrt{\frac{E\, \mathcal{A}\, s^2}{L^2 T}}\, .
  \end{equation}
 We assume that $y(x)$ is a sum of terms of the form
  \begin{equation}
@@ -45,7 +45,7 @@ The corresponding general solution to \eqn{wave_eqn_dim} has the form
 y(x) = e^{-i \omega t} \left( C_1^+ e^{k_1 x} + C_1^- e^{-k_1 x} + C_2^+ e^{i k_2 x} + C_2^- e^{-i k_2 x} \right)\, .
  \end{equation}
 
-As discussed in \sct{model}, the boundary conditions for the case of a classical guitar string are not symmetric. At $x = 0$ (the saddle), the string is pinned (but not clamped), so that $y = 0$ and $\partial^2 y/\partial x^2 = 0$. However, at $x = 1$ (the fret) the string is clamped, so that $y = 0$ and $\partial y/\partial x = 0$. Applying these constraints to \eqn{soln_dim}, we obtain
+As discussed in \sct{model}, we have decided that the boundary conditions for the case of a classical guitar string are not likely to be symmetric. At $x = 0$ (the saddle), we assume that the string is pinned (but not clamped), so that $y = 0$ and $\partial^2 y/\partial x^2 = 0$. However, at $x = 1$ (the fret) we assume that the string is clamped, so that $y = 0$ and $\partial y/\partial x = 0$. Applying these constraints to \eqn{soln_dim}, we obtain
  \begin{subequations}
  \begin{align}
   0 &= C_1^+ + C_1^- + C_2^+ + C_2^-\, , \\

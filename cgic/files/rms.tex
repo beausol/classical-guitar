@@ -30,10 +30,10 @@ where
 \end{subequations}
 
 In \sct{model}, we determined that --- for the purposes of estimating the values of the setbacks --- $W_n$ could be represented accurately by
-\begin{equation}
+\begin{equation} \label{eqn:w_n_approx}
   W_n \approx \frac{\Delta N - \left(\gamma_n - 1\right) \Delta S}{X_0}\, .
 \end{equation}
-Furthermore, we discovered that $Z_n$ does not depend even to second order on either $\Delta S$ or $\Delta N$. Therefore, the components of the gradient of $\chi^2$ are
+Furthermore, we discovered that $Z_n$ does not depend to second order on either $\Delta S$ or $\Delta N$. Therefore, the components of the gradient of $\chi^2$ are
 \begin{subequations} \label{chi2_grad}
   \begin{align}
     \frac{\partial}{\partial \Delta S}\, \chi^2 &= 2 \sum_n \left(W_n + Z_n\right)\frac{\partial W_n}{\partial \Delta S} = -\frac{2}{X_0}\, \sum_n (\gamma_n - 1) \left(W_n + Z_n\right)\, , \nd \\
@@ -66,7 +66,7 @@ H = \begin{bmatrix}
  \end{equation}
 We can apply the second partial derivative test to the Hessian to determine whether we've found an extremum of $\chi^2$. If the determinant of the Hessian is positive, and (in the case of a $2 \times 2$ matrix) one of the diagonal elements is positive, then we have found a minimum. The determinant is greater than zero for $n_\text{max} \ge 2$, and the second condition is satisfied by $\sigma_0 = n_\text{max} > 0$ when $n_\text{max} \ge 1$. Therefore, we can be confident that the solution for $\Delta S$ and $\Delta N$ given by \eqn{rms_sol} minimizes $\chi^2$ accurately to first order in $\Delta S$ and $\Delta N$ provided that we are averaging over at least the first two frets.
 
-We can further refine the predicted values of these setbacks to accommodate second-order terms in $\Delta S$ and $\Delta N$ arising in both the resonant length error and the normalized relative displacement $Q_n$. Relying on \eqn{error_def} as the exact expression for the frequency error $\Delta \nu_n$, we can use \eqn{rms_sol} to provide initial values for a nonlinear minimization of $\sum_n\, \Delta \nu_n^2$ over the first 12 frets. We adopt the quasi-Newton algorithm of Broyden, Fletcher, Goldfarb, and Shanno~\cite{ref:nocedal2006no}, a second-order algorithm for numerical optimization. We'll refer to this approach as the ``RMS + BFGS method,'' and we use it throughout this work to compute the setbacks for each string under study. Note that the approximate equations given by \eqn{comp_approx} also can be used to compute initial values for the nonlinear minimization.
+We can further refine the predicted values of these setbacks to accommodate small second-order terms in $\Delta S$, $\Delta N$, $b$, and $c$ neglected in the resonant length error approximation used in \eqn{w_n_approx}. Relying on \eqn{error_def} as the exact expression for the frequency error $\Delta \nu_n$, we can use \eqn{rms_sol} to provide initial values for a nonlinear minimization of $\sum_n\, \Delta \nu_n^2$ over the first 12 frets. We adopt the quasi-Newton algorithm of Broyden, Fletcher, Goldfarb, and Shanno~\cite{ref:nocedal2006no}, a second-order algorithm for numerical optimization. We'll refer to this approach as the ``RMS + BFGS method,'' and we use it throughout this work to compute the setbacks for each string under study. Note that the approximate equations given by \eqn{comp_approx} also can be used to compute initial values for this final nonlinear minimization.
 
 % Again, to guide our intuition, we follow the logic used to develop \eqn{error_tot} and approximate $Z_n$ as
 % \begin{equation}
