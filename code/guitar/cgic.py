@@ -463,40 +463,13 @@ class GuitarStrings(object):
         if filepath is None:
             pass
         else:
-            print("Saved {0}\n".format(filepath))
             print(table_str,  file=open(filepath, 'w'))        
+            print("Saved {0}\n".format(filepath))
 
         if show:
             styler.set_properties(**{'text-align': 'center'})
             display(styler)
  
- 
-    def save_props_excel(self, show=True, savepath=None, filename=None, sheetname=None):
-        names = self.get_string_names()
-        r, dr = self.get_r()
-        kappa = self.get_kappa()
-        modulus = self.get_modulus()
-        stiffness = self.get_stiffness()
-
-        df = pd.DataFrame({'String': names,
-                           'R': r.tolist(),
-                           'sigma': dr.tolist(),
-                           'kappa': kappa.tolist(),
-                           'B_0': stiffness.tolist(),
-                           'E': modulus.tolist()})
-
-        filepath = file_path(savepath, filename)
-        if filepath is None or sheetname is None:
-            pass
-        else:
-            if os.path.isfile(filepath):
-                writer = pd.ExcelWriter(filepath,  mode='a', if_sheet_exists='replace')
-            else:
-                writer = pd.ExcelWriter(filepath,  mode='w')
-#            with pd.ExcelWriter(filepath,  mode=mode, if_sheet_exists='replace') as writer:
-            df.to_excel(writer, sheetname, float_format="%.{}f".format(sys.float_info.dig), index=False)        
-            print("Saved {} : {}\n".format(filepath, sheetname))
-
     def save_props_table(self, show=True, savepath=None, filename=None):
         names = self.get_string_names()
         r, dr = self.get_r()
@@ -524,12 +497,33 @@ class GuitarStrings(object):
         if filepath is None:
             pass
         else:
-            print("Saved {0}\n".format(filepath))
             print(table_str,  file=open(filepath, 'w'))        
+            print("Saved {0}\n".format(filepath))
 
         if show:
             styler.set_properties(**{'text-align': 'center'})
             display(styler)
+ 
+    def save_props_excel(self, filepath, sheet_name):
+        names = self.get_string_names()
+        r, dr = self.get_r()
+        kappa = self.get_kappa()
+        modulus = self.get_modulus()
+        stiffness = self.get_stiffness()
+
+        df = pd.DataFrame({'String': names,
+                           'R': r.tolist(),
+                           'sigma': dr.tolist(),
+                           'kappa': kappa.tolist(),
+                           'B_0': stiffness.tolist(),
+                           'E': modulus.tolist()})
+
+        if os.path.isfile(filepath):
+            with pd.ExcelWriter(filepath,  mode='a', if_sheet_exists='replace') as writer:
+                df.to_excel(writer, sheet_name=sheet_name, float_format="%.{}f".format(sys.float_info.dig), index=False)
+        else:
+            df.to_excel(filepath, sheet_name=sheet_name, float_format="%.{}f".format(sys.float_info.dig), index=False)
+        print("\nSaved {} : {}\n".format(filepath, sheet_name))
         
 
 class Guitar(object):
