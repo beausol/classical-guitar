@@ -143,14 +143,16 @@ class GuitarString(object):
             lb_to_mg = 453592.37
             lb_to_nt = 4.4482216153 # 9.81 / 2.204
             
-            self._params.scale_length *= in_to_mm
+            self._params.scale *= in_to_mm
             self._params.diameter *= in_to_mm
-            self._params.linear_mass_density *= (lb_to_mg/in_to_mm)
+            self._params.density *= (lb_to_mg/in_to_mm)
             self._params.tension *= lb_to_nt
 
-        freq = self._frequency(self._params.note)
+        frequency = self._frequency(self._params.note)
         radius = self._params.diameter / 2
-        params = pd.concat([[params, pd.Series({'freq':freq}), pd.Series({'radius':radius})]])
+        params_name = self._params.name
+        self._params = pd.concat([self._params, pd.Series({'frequency':frequency}), pd.Series({'radius':radius})])
+        self._params.name = params_name
 
     def __str__(self):
         '''Return a string displaying the attributes of a GuitarString object.
