@@ -104,7 +104,7 @@ class GuitarString(object):
         FrequencyShifts object
     '''
 
-    def __init__(self, params, props, units='IPS'):
+    def __init__(self, params, props, scale_length):
         '''Initialize a GuitarString object.
 
         Parameters
@@ -138,21 +138,21 @@ class GuitarString(object):
         self._params = params
         self._props = props
         
-        if units == 'IPS':
-            in_to_mm = 25.4
-            lb_to_mg = 453592.37
-            lb_to_nt = 4.4482216153 # 9.81 / 2.204
+        # if units == 'IPS':
+        #     in_to_mm = 25.4
+        #     lb_to_mg = 453592.37
+        #     lb_to_nt = 4.4482216153 # 9.81 / 2.204
             
-            self._params.scale *= in_to_mm
-            self._params.diameter *= in_to_mm
-            self._params.density *= (lb_to_mg/in_to_mm)
-            self._params.tension *= lb_to_nt
+        #     self._params.scale *= in_to_mm
+        #     self._params.diameter *= in_to_mm
+        #     self._params.density *= (lb_to_mg/in_to_mm)
+        #     self._params.tension *= lb_to_nt
 
-        frequency = self._frequency(self._params.note)
-        radius = self._params.diameter / 2
-        params_name = self._params.name
-        self._params = pd.concat([self._params, pd.Series({'frequency':frequency}), pd.Series({'radius':radius})])
-        self._params.name = params_name
+        self._frequency = self._frequency(self._params.note)
+        if np.abs(scale_length - self._params.scale) > 10 * np.finfo(float).eps:
+            self._params.scale = scale_length
+            self._comp_tension()
+            
 
     def __str__(self):
         '''Return a string displaying the attributes of a GuitarString object.
@@ -260,25 +260,27 @@ class GuitarString(object):
 
 
 class GuitarStrings(object):
-    def __init__(self, name, file_name, sheet_name=None, scale_length=None):
+    def __init__(self, name, scale_length, file_path, sheet_name=0, units='IPS'):
         self._name = name
         self._scale_length = scale_length
-        if sheet_name is None:
-            data = pd.read_excel(file_name,
-                                 dtype={'name': str, 'note': str, 'scale': float,
-                                        'diameter': float, 'density': float, 'tension': float})
-        else:
-            data = pd.read_excel(file_name, sheet_name=sheet_name,
-                                 dtype={'name': str, 'note': str, 'scale': float,
-                                        'diameter' : float, 'density': float, 'tension': float})
+        strings_params = pd.read_excel(file_path, sheet_name=sheet_name, index_col=0,
+                                       dtype={'note': str, 'diameter' : np.float64, 'density': np.float64,
+                                              'tension': np.float64, 'scale': np.float64})
+        strings_params.diameter /= 2
+        strings_params.rename(columns={"diameter" : "radius"}, inplace=True)
+        if units == 'IPS':
+            in_to_mm = 25.4
+            lb_to_mg = 453592.37
+            lb_to_nt = 4.4482216153 # 9.81 / 2.204
+
+            strings_params.scale *= in_to_mm
+            strings_params.radius *= in_to_mm
+            strings_params.density *= (lb_to_mg/in_to_mm)
+            strings_params.tension *= lb_to_nt
 
         self._strings = []
-        row_list = np.arange(data.shape[0])
-        for row in row_list:
-            string = GuitarString(data.name[row], data.note[row], data.scale[row],
-                            data.diameter[row], data.density[row], data.tension[row])
-            if scale_length is not None:
-                string.set_scale_length(scale_length)
+        for index, row in strings_params.iterrows():
+            string = GuitarString(row, None, scale_length)
             self._strings.append(string)
             
     def __str__(self):
