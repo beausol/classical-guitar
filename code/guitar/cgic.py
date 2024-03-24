@@ -1045,7 +1045,7 @@ class Guitar(object):
             zero_frets = harm[1]
             for s, n in zip(zero_strings, zero_frets):
                 shifts[s-1] -= shifts[s-1][n]
-        rms = np.sqrt(np.mean(shifts**2))
+        rms = np.sqrt(np.mean(shifts[1:]**2))
         names = self._strings.get_string_names()
 
         plt.figure(figsize=(8.0,6.0))
@@ -1086,6 +1086,8 @@ class Guitar(object):
             plt.show()
         else:
             plt.close()
+
+        return rms
 
     # def plot_shifts_old(self, max_fret=12, show=True, harm=[], savepath=None, filename=None):
     #     fret_list = np.arange(0, max_fret + 1)

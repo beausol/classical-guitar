@@ -149,10 +149,7 @@ class GuitarString(object):
         #     self._params.tension *= lb_to_nt
 
         self._frequency = self._frequency(self._params.note)
-        if np.abs(scale_length - self._params.scale) > 10 * np.finfo(float).eps:
-            self._params.scale = scale_length
-            self._comp_tension()
-            
+        self.set_scale_length(scale_length)
 
     def __str__(self):
         '''Return a string displaying the attributes of a GuitarString object.
@@ -196,13 +193,10 @@ class GuitarString(object):
     def _comp_modulus(self):
         self._modulus = 1.0e-09 * (self._tension / (np.pi * (self._radius/1000)**2)) * self._kappa
 
-    def set_scale_length(self, scale_length, units=None):
-        if units == 'IPS':
-            in_to_mm = 25.4
-            scale_length *= in_to_mm
-            
-        self._scale_length = scale_length
-        self._comp_tension()
+    def set_scale_length(self, scale_length):
+        if np.abs(scale_length - self._params.scale) > 10 * np.finfo(float).eps:
+            self._params.scale = scale_length
+            self._comp_tension()
         
     def fit_r(self, dx, df, scale):
         def func(x, intercept, slope):
@@ -1048,6 +1042,7 @@ class Guitar(object):
             for s, n in zip(zero_strings, zero_frets):
                 shifts[s-1] -= shifts[s-1][n]
         rms = np.sqrt(np.mean(shifts**2))
+        print(rms)
         names = self._strings.get_string_names()
 
         plt.figure(figsize=(8.0,6.0))
@@ -1088,6 +1083,8 @@ class Guitar(object):
             plt.show()
         else:
             plt.close()
+
+        return rms
 
     # def plot_shifts_old(self, max_fret=12, show=True, harm=[], savepath=None, filename=None):
     #     fret_list = np.arange(0, max_fret + 1)

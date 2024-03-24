@@ -23,7 +23,7 @@ Throughout this work, we will use \emph{cents} to describe small differences in 
  \end{equation}
 where $\log_2(x)$ is the logarithm base 2 of $x$. Let's choose the average frequency $f \equiv (f_1 + f_2) / 2$ and the frequency difference $\Delta f \equiv f_2 - f_1$. Then
  \begin{equation} \label{eqn:cents_approx}
-\Delta \nu = 1200\, \log_2\left(\frac{f + \Delta f / 2}{f - \Delta f /2}\right) \approx \frac{1200}{\ln(2)}\, \frac{\Delta f}{f} = 1731\, \frac{\Delta f}{f}\, ,
+\Delta \nu = 1200\, \log_2\left(\frac{f + \Delta f / 2}{f - \Delta f /2}\right) \approx \frac{1200}{\ln(2)}\, \frac{\Delta f}{f} \approx 1731\, \frac{\Delta f}{f}\, ,
  \end{equation}
 where the approximation applies when $\Delta f \ll f$, and $\ln(x)$ is the natural logarithm function of $x$. As shown in \fig{diff_pitch}, if the average frequency of the interval is used to compute $\Delta \nu$ --- rather than the initial frequency $f_1$ --- then the accuracy of \eqn{cents_approx} holds for almost an entire octave. In this plot, we chose $f_1 = A_3 = 220$~Hz, and allowed $f_2$ to vary from $A_3$ to $A_4 + 30 \textrm{ Hz} = 470$~Hz. At the octave, the error in $\Delta \nu$ arising from \eqn{cents_approx} is only $-46$~cents, or $-4$\%. The choice of a logarithmic frequency-difference scale \emph{decouples} multiplicative factors that predict the frequency of a real fretted string, allowing us to build straightforward intuitive models of guitar intonation and compensation.
   
