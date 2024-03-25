@@ -254,10 +254,11 @@ class GuitarString(object):
 
 
 class GuitarStrings(object):
-    def __init__(self, name, scale_length, file_path, sheet_name=0, units='IPS'):
+    def __init__(self, name, scale_length, params_path, props_path, sheet_name=0, units='IPS'):
         self._name = name
         self._scale_length = scale_length
-        strings_params = pd.read_excel(file_path, sheet_name=sheet_name, index_col=0,
+
+        strings_params = pd.read_excel(params_path, sheet_name=sheet_name, index_col=0,
                                        dtype={'note': str, 'diameter' : np.float64, 'density': np.float64,
                                               'tension': np.float64, 'scale': np.float64})
         strings_params.diameter /= 2
@@ -271,10 +272,23 @@ class GuitarStrings(object):
             strings_params.radius *= in_to_mm
             strings_params.density *= (lb_to_mg/in_to_mm)
             strings_params.tension *= lb_to_nt
+        params_indices, params_rows = zip(*strings_params.iterrows())
+
+        if props_path is None:
+            props_indices = params_indices
+            props_rows = (None,) * 6
+        else:
+            strings_props = pd.read_excel(props_path, sheet_name=sheet_name, index_col=0,
+                                          dtype={'R': np.float64, 'sigma' : np.float64, 'kappa': np.float64,
+                                                 'B_0': np.float64, 'E': np.float64})
+            props_indices, props_rows = zip(*strings_props.iterrows())
+            
+        assert params_indices == props_indices, 'Parameter indices ({}) do not match Properties indices ({}).'.format(params_indices, props_indices)
+
 
         self._strings = []
-        for index, row in strings_params.iterrows():
-            string = GuitarString(row, None, scale_length)
+        for params_row, props_row in zip(params_rows, props_rows):
+            string = GuitarString(params_row, props_row, scale_length)
             self._strings.append(string)
             
     def __str__(self):
