@@ -148,24 +148,24 @@ class GuitarString(object):
         #     self._params.density *= (lb_to_mg/in_to_mm)
         #     self._params.tension *= lb_to_nt
 
-        self._frequency = self._frequency(self._params.note)
+        self._freq = self._frequency(self._params.note)
         self.set_scale_length(scale_length)
 
-    def __str__(self):
-        '''Return a string displaying the attributes of a GuitarString object.
+    # def __str__(self):
+    #     '''Return a string displaying the attributes of a GuitarString object.
 
-        Example
-        -------
-        string = GuitarString(name, note, scale_length, diameter, linear_mass_density, tension)
+    #     Example
+    #     -------
+    #     string = GuitarString(name, note, scale_length, diameter, linear_mass_density, tension)
         
-        print(string)
-        '''
-        retstr = self._name + " (" + self._note + " = {:5.1f} Hz) -- ".format(self._freq)
-        retstr += 'Scale Length: ' + '{} mm; '.format(round(self._scale_length))
-        retstr += 'Radius: ' + '{:.3f} mm; '.format(self._radius)
-        retstr += 'Density: ' + '{:.3f} mg/mm; '.format(self._density_lin)
-        retstr += 'Tension: ' + '{:.1f} N'.format(self._tension)
-        return retstr
+    #     print(string)
+    #     '''
+    #     retstr = self._name + " (" + self._note + " = {:5.1f} Hz) -- ".format(self._freq)
+    #     retstr += 'Scale Length: ' + '{} mm; '.format(round(self._scale_length))
+    #     retstr += 'Radius: ' + '{:.3f} mm; '.format(self._radius)
+    #     retstr += 'Density: ' + '{:.3f} mg/mm; '.format(self._density_lin)
+    #     retstr += 'Tension: ' + '{:.1f} N'.format(self._tension)
+    #     return retstr
     
     def _frequency(self, note_str):
         notes = dict([('Ab', 49), ('A', 48), ('A#', 47), ('Bb', 47), ('B', 46), ('B#', 57), ('Cb', 46), ('C', 57), ('C#', 56),
@@ -176,9 +176,9 @@ class GuitarString(object):
         return 440.0 * 2**( int(note[1], 10) - notes[note[0]]/12.0 )
 
     def _comp_tension(self):
-        mu = self._density_lin / 1000       # Convert mg/mm to kg/m
-        x0 = self._scale_length / 1000      # Convert mm to m
-        self._tension = mu * (2 * x0 * self._freq)**2
+        mu = self._params.density / 1000       # Convert mg/mm to kg/m
+        x0 = self._params.scale / 1000      # Convert mm to m
+        self._params.tension = mu * (2 * x0 * self._freq)**2
 
     def _comp_kappa(self):
         self._kappa = 2 * self._r + 1
@@ -285,7 +285,6 @@ class GuitarStrings(object):
             
         assert params_indices == props_indices, 'Parameter indices ({}) do not match Properties indices ({}).'.format(params_indices, props_indices)
 
-
         self._strings = []
         for params_row, props_row in zip(params_rows, props_rows):
             string = GuitarString(params_row, props_row, scale_length)
@@ -300,10 +299,17 @@ class GuitarStrings(object):
         
         print(strings)
         '''
-        retstr = self._name + "\n"
+        
+        string_params = []
         for string in self._strings:
-            retstr += string.__str__() + "\n"
-        return retstr
+            string_params.append(string._params)
+            
+        return pd.DataFrame(string_params).to_string()
+    
+    #     retstr = self._name + "\n"
+    #     for string in self._strings:
+    #         retstr += string.__str__() + "\n"
+    #     return retstr
     
     def set_scale_length(self, scale_length):
         self._scale_length = scale_length
@@ -420,34 +426,34 @@ class GuitarStrings(object):
             stiffness.append(string.get_stiffness())
         return np.array(stiffness)
 
-    def compensate(self, g_n, q_n, s):
-        def sigma_n(g_n, k):
-            return np.sum((g_n - 1)**k)
+#     def compensate(self, g_n, q_n, s):
+#         def sigma_n(g_n, k):
+#             return np.sum((g_n - 1)**k)
 
-        sigma_0 = sigma_n(g_n, 0)
-        sigma_1 = sigma_n(g_n, 1)
-        sigma_2 = sigma_n(g_n, 2)
-        sigma_3 = sigma_n(g_n, 3)
+#         sigma_0 = sigma_n(g_n, 0)
+#         sigma_1 = sigma_n(g_n, 1)
+#         sigma_2 = sigma_n(g_n, 2)
+#         sigma_3 = sigma_n(g_n, 3)
         
-        sigma = np.array([[sigma_2, -sigma_1], [sigma_1, -sigma_0]])
-        sum_qn = 0.5 * np.sum(q_n)
-        sum_gq = 0.5 * np.sum((g_n - 1) * q_n)
+#         sigma = np.array([[sigma_2, -sigma_1], [sigma_1, -sigma_0]])
+#         sum_qn = 0.5 * np.sum(q_n)
+#         sum_gq = 0.5 * np.sum((g_n - 1) * q_n)
 
-        idx_list = np.arange(0, self.get_count())
-        kappa = self.get_kappa()
-        b0 = self.get_stiffness() * s
-        ds = np.zeros(self.get_count())
-        dn = np.zeros(self.get_count())
-#        for string, idx in zip(self._strings, idx_list):
-        for idx in idx_list:
-            b_1 = sigma_1 * b0[idx] + 0.5 * (1 + np.pi**2) * (sigma_2 + 2.0 * sigma_1) * b0[idx]**2
-            b_2 = sigma_2 * b0[idx] + 0.5 * (1 + np.pi**2) * (sigma_3 + 2.0 * sigma_2) * b0[idx]**2
-            rhs = np.array([[b_2 + sum_gq * kappa[idx]], [b_1 + sum_qn * kappa[idx]]])
-            lhs = np.dot(np.linalg.inv(sigma), rhs)
-            ds[idx] = lhs[0]
-            dn[idx] = lhs[1]
+#         idx_list = np.arange(0, self.get_count())
+#         kappa = self.get_kappa()
+#         b0 = self.get_stiffness() * s
+#         ds = np.zeros(self.get_count())
+#         dn = np.zeros(self.get_count())
+# #        for string, idx in zip(self._strings, idx_list):
+#         for idx in idx_list:
+#             b_1 = sigma_1 * b0[idx] + 0.5 * (1 + np.pi**2) * (sigma_2 + 2.0 * sigma_1) * b0[idx]**2
+#             b_2 = sigma_2 * b0[idx] + 0.5 * (1 + np.pi**2) * (sigma_3 + 2.0 * sigma_2) * b0[idx]**2
+#             rhs = np.array([[b_2 + sum_gq * kappa[idx]], [b_1 + sum_qn * kappa[idx]]])
+#             lhs = np.dot(np.linalg.inv(sigma), rhs)
+#             ds[idx] = lhs[0]
+#             dn[idx] = lhs[1]
         
-        return ds, dn
+#         return ds, dn
 
     def save_specs_table(self, show=True, savepath=None, filename=None):
         names = self.get_string_names()

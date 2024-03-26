@@ -410,34 +410,34 @@ class GuitarStrings(object):
             stiffness.append(string.get_stiffness())
         return np.array(stiffness)
 
-    def compensate(self, g_n, q_n, s):
-        def sigma_n(g_n, k):
-            return np.sum((g_n - 1)**k)
+#     def compensate(self, g_n, q_n, s):
+#         def sigma_n(g_n, k):
+#             return np.sum((g_n - 1)**k)
 
-        sigma_0 = sigma_n(g_n, 0)
-        sigma_1 = sigma_n(g_n, 1)
-        sigma_2 = sigma_n(g_n, 2)
-        sigma_3 = sigma_n(g_n, 3)
+#         sigma_0 = sigma_n(g_n, 0)
+#         sigma_1 = sigma_n(g_n, 1)
+#         sigma_2 = sigma_n(g_n, 2)
+#         sigma_3 = sigma_n(g_n, 3)
         
-        sigma = np.array([[sigma_2, -sigma_1], [sigma_1, -sigma_0]])
-        sum_qn = 0.5 * np.sum(q_n)
-        sum_gq = 0.5 * np.sum((g_n - 1) * q_n)
+#         sigma = np.array([[sigma_2, -sigma_1], [sigma_1, -sigma_0]])
+#         sum_qn = 0.5 * np.sum(q_n)
+#         sum_gq = 0.5 * np.sum((g_n - 1) * q_n)
 
-        idx_list = np.arange(0, self.get_count())
-        kappa = self.get_kappa()
-        b0 = self.get_stiffness() * s
-        ds = np.zeros(self.get_count())
-        dn = np.zeros(self.get_count())
-#        for string, idx in zip(self._strings, idx_list):
-        for idx in idx_list:
-            b_1 = sigma_1 * b0[idx] + 0.5 * (1 + np.pi**2) * (sigma_2 + 2.0 * sigma_1) * b0[idx]**2
-            b_2 = sigma_2 * b0[idx] + 0.5 * (1 + np.pi**2) * (sigma_3 + 2.0 * sigma_2) * b0[idx]**2
-            rhs = np.array([[b_2 + sum_gq * kappa[idx]], [b_1 + sum_qn * kappa[idx]]])
-            lhs = np.dot(np.linalg.inv(sigma), rhs)
-            ds[idx] = lhs[0]
-            dn[idx] = lhs[1]
+#         idx_list = np.arange(0, self.get_count())
+#         kappa = self.get_kappa()
+#         b0 = self.get_stiffness() * s
+#         ds = np.zeros(self.get_count())
+#         dn = np.zeros(self.get_count())
+# #        for string, idx in zip(self._strings, idx_list):
+#         for idx in idx_list:
+#             b_1 = sigma_1 * b0[idx] + 0.5 * (1 + np.pi**2) * (sigma_2 + 2.0 * sigma_1) * b0[idx]**2
+#             b_2 = sigma_2 * b0[idx] + 0.5 * (1 + np.pi**2) * (sigma_3 + 2.0 * sigma_2) * b0[idx]**2
+#             rhs = np.array([[b_2 + sum_gq * kappa[idx]], [b_1 + sum_qn * kappa[idx]]])
+#             lhs = np.dot(np.linalg.inv(sigma), rhs)
+#             ds[idx] = lhs[0]
+#             dn[idx] = lhs[1]
         
-        return ds, dn
+#         return ds, dn
 
     def save_specs_table(self, show=True, savepath=None, filename=None):
         names = self.get_string_names()
