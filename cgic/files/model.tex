@@ -159,27 +159,6 @@ Although it is arguable whether this approximation is simpler than the exact exp
 % L^\prime_n = \sqrt{\left(X_0 - X_n + \Delta N\right)^2 + b^2} \approx X_0 - X_n + \Delta N + \frac{b^2}{2 \left(X_0 - X_n\right)}\, ,
 %  \end{equation}
 
-Many luthiers provide ``relief'' to enlarge the effective height of the string (particularly for the wound bass strings) as the fret number grows to provide clearance for vibration amplitude at higher volume. In practice, this is accomplished by pivoting the fret board shown in \fig{guitar_schematic} clockwise about $x = X_0$, increasing the height of the string above fret $n$ by an amount
-\begin{equation}
-  \begin{split}
-    \Delta y_n &= m \left(X_0 - X_n\right) \\
-    &= \frac{\gamma_n - 1}{\gamma_n}\, m\, X_0 \\
-    &= \frac{\gamma_n - 1}{\gamma_n}\, 2\, \Delta y_{12}\, ,
-  \end{split}
-\end{equation}
-where $\Delta y_{12}$ is the relief at the twelfth fret and $m = 2\, \Delta y_{12} / X_0 \ge 0$ is the downward slope of the fret board. If we update \eqn{l_n_def} and \eqn{l_p_def} (with $d = 0$), then we obtain
-\begin{subequations}
-  \begin{align}
-    L_n &= \sqrt{\left(X_n + \Delta S\right)^2 + (b + \Delta y_n + c)^2}\, , \nd \\
-    L^\prime_n &= \sqrt{\left(X_0 - X_n + \Delta N\right)^2 + \left(b + \Delta y_n\right)^2}\, .
-  \end{align}
-\end{subequations}
-These equations indicate that we could modify the approximation for $Q_n$ given by \eqn{q_n_approx} by replacing $b \longrightarrow b + \Delta y_n$, which results in the numerator
-\begin{equation}
-  \gamma_n\, b + (\gamma_n - 1)\, c \longrightarrow \gamma_n\, b + (\gamma_n - 1) \left(c + 2\, \Delta y_{12}\right)\, ,
-\end{equation}
-indicating that the intuitive substitution $c \longrightarrow c + 2\, \Delta y_{12}$ captures the effect of relief. (Note that this should \emph{not} be done when computing the length $L_0$ of the open string!)
-
 %However, when $d = 0$, $Q_n$ is approximately
 % \begin{equation}
 %     \begin{split}
@@ -239,22 +218,23 @@ indicating that the intuitive substitution $c \longrightarrow c + 2\, \Delta y_{
 
  \subsection{Tension\label{sct:model_tension}}
 %The third term in \eqn{error_def} provides us withe frequency shift of a string
-Nylon classical guitar strings have very different physical properties than those of steel strings. When fresh strings are brought up to the required tension for the first time, they are stretched by a distance $\Delta L$ that varies from 8~cm (for the first $E_4$ string) to 2~cm (for the sixth $E_2$ string). After a few minutes, the string must be re-tensioned because it has experienced viscoelastic relaxation and has gone flat by at least a half-step~\cite{ref:blanc1996nvb,ref:lynchaird2017mpn,ref:lynchaird2018cmp}. This process continues for several hours until the strings begin to ``settle'' and remain properly tuned for longer periods; after about 10~hours, they will remain at the proper frequencies for an hour provided that the temperature in the room doesn't change.~\cite{ref:blanc1996nvb,ref:lynchaird2017mpn}.
-\begin{equation} \label{eqn:youngs_mod_t_0_def}
-  \Delta T = \pi\, \rho^2\, E\, \frac{\mathcal{L} - L}{L}\, .
+Nylon classical guitar strings have very different physical properties than those of steel strings \cite{ref:grimes2014stp,ref:kemp2017puw,ref:kemp2020ibg}. When fresh nylon strings are brought up to the required tension for the first time, they are stretched by a macroscopic distance $\Delta L$ that varies from 7~cm (for the first $E_4$ string) to 2~cm (for the sixth $E_2$ string). After only a few minutes, the string must be re-tensioned because it has experienced nonlinear viscoelastic relaxation and has gone flat by at least a half-step~\cite{ref:blanc1996nvb,ref:lynchaird2017mpn,ref:lynchaird2018cmp}. This process continues for several hours until the strings begin to ``settle'' and remain properly tuned for longer periods; after about 10~hours, they will respond at the correct frequencies for more than an hour provided that the temperature in the room doesn't change significantly.~\cite{ref:blanc1996nvb,ref:lynchaird2017mpn}. A string removed from the guitar after this stage has been reached will not relax back to its original ``out-of-the-box'' length, but small changes ($\pm 1$~mm or less) will be elastically restored. In this settled regime, an infinitesimal change $\delta L$ of a nylon string with length $L$ will result in a linear change in the tension by an amount~\cite{ref:landau1986toe}
+\begin{equation} \label{eqn:youngs_mod_def}
+  \delta T = \pi\, \rho^2\, E_\mathrm{eff}\, \frac{\delta L}{L}\, ,
 \end{equation}
-  
-We've seen above that as a guitar string is fretted its length increases, thereby increasing its tension through linear elastic deformation~\cite{ref:landau1986toe}. We will focus on the response of the string to a longitudinal strain, and neglect the transverse stress that causes negligible changes in the radius of the string~\cite{ref:lynchaird2017mpn}. In this case, we can write the change in tension of a string experiencing an infinitesimal change in length from $L$ to $\mathcal{L}$ as
- \begin{equation} \label{eqn:youngs_mod_def}
-\Delta T = \pi\, \rho^2\, E\, \frac{\mathcal{L} - L}{L}\, .
+where $E_\mathrm{eff}$ is an effective linear modulus of elasticity for the settled string.
+
+We will focus on the response of a settled string to a differential longitudinal strain, and neglect the transverse stress that causes negligible changes in the radius of the string~\cite{ref:lynchaird2017mpn}. Specifically, we write the change in tension of a string touching fret $n$ as
+ \begin{equation} \label{eqn:delta_t_n}
+\delta T_n = \pi\, \rho^2\, E_\mathrm{eff}\, Q_n\, ,
  \end{equation}
-Therefore, the tension in a string clamped to fret $n$ is
+where $Q_n$ is the normalized infinitesimal displacement defined by \eqn{q_n_def}. Note that we are using the length $L_0$ of the unfretted string between the saddle and the nut; we neglect the length of the string between the nut and the tuners, which is at a much higher tension because the string is held tightly within the nut. Therefore, the tension in a string clamped to fret $n$ is
  \begin{equation} \label{eqn:t_n_def}
-T_n = T_0 + \Delta T_n = T_0 \left( 1 + \kappa\, Q_n \right)\, ,
+T_n = T_0 + \delta T_n = T_0 \left( 1 + \kappa\, Q_n \right)\, ,
  \end{equation}
-where we have used \eqn{q_n_def} and defined the dimensionless linear ``string constant''
+where we have defined the dimensionless linear ``string constant''
  \begin{equation}\label{eqn:kappa_def}
-\kappa \equiv \frac{\pi \rho^2 E}{T_0}\, .
+\kappa \equiv \frac{\pi \rho^2 E_\mathrm{eff}}{T_0}\, .
  \end{equation}
 The corresponding frequency shift due to the increase in tension caused by fretting is therefore given by the third term in the final line of \eqn{error_def} as
 \begin{equation} \label{eqn:tension_shift}
@@ -273,6 +253,27 @@ In \fig{tnu_test}, we plot a comparison between the exact and approximate expres
   \includegraphics[width=5.0in]{figures/tnu_test}
   \caption{\label{fig:tnu_test} Comparison of the exact expression for the frequency shift caused by tension given by \eqn{tension_shift} with the approximate expression given by \eqn{tension_approx}.}
 \end{figure}
+
+Many luthiers provide ``relief'' to enlarge the effective height of the string (particularly for the wound bass strings) as the fret number grows to provide clearance for vibration amplitude at higher volume. In practice, this is accomplished by pivoting the fret board shown in \fig{guitar_schematic} clockwise about $x = X_0$, increasing the height of the string above fret $n$  by an amount
+\begin{equation}
+  \begin{split}
+    \Delta y_n &= m \left(X_0 - X_n\right) \\
+    &= \frac{\gamma_n - 1}{\gamma_n}\, m\, X_0 \\
+    &= \frac{\gamma_n - 1}{\gamma_n}\, 2\, \Delta y_{12}\, ,
+  \end{split}
+\end{equation}
+where $\Delta y_{12}$ is the relief at the twelfth fret and $m = 2\, \Delta y_{12} / X_0 \ge 0$ is the downward slope of the fret board. If we update \eqn{l_n_def} and \eqn{l_p_def} (with $d = 0$), then we obtain
+\begin{subequations}
+  \begin{align}
+    L_n &= \sqrt{\left(X_n + \Delta S\right)^2 + (b + \Delta y_n + c)^2}\, , \nd \\
+    L^\prime_n &= \sqrt{\left(X_0 - X_n + \Delta N\right)^2 + \left(b + \Delta y_n\right)^2}\, .
+  \end{align}
+\end{subequations}
+These equations indicate that we could modify the approximation for $Q_n$ given by \eqn{q_n_approx} by replacing $b \longrightarrow b + \Delta y_n$, which results in the numerator
+\begin{equation}
+  \gamma_n\, b + (\gamma_n - 1)\, c \longrightarrow \gamma_n\, b + (\gamma_n - 1) \left(c + 2\, \Delta y_{12}\right)\, ,
+\end{equation}
+indicating that the intuitive substitution $c \longrightarrow c + 2\, \Delta y_{12}$ captures the effect of relief. (Note that this should \emph{not} be done when computing the length $L_0$ of the open string!)
 
 % In \fig{tn_test}, we compare the exact expression for the frequency shift due to tension increases as a function of the fret number given by the \lhs of \eqn{tension_shift} with the approximate expression given by the \rhs. The exact curves for both $d = 0$~mm and $d = 10$~mm used the corresponding exact expressions for $\mathcal{L}_n$ and $L_0$, while the approximate expressions relied only on \eqn{q_n_approx}. Here we have chosen $\kappa = 51$ from \tbl{string_specs} and the guitar has the same parameters as in \fig{qn_test}.
 
