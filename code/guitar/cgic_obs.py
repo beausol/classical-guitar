@@ -104,7 +104,7 @@ class GuitarString(object):
         FrequencyShifts object
     '''
 
-    def __init__(self, specs, props, scale_length):
+    def __init__(self, name, note, scale_length, diameter, linear_mass_density, tension, units='IPS'):
         '''Initialize a GuitarString object.
 
         Parameters
@@ -135,37 +135,40 @@ class GuitarString(object):
             variables is assumed to use millimeters, milligrams, newtons, and
             seconds
         '''
-        self._specs = specs
-        self._props = props
-        
-        # if units == 'IPS':
-        #     in_to_mm = 25.4
-        #     lb_to_mg = 453592.37
-        #     lb_to_nt = 4.4482216153 # 9.81 / 2.204
+        if units == 'IPS':
+            in_to_mm = 25.4
+            lb_to_mg = 453592.37
+            lb_to_nt = 4.4482216153 #9.81 / 2.204
             
-        #     self._params.scale *= in_to_mm
-        #     self._params.diameter *= in_to_mm
-        #     self._params.density *= (lb_to_mg/in_to_mm)
-        #     self._params.tension *= lb_to_nt
+            scale_length *= in_to_mm
+            diameter *= in_to_mm
+            linear_mass_density *= (lb_to_mg/in_to_mm)
+            tension *= lb_to_nt
 
-        self._freq = self._frequency(self._specs.note)
-        self.set_scale_length(scale_length)
+        self._name = name
+        self._note = note
+        self._freq = self._frequency(self._note)
+        self._scale_length = scale_length
+        self._radius = diameter / 2
+        self._density_lin = linear_mass_density
+        self._density_vol = self._density_lin / (np.pi * self._radius**2)
+        self._tension = tension
 
-    # def __str__(self):
-    #     '''Return a string displaying the attributes of a GuitarString object.
+    def __str__(self):
+        '''Return a string displaying the attributes of a GuitarString object.
 
-    #     Example
-    #     -------
-    #     string = GuitarString(name, note, scale_length, diameter, linear_mass_density, tension)
+        Example
+        -------
+        string = GuitarString(name, note, scale_length, diameter, linear_mass_density, tension)
         
-    #     print(string)
-    #     '''
-    #     retstr = self._name + " (" + self._note + " = {:5.1f} Hz) -- ".format(self._freq)
-    #     retstr += 'Scale Length: ' + '{} mm; '.format(round(self._scale_length))
-    #     retstr += 'Radius: ' + '{:.3f} mm; '.format(self._radius)
-    #     retstr += 'Density: ' + '{:.3f} mg/mm; '.format(self._density_lin)
-    #     retstr += 'Tension: ' + '{:.1f} N'.format(self._tension)
-    #     return retstr
+        print(string)
+        '''
+        retstr = self._name + " (" + self._note + " = {:5.1f} Hz) -- ".format(self._freq)
+        retstr += 'Scale Length: ' + '{} mm; '.format(round(self._scale_length))
+        retstr += 'Radius: ' + '{:.3f} mm; '.format(self._radius)
+        retstr += 'Density: ' + '{:.3f} mg/mm; '.format(self._density_lin)
+        retstr += 'Tension: ' + '{:.1f} N'.format(self._tension)
+        return retstr
     
     def _frequency(self, note_str):
         notes = dict([('Ab', 49), ('A', 48), ('A#', 47), ('Bb', 47), ('B', 46), ('B#', 57), ('Cb', 46), ('C', 57), ('C#', 56),
@@ -176,12 +179,16 @@ class GuitarString(object):
         return 440.0 * 2**( int(note[1], 10) - notes[note[0]]/12.0 )
 
     def _comp_tension(self):
-        mu = self._specs.density / 1000       # Convert mg/mm to kg/m
-        x0 = self._specs.scale / 1000      # Convert mm to m
-        self._specs.tension = mu * (2 * x0 * self._freq)**2
+        mu = self._density_lin / 1000       # Convert mg/mm to kg/m
+        x0 = self._scale_length / 1000      # Convert mm to m
+        self._tension = mu * (2 * x0 * self._freq)**2
 
     def _comp_kappa(self):
         self._kappa = 2 * self._r + 1
+
+    def _comp_stiffness_old(self):
+        modulus = 1.0e+09 * self._modulus
+        self._stiffness = np.sqrt( np.pi * (self._radius / 1000)**4 * modulus / ( 4 * self._tension * (self._scale_length / 1000)**2 ) )
 
     def _comp_stiffness(self):
         self._stiffness = np.sqrt(self._kappa) * (self._radius / 1000) / ( 2 * self._scale_length / 1000)
@@ -189,17 +196,20 @@ class GuitarString(object):
     def _comp_modulus(self):
         self._modulus = 1.0e-09 * (self._tension / (np.pi * (self._radius/1000)**2)) * self._kappa
 
-    def set_scale_length(self, scale_length):
-        if np.abs(scale_length - self._specs.scale) > 10 * np.finfo(float).eps:
-            self._specs.scale = scale_length
-            self._comp_tension()
+    def set_scale_length(self, scale_length, units=None):
+        if units == 'IPS':
+            in_to_mm = 25.4
+            scale_length *= in_to_mm
+            
+        self._scale_length = scale_length
+        self._comp_tension()
         
-    def fit_r(self, dx, df, rescale):
+    def fit_r(self, dx, df, scale):
         def func(x, intercept, slope):
             return intercept + slope * x
 
-        param, param_cov = curve_fit(func, rescale*dx, df)
-        fit = func(rescale*dx, *param)
+        param, param_cov = curve_fit(func, scale*dx, df)
+        fit = func(scale*dx, *param)
         
         dfdx = param[1]
         ddfdx = np.sqrt(param_cov[1][1])
@@ -250,38 +260,25 @@ class GuitarString(object):
 
 
 class GuitarStrings(object):
-    def __init__(self, name, scale_length, path_specs, path_props, sheet_name=0, units='IPS'):
+    def __init__(self, name, file_name, sheet_name=None, scale_length=None):
         self._name = name
         self._scale_length = scale_length
-
-        df_specs = pd.read_excel(path_specs, sheet_name=sheet_name, #index_col=0,
-                                       dtype={'string' : str, 'note': str, 'diameter' : np.float64,
-                                              'density': np.float64, 'tension': np.float64, 'scale': np.float64})
-        df_specs.diameter /= 2
-        df_specs.rename(columns={"diameter" : "radius"}, inplace=True)
-        if units == 'IPS':
-            in_to_mm = 25.4
-            lb_to_mg = 453592.37
-            lb_to_nt = 4.4482216153 # 9.81 / 2.204
-
-            df_specs.scale *= in_to_mm
-            df_specs.radius *= in_to_mm
-            df_specs.density *= (lb_to_mg/in_to_mm)
-            df_specs.tension *= lb_to_nt
-        indices, rows_specs = zip(*df_specs.iterrows())
-
-        if path_props is None:
-            rows_props = (None,) * 6
+        if sheet_name is None:
+            data = pd.read_excel(file_name,
+                                 dtype={'name': str, 'note': str, 'scale': float,
+                                        'diameter': float, 'density': float, 'tension': float})
         else:
-            df_props = pd.read_excel(path_props, sheet_name=sheet_name, #index_col=0,
-                                          dtype={'string' : str, 'R': np.float64, 'sigma' : np.float64, 'kappa': np.float64,
-                                                 'B_0': np.float64, 'E': np.float64})
-            assert df_specs['string'].equals(df_props['string']), 'Parameter string names and Property string names do not match.'
-            indices, rows_props = zip(*df_props.iterrows())
-        
+            data = pd.read_excel(file_name, sheet_name=sheet_name,
+                                 dtype={'name': str, 'note': str, 'scale': float,
+                                        'diameter' : float, 'density': float, 'tension': float})
+
         self._strings = []
-        for row_specs, row_props in zip(rows_specs, rows_props):
-            string = GuitarString(row_specs, row_props, scale_length)
+        row_list = np.arange(data.shape[0])
+        for row in row_list:
+            string = GuitarString(data.name[row], data.note[row], data.scale[row],
+                            data.diameter[row], data.density[row], data.tension[row])
+            if scale_length is not None:
+                string.set_scale_length(scale_length)
             self._strings.append(string)
             
     def __str__(self):
@@ -293,43 +290,18 @@ class GuitarStrings(object):
         
         print(strings)
         '''
-        
-        df = self._build_specs_frame()
-        df.drop(columns=["scale"], inplace=True)
-        df.rename(columns={"string" : "String", "note" : "Note", "radius" : "Radius (mm)",
-                           "density" : "Density (mg/mm)", "tension" : "Tension (N)"},
-                  inplace=True)
-        
-        return df.to_string(index=False)
-
-#        return params_frame.to_string()
-    
-    #     retstr = self._name + "\n"
-    #     for string in self._strings:
-    #         retstr += string.__str__() + "\n"
-    #     return retstr
-    
-    def _build_specs_frame(self):
-        series_specs = []
+        retstr = self._name + "\n"
         for string in self._strings:
-            series_specs.append(string._specs)
-        
-        return pd.DataFrame(series_specs)
-        
-    def _build_props_frame(self):
-        series_props = []
-        for string in self._strings:
-            series_props.append(string._props)
-        
-        return pd.DataFrame(series_props)
-        
+            retstr += string.__str__() + "\n"
+        return retstr
+    
     def set_scale_length(self, scale_length):
         self._scale_length = scale_length
         for string in self._strings:
             string.set_scale_length(scale_length)
 
-    def fit_r_old(self, data_path, sheet_name=0, scale=1.0, show=True, save_path=None, file_name=None, markersize=12.5):
-        data = pd.read_excel(data_path, sheet_name=sheet_name)
+    def fit_r(self, datapath, sheet_name=0, scale=1.0, show=True, savepath=None, filename=None, markersize=12.5):
+        data = pd.read_excel(datapath, sheet_name=sheet_name)
         column_names = list(data.columns)
         dx = np.array(data[[column_names[0]]].values.T[0])
         self.compare_string_names(column_names[1:])
@@ -340,29 +312,8 @@ class GuitarStrings(object):
             fit = string.fit_r(dx, data[name].values -  data[name].values[0], scale)
             fit_dict[name] = fit
         
-        self.plot_fit(fit_dict, data, show, save_path, file_name, markersize)
+        self.plot_fit(fit_dict, data, show, savepath, filename, markersize)
 
-    def fit_r(self, data_path, sheet_name=0, scale=1.0, show=True, save_path=None, file_name=None, markersize=12.5):
-        data = pd.read_excel(data_path, sheet_name=sheet_name)
-#        column_names = list(data.columns)
-        dx = data['dx'].to_numpy()
-        self._check_string_names(data)
-        
-        fit_dict = {}
-        for string in self._strings:
-            name = string.get_name()
-            fit = string.fit_r(dx, data[name].values -  data[name].values[0], scale)
-            fit_dict[name] = fit
-        
-        self.plot_fit(fit_dict, data, show, save_path, file_name, markersize)
-
-    def _check_string_names(self, data):
-        specs = self._build_specs_frame()
-        specs_names = specs['string'].to_list()
-        data_names = list(data.columns)[1:]
-        assert len(specs_names) == len(data_names), 'This string set has {} strings, not {}.'.format(len(specs_names), len(data_names))
-        assert sorted(specs_names) == sorted(data_names), 'The input string names should be {}, not {}.'.format(sorted(specs_names), sorted(data_names))
-    
     def plot_fit(self, fit_dict, data, show, savepath, filename, markersize):
         dx = np.array(data[[list(data.columns)[0]]].values.T[0])
         
@@ -402,6 +353,11 @@ class GuitarStrings(object):
             names.append(string.get_name())
         return names
 
+    def compare_string_names(self, name_list):
+        string_names = self.get_string_names()
+        assert len(string_names) == len(name_list), 'This string set has {} strings, not {}.'.format(len(string_names), len(name_list))
+        assert sorted(string_names) == sorted(name_list), 'The input string names should be {}, not {}.'.format(string_names, name_list)
+    
     def get_notes(self):
         notes = []
         for string in self._strings:
@@ -484,11 +440,11 @@ class GuitarStrings(object):
 #         return ds, dn
 
     def save_specs_table(self, show=True, savepath=None, filename=None):
-        #names = self.get_string_names()
-        #notes = self.get_notes()
-        #radii = self.get_radii()
-        #densities = self.get_densities()
-        #tensions = self.get_tensions()
+        names = self.get_string_names()
+        notes = self.get_notes()
+        radii = self.get_radii()
+        densities = self.get_densities()
+        tensions = self.get_tensions()
 
         df = pd.DataFrame({'String': names,
                            'Note': notes,
@@ -1089,8 +1045,7 @@ class Guitar(object):
             zero_frets = harm[1]
             for s, n in zip(zero_strings, zero_frets):
                 shifts[s-1] -= shifts[s-1][n]
-        rms = np.sqrt(np.mean(shifts**2))
-        print(rms)
+        rms = np.sqrt(np.mean(shifts[1:]**2))
         names = self._strings.get_string_names()
 
         plt.figure(figsize=(8.0,6.0))
