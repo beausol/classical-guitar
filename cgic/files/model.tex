@@ -14,13 +14,15 @@ f_{q} = \frac{q}{2\, L}\, \sqrt{\frac{T}{\mu}} \left[ 1 + 2 B + 4 \left(1 + \fra
  \end{equation}
 Here $L$ is the length of the string, $T$ and $\mu$ are its tension and linear mass density, respectively, and $B$ is a small ``bending stiffness'' coefficient to capture the relevant mechanical properties of the string. For a homogeneous string with a cylindrical cross-section, $B$ is given by
  \begin{equation} \label{eqn:b_def}
-B \equiv \sqrt{\frac{\pi\, \rho^4\, E}{4\, T\, L^2}}\, ,
+  B \equiv \sqrt{\frac{E\, \mathcal{A}\, s^2}{L^2 T}}\, ,
  \end{equation}
-where $\rho$ is the radius of the string and $E$ is Young's modulus (or the modulus of elasticity). But it's unlikely that \eqn{f_m_clamped} accurately describes the resonant frequencies of a nylon string on a classical guitar, because it assumes that the string is ``clamped'' at both ends, so that a particular set of symmetric boundary conditions must be applied to the partial differential equation (PDE) describing transverse vibrations of the string. We believe that this assumption is correct for the end of the string held at either the nut or the fret, but that the string is ``pinned'' (and not clamped) at the saddle. In \app{freq}, we solve the PDE using these non-symmetric boundary conditions, and find
+where $\mathcal{A}$ and $s$ are the cross-sectional area and the radius of gyration of the string, respectively, and $E$ is Young's modulus (or the modulus of elasticity). But it's unlikely that \eqn{f_m_clamped} accurately describes the resonant frequencies of a nylon string on a classical guitar. First, it is derived by assuming that the vibration of the string is polarized vertically (perpendicular to the plane of the guitar top). This is true for a piano string, but not for a classical guitar string, which is polarized elliptically with the major axis parallel to the guitar top. Second, the factor of two in front of the bending stiffness arises from the assumption that the string is ``clamped'' at both ends, so that a particular set of symmetric mathematical boundary conditions must be applied to the partial differential equation (PDE) describing transverse vibrations of the string. However, measurements of the frequency of a stiff piano string showed that neither symmetric clamped nor ``pinned'' boundary conditions were completely correct~\cite{ref:fletcher1964nvf}. In addition, \eqn{f_m_clamped} predicts values of saddle setbacks that are about twice as large as those used by experienced luthiers based on trial and error~\cite{ref:buckland2021ror}.
+
+As a compromise, we assume that the string is clamped at the nut but pinned at the saddle. In \app{freq}, we solve the PDE using these non-symmetric boundary conditions, and find
  \begin{equation} \label{eqn:f_m_stiff}
 f_q = \frac{q}{2\, L}\, \sqrt{\frac{T}{\mu}} \left[ 1 + B + \left( 1 + \half q^2 \pi^2 \right) B^2 \right]\, .
  \end{equation}
-Note that this expression is valid only when $B \ll 1$. For a typical nylon guitar string with $E \approx 5$~GPa, $T \approx 60$~N, $\rho \approx 0.5$~mm, and $L \approx 650$~mm, we have $B \approx 3 \times 10^{-3}$. (In this case, the quadratic $B$ term in \eqn{f_m_stiff} is only 2\% as large as the linear term, and can generally be neglected. We will include it in our analysis below only for completeness.) We should use \eqn{f_m_stiff} with some caution, because the chemistry, materials science, and physics of nylon strings (particularly the wound bass strings) are quite complicated~\cite{ref:lynchaird2017mpn}.
+Note that this expression is valid only when $B \ll 1$. We'll see that a typical nylon guitar string has $B \approx 2 - 3 \times 10^{-3}$. In this case, the quadratic $B$ term in \eqn{f_m_stiff} is only 2\% as large as the linear term, and can generally be neglected. We will include it in our numerical computations for completeness. We should use \eqn{f_m_stiff} with some caution, because the chemistry, materials science, and physics of nylon strings (particularly the wound bass strings) are quite complicated~\cite{ref:lynchaird2017mpn}. With this in mind, we check the validity of this equation for the nylon strings we tested in \sct{exp}.
 
  \begin{figure}
   \centering
@@ -36,7 +38,7 @@ f_n = \frac{1}{2\, L_n}\, \sqrt{\frac{T_n}{\mu_n}} \left[ 1 + B_n + \left(1 + \f
  \end{equation}
 where $T_n$ and $\mu_n$ are the modified tension and the linear mass density of the fretted string, and
  \begin{equation} \label{eqn:b_n_def}
-B_n \equiv \sqrt{\frac{\pi\, \rho^4\, E}{4\, T_n\, L_n^2}}\, .
+B_n \equiv \sqrt{\frac{E\, \mathcal{A}\, s^2}{4\, T_n\, L_n^2}}\, .
  \end{equation}
 We note that $T_n$ and $\mu_n$ depend on $\mathcal{L}_n$, the \emph{total} length of the fretted string from the saddle to the nut. Ideally, in the 12-TET system~\cite{ref:durfee2015pms},
  \begin{equation} \label{eqn:f_n_tet}
@@ -122,10 +124,11 @@ Then --- if the guitar has been manufactured such that $X_n = X_0 / \gamma_n$ --
     1200\, \log_2 \left( \frac{L_0}{\gamma_n\, L_n} \right) &\approx \frac{1200}{\ln(2)} \left[ \frac{\Delta N - \left(\gamma_n - 1\right) \Delta S}{X_0} - \frac{(\Delta N + \Delta S)^2 - \gamma_n^2\, \Delta S^2}{2\, X_0^2}\right. \\ &\qquad\qquad - \left. \frac{\gamma_n^2 (b + c)^2 - c^2}{2\, X_0^2}\right]\, .
   \end{split}
 \end{equation}
-If the guitar is uncompensated, so that $\Delta S = \Delta N = 0$, the magnitude of this error on our Classical Guitar can be neglected. However, we'll see that choosing $\Delta S > 0$ and $\Delta N < 0$ will allow us to substantially compensate for frequency shift contributions from other effects. In this case, we note that the three terms inside the bracket on the \rhs of \eqn{rle_taylor} are $\{-3.5 \times 10^{-3}, 1.4 \times 10^{-5}, -1.0 \times 10^{-4}\}$, respectively, for the parameter values given by \tbl{mcg_specs}, corresponding to frequency shifts of $\{-6.05, 0.02, -0.17\}$~cents. Therefore, the second two terms are negligible compared to the first, and we can approximate the resonant length error --- for the purposes of estimating setbacks --- as
+If the guitar is uncompensated, so that $\Delta S = \Delta N = 0$, the magnitude of this error on our Classical Guitar can be neglected in approximate treatments. However, we'll see that choosing $\Delta S > 0$ and $\Delta N < 0$ will allow us to substantially compensate for frequency shift contributions from other effects. In this case, we note that the three terms inside the bracket on the \rhs of \eqn{rle_taylor} are $\{-3.5 \times 10^{-3}, 1.4 \times 10^{-5}, -1.0 \times 10^{-4}\}$, respectively, for the parameter values given by \tbl{mcg_specs}, corresponding to frequency shifts of $\{-6.05, 0.02, -0.17\}$~cents. Therefore, the second two terms are negligible compared to the first, and we can approximate the resonant length error --- for the purposes of estimating setbacks in \sct{comp} --- as
 \begin{equation} \label{eqn:rle_approx}
   1200\, \log_2 \left( \frac{L_0}{\gamma_n\, L_n} \right) \approx \frac{1200}{\ln(2)} \left[ \frac{\Delta N - \left(\gamma_n - 1\right) \Delta S}{X_0}\right]\, .
 \end{equation}
+We'll include the term in \eqn{rle_taylor} that is quadratic in $b$ and $c$ in our computation of setbacks detailed in \app{rms}, and we'll use \eqn{l_0_def} and \eqn{l_n_def} when computing frequency errors.
 
  \subsection{Linear Mass Density\label{sct:model_lmd}}
 As discussed above, the linear mass density $\mu_0$ of an open (unfretted) string is simply the total mass $M$ of the string clamped between the saddle and the nut divided by the length $L_0$. Similarly, the mass density $\mu_n$ of a string held onto fret $N$ is $M/\mathcal{L}_n$. Therefore
@@ -144,7 +147,7 @@ When $d \ll X_0$, we can expand $Q_n$ to third order in all small distances and 
 \begin{equation} \label{eqn:q_n_approx}
   Q_n \approx \frac{\left[ \gamma_n\, b + (\gamma_n - 1)\, c \right]^2}{2\, (\gamma_n - 1)\, X_0^2} \left( 1 + \frac{\gamma_n^2}{\gamma_n - 1}\, \frac{d}{X_0} \right)\, ,
 \end{equation}
-Although it is arguable whether this approximation is simpler than the exact expression given by \eqn{q_n_def}, it is quite clear that $Q_n$ does not depend significantly on the setbacks $\Delta S$ or $\Delta N$. For a guitar with the specifications listed in \tbl{mcg_specs}, $Q_n$ falls in the range $25 - 45 \times 10^{-6}$ for $d \le 10$~mm, corresponding to a net stretch of the string less than $0.03$~mm. For the same parameters, when $d = 10$~mm, we find that $\Delta \nu_{1} \approx 0.04$~cents, and is smaller at all other frets. Therefore, in general the shift due to linear mass density can be neglected without significant loss of accuracy.
+Although it is arguable whether this approximation is simpler than the exact expression given by \eqn{q_n_def}, it is quite clear that $Q_n$ does not depend significantly on the setbacks $\Delta S$ or $\Delta N$. For a guitar with the specifications listed in \tbl{mcg_specs}, $Q_n$ falls in the range $25 - 45 \times 10^{-6}$ for $d \le 10$~mm, corresponding to a net stretch of the string less than $0.03$~mm. For the same parameters, when $d = 10$~mm, we find that $\Delta \nu_{1} \approx 0.04$~cents, and is smaller at all other frets. Therefore, in general the shift due to linear mass density can be neglected without significant loss of accuracy in the approximate setback solutions we derive in \sct{comp}.
 
 % In this case, we won't bother with a Taylor series expansion that includes $d \ne 0$, because it isn't significantly more illuminating than \eqn{l_p_def}.
 
@@ -218,25 +221,26 @@ Although it is arguable whether this approximation is simpler than the exact exp
 
  \subsection{Tension\label{sct:model_tension}}
 %The third term in \eqn{error_def} provides us withe frequency shift of a string
-Nylon classical guitar strings have very different physical properties than those of steel strings \cite{ref:grimes2014stp,ref:kemp2017puw,ref:kemp2020ibg}, with completely different stress-strain curves. When fresh nylon strings are brought up to the required tension for the first time, they are stretched by a macroscopic distance $\Delta L$ that varies from 7~cm (for the first $E_4$ string) to 2~cm (for the sixth $E_2$ string). After only a few minutes, the string must be re-tensioned because it has experienced nonlinear viscoelastic relaxation and has gone flat by at least a half-step~\cite{ref:blanc1996nvb,ref:lynchaird2017mpn,ref:lynchaird2018cmp}. This process continues for several hours until the strings begin to ``settle'' and remain properly tuned for longer periods; after about 10~hours, they will respond at the correct frequencies for more than an hour provided that the temperature in the room doesn't change significantly~\cite{ref:blanc1996nvb,ref:lynchaird2017mpn}. A string removed from the guitar after this stage has been reached will not relax back to its original ``out-of-the-box'' length. The frequency of most settled nylon strings string can be ``dropped'' one whole step and returned to the initial value, but attempts to raise the frequency by similar amounts will often result in a broken string.
+Counterintuitively, nylon classical guitar strings have very different physical properties than those of steel strings~\cite{ref:grimes2014stp,ref:kemp2017puw,ref:kemp2020ibg}, with completely different stress-strain curves. When fresh nylon strings are brought up to the required tension for the first time, they are stretched by a macroscopic distance $\Delta L$ that varies from 7~cm (for the first $E_4$ string) to 2~cm (for the sixth $E_2$ string). After only a few minutes, the string must be re-tensioned because it has experienced nonlinear viscoelastic relaxation and has gone flat by at least a half-step~\cite{ref:blanc1996nvb,ref:lynchaird2017mpn,ref:lynchaird2018cmp}. This process continues for several hours until the strings begin to ``settle'' and remain properly tuned for longer periods; after about 10~hours, they will respond at the correct frequencies for more than an hour provided that the temperature in the room doesn't change significantly~\cite{ref:blanc1996nvb,ref:lynchaird2017mpn}. A string removed from the guitar after this stage has been reached will not relax back to its original ``out-of-the-box'' length --- it has been permanently deformed. The frequency of most settled nylon strings string can be ``dropped'' one whole step and returned to the initial value, but attempts to increase tension further will reach a nonlinear stage where the frequency increases much less quickly and will often result in a fractured string.
 
 We will focus on the response of a settled string to a differential longitudinal strain, and neglect the transverse stress that causes insignificant changes in the radius of the string~\cite{ref:lynchaird2017mpn}. As we show in \sct{exp}, in the settled regime an infinitesimal change $\delta L$ of a nylon string with length $L$ will result in a linear change in the tension by an amount~\cite{ref:landau1986toe}
 \begin{equation} \label{eqn:youngs_mod_def}
-  \delta T = \pi\, \rho^2\, E_\mathrm{eff}\, \frac{\delta L}{L}\, ,
+  \delta T = \mathcal{A}\, E_\mathrm{eff}\, \frac{\delta L}{L}\, ,
 \end{equation}
-where $E_\mathrm{eff}$ is an effective linear modulus of elasticity representing the ratio of the differential stress $\delta T / \pi\, \rho^2$ to the differential strain $\frac{\delta L}{L}$. Therefore, we write the change in tension of a string stretched by touching fret $n$ as
+where $E_\mathrm{eff}$ is an effective linear modulus of elasticity representing the ratio of the differential stress $\delta T / \mathcal{A}$ to the differential strain $\delta L / L$. Therefore, we write the change in tension of a string stretched by touching fret $n$ as
  \begin{equation} \label{eqn:delta_t_n}
-\delta T_n = \pi\, \rho^2\, E_\mathrm{eff}\, Q_n\, ,
+\delta T_n = \mathcal{A}\, E_\mathrm{eff}\, Q_n\, ,
  \end{equation}
-where $Q_n$ is the normalized infinitesimal displacement --- here acting as the differential strain --- defined by \eqn{q_n_def}. Note that we are using the length $L_0$ of the unfretted string between the saddle and the nut as our reference length. In the case of steel strings on electric guitars, it is appropriate to include the length of the string between the nut and the tuning peg~\cite{ref:kemp2020ibg}. But a nylon string on a classical guitar emerges from the outside of the nut at a sharp angle, and is held so tightly within the nut that the tension of the string between the nut and the tuners is significantly higher than that of the vibrating string. Based on these considerations, we write the tension in a settled string clamped to fret $n$ as
+where $Q_n$ is the normalized infinitesimal displacement --- here acting as the differential strain --- defined by \eqn{q_n_def}. Note that we are using the length $L_0$ of the unfretted string between the saddle and the nut as our reference length. In the case of steel strings on electric guitars, it is appropriate to include the length of the string between the nut and the tuning peg because the string can slide freely through the nut and the tension on either side is the same~\cite{ref:kemp2020ibg}. But a nylon string on a classical guitar emerges from the outside of the nut at a sharp angle, and is held so tightly within the nut that the tension of the string between the nut and the tuners is significantly higher than that of the vibrating string by an amount that depends on the string and the manufacturing choices made for the nut.
+
+Based on these considerations, we write the tension in a settled string clamped to fret $n$ as
  \begin{equation} \label{eqn:t_n_def}
 T_n = T_0 + \delta T_n = T_0 \left( 1 + \kappa\, Q_n \right)\, ,
  \end{equation}
 where we have defined the dimensionless linear ``string constant''
  \begin{equation}\label{eqn:kappa_def}
-\kappa \equiv \frac{\pi \rho^2 E_\mathrm{eff}}{T_0}\, .
+\kappa \equiv \frac{\mathcal{A} E_\mathrm{eff}}{T_0}\, .
  \end{equation}
- 
 The corresponding frequency shift due to the increase in tension caused by fretting is therefore given by the third term in the final line of \eqn{error_def} as
 \begin{equation} \label{eqn:tension_shift}
   600\, \log_2 \left(  \frac{T_n}{T_0} \right) = 600\, \log_2 \left( 1 + \kappa\, Q_n \right)\, .
@@ -284,7 +288,7 @@ indicating that the intuitive substitution $c \longrightarrow c + 2\, \Delta y_{
 % \end{equation}
 The bending stiffness of a string clamped at the $n^{\mathrm{th}}$ fret is given by \eqn{b_n_def}, \eqn{l_n_def}, and \eqn{t_n_def} as
 \begin{equation} \label{eqn:bg_n_def}
-  B_n = \sqrt{\frac{\pi\, \rho^4\, E}{4\, T_n\, L_n^2}} = \sqrt{1 + \kappa\, Q_n}\, \frac{L_0}{L_n}\, \sqrt{\frac{\pi\, \rho^4\, E}{4\, T_0\, L_0^2}} \approx \gamma_n\, B_0\, ,
+  B_n = \sqrt{\frac{E\, \mathcal{A}\, s^2}{4\, T_n\, L_n^2}} = \sqrt{1 + \kappa\, Q_n}\, \frac{L_0}{L_n}\, \sqrt{\frac{E\, \mathcal{A}\, s^2}{4\, T_0\, L_0^2}} \approx \gamma_n\, B_0\, ,
 \end{equation}
 where the approximation applies when $B_0 \ll 1$ and the largest contribution arises from the shortened length of the fretted string compared to that of the open string. This expression confirms our intuitive expectation that the stiffness of the string should increase as the length becomes shorter.
 % We see from \eqn{l_n_def} that $L_n \approx L_0/\gamma_n$, so from \eqn{b_n_def} we have
@@ -296,12 +300,6 @@ Therefore, the fourth term in the final line of \eqn{error_def} can be approxima
 1200\, \log_2 \left[ \frac{1 + B_n + (1 + \pi^2/2)\, B_n^2}{1 + B_0 + (1 + \pi^2/2)\, B_0^2} \right] \approx \frac{1200}{\ln(2)}\, \left[ \left(\gamma_n - 1\right) B_0 + \half\, \left(\gamma_n^2 - 1\right) \left(1 + \pi^2\right) B_0^2 \right]\, .
  \end{equation}
 In \fig{bnu_test}, we use \eqn{dnu_bn} to compare the exact and approximate expressions for frequency shifts due to bending stiffness based on  \tbl{mcg_specs} and \tbl{string_specs}. Note that we show the approximate frequencies with and without the quadratic terms, and we see that the $2^\mathrm{nd}$-order contribution is about $0.2$~cents at the $12^\mathrm{th}$ fret. Once again, it is clear that $B_n$ does not depend significantly on either $\Delta S$ or $\Delta N$. In other words, the bending stiffness error does not depend on the tiny changes to the linear mass density or the tension that arise due to string fretting. Instead, it is an intrinsic mechanical property of the string: the stiffness increases as the length of the vibrating string becomes shorter. Comparing \fig{tnu_test} and \fig{bnu_test}, we see that at the 12$^\textrm{th}$ fret the frequency error due to bending stiffness is about twice as large as that caused by the increase in tension.
-
-\red{
-Steel strings: nickel (electric or bass) or phosphor bronze.
-
-silver-coated copper
-}
 
 \begin{figure}
   \centering
@@ -324,16 +322,10 @@ But how do we determine the bending stiffness $B_0$ given by \eqn{b_def} and the
 %   \caption{\label{fig:tfe_test} A comparison of the total frequency shift given by \eqn{error_def} and \eqn{error_tot} for the Classical Guitar specified by \tbl{mcg_specs} (with nonzero setbacks) and a string with the parameters listed in \tbl{string_specs}.}
 % \end{figure}
 
-
-
-It's impractical to assume that the modulus of elasticity of a particular string can be derived from published values of bulk nylon (particularly in the case of a wound string). Instead, let's assume that we know the value of $\kappa$, and then estimate the bending stiffness coefficient by comparing \eqn{b_def} and \eqn{kappa_def}, and writing $B_0$ as
-\begin{equation} \label{eqn:b_0_kappa}
-  B_0 = \sqrt{\kappa}\, \frac{\rho}{2\, L_0} \approx \sqrt{\kappa}\, \frac{\rho}{2\, X_0}\, .
-\end{equation}
-To measure $\kappa$, in \sct{exp} we will conduct an experiment that measures the change in the frequency of an open string as we make slight changes to its length~\cite{ref:byers1996cgi,ref:varieschi2010icf}. From \eqn{f_m_stiff}, the derivative of the fundamental frequency of an open string is
+To measure $\kappa$, in \sct{exp} we will conduct an experiment that measures the change in the frequency of an open string as we make slight changes to its length~\cite{ref:byers1996cgi,ref:varieschi2010icf}. From \eqn{f_m_stiff}, the change $\delta f$ of the fundamental frequency of an open string due to a small  change in length $\delta L$ is
  \begin{equation}
  \begin{split}
-\frac{d\, f}{d\, L} &= \frac{f}{L} \left( -1 + \frac{L}{2\, T}\, \frac{d\, T}{d\, L} - \frac{L}{2\, \mu}\, \frac{d\, \mu}{d\, L} + \frac{L}{1 + B}\, \frac{d\, B}{d\, L} \right) \\
+\frac{\delta\, f}{\delta\, L} &= \frac{f}{L} \left( -1 + \frac{L}{2\, T}\, \frac{\delta\, T}{\delta\, L} - \frac{L}{2\, \mu}\, \frac{\delta\, \mu}{\delta\, L} + \frac{L}{1 + B}\, \frac{\delta\, B}{\delta\, L} \right) \\
 &= \frac{f}{L} \left( -1 + \half\, \kappa + \half - \frac{B}{1 + B} \right) \\
 &\approx \frac{f}{L} \times \half\, (\kappa - 1)\, ,
  \end{split}
@@ -341,29 +333,45 @@ To measure $\kappa$, in \sct{exp} we will conduct an experiment that measures th
 where we have used the analyses above to determine that
  \begin{subequations}
  \begin{align}
-\frac{d\, T}{d\, L} &= \frac{T}{L}\, \kappa\, , \\
-\frac{d\, \mu}{d\, L} &= -\frac{\mu}{L}\, , \nd \\
-\frac{d\, B}{d\, L} &= -\frac{B}{L}\, , \\
+\frac{\delta\, T}{\delta\, L} &= \frac{T}{L}\, \kappa\, , \\
+\frac{\delta\, \mu}{\delta\, L} &= -\frac{\mu}{L}\, , \nd \\
+\frac{\delta\, B}{\delta\, L} &= -\frac{B}{L}\, , \\
  \end{align}
  \end{subequations}
 and we have again assumed that $B_0 \ll 1$. Therefore, following Byers~\cite{ref:byers1996cgi,ref:varieschi2010icf}, we define the parameter $R$ to be
  \begin{equation}\label{eqn:r_def}
-R \equiv \frac{L}{f}\, \frac{d\, f}{d\, L} = \half\, (\kappa - 1)\, ,
+R \equiv \frac{L}{f}\, \frac{\delta\, f}{\delta\, L} = \half\, (\kappa - 1)\, ,
  \end{equation}
 which gives
  \begin{equation} \label{eqn:kappa_r}
 \kappa = 2\, R + 1\, .
  \end{equation}
 
-We can anticipate the typical value of $R$ for a nylon classical guitar string through a simple observation. On a classical guitar with a scale length of 650~mm, we can usually tune an open string a full step by winding the tuner/machine head three half turns. As we shall see below, this increases or decreases the string length above the first fret by about 3~mm, where the corresponding length of the open string from the saddle to the first fret is about 614~mm. Since a full step is (by definition) 200~cents, \eqn{cents_approx} tells us that
+ We can anticipate the typical value of $R$ for a nylon classical guitar string through a simple observation. On a classical guitar with a scale length of 650~mm, we can usually tune an open string down a full step by winding the tuner/machine head five half turns down and then two half turns back up to re-tension the string. As we shall see in \sct{exp}, this decreases the effective string length by 3~mm. Since a full step is (by definition) 200~cents, \eqn{cents_approx} tells us that
 \begin{equation}
   \frac{\Delta f}{f} \approx \frac{\ln(2)}{1200}\, \Delta \nu = \frac{200}{1731} = 0.116\, .
 \end{equation}
 In this case, we estimate $R$ to be
 \begin{equation}
-  R \approx \frac{614}{3}\, 0.116 = 24\, ,
+  R \approx \frac{650}{3}\, 0.116 = 25\, ,
 \end{equation}
-giving $\kappa \approx 49$, close to the values listed in \tbl{string_specs}. The corresponding open-string bending stiffness is computed using \eqn{b_0_kappa} with the scale length given in \tbl{mcg_specs}. In \fig{uncomp}, we compare the total frequency shifts predicted by \eqn{error_def} and \eqn{error_tot} for this string on the Classical Guitar with $\Delta S = \Delta N = 0$~mm at two different values of $d$. Note that the string is sharp at every fret, but even a large nonzero value of $d$ is only important at the first fret. The bending stiffness is negligible at the first fret, but accounts for 65\% of the shift at the 12$^\textrm{th}$ fret. The close agreement between the exact and approximate expressions for the frequency shifts gives us confidence that the equations we derive for the setbacks in \sct{comp} will be useful.
+giving $\kappa \approx 51$, which are the values listed in \tbl{string_specs}. 
+
+
+It's impractical to assume that the modulus of elasticity of a particular string can be derived from published values of bulk nylon (particularly in the case of a wound string). Instead, let's assume that we know the value of $\kappa$, and then estimate the bending stiffness coefficient by comparing \eqn{b_def} and \eqn{kappa_def}, and writing $B_0$ as
+\begin{equation} \label{eqn:b_0_kappa}
+  B_0 = \sqrt{\kappa}\, \frac{\rho}{2\, L_0} \approx \sqrt{\kappa}\, \frac{\rho}{2\, X_0}\, .
+\end{equation}
+
+\red{
+ Steel strings: nickel (electric or bass) or phosphor bronze.
+ 
+ silver-coated copper
+ }
+
+
+
+The corresponding open-string bending stiffness is computed using \eqn{b_0_kappa} with the scale length given in \tbl{mcg_specs}. In \fig{uncomp}, we compare the total frequency shifts predicted by \eqn{error_def} and \eqn{error_tot} for this string on the Classical Guitar with $\Delta S = \Delta N = 0$~mm at two different values of $d$. Note that the string is sharp at every fret, but even a large nonzero value of $d$ is only important at the first fret. The bending stiffness is negligible at the first fret, but accounts for 65\% of the shift at the 12$^\textrm{th}$ fret. The close agreement between the exact and approximate expressions for the frequency shifts gives us confidence that the equations we derive for the setbacks in \sct{comp} will be useful.
 
 \begin{figure}
   \centering

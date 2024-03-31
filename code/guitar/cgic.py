@@ -562,6 +562,12 @@ class GuitarStrings(object):
     def save_specs_table(self, show=True, savepath=None, filename=None):
         df = self._specs.copy()
         df.drop(columns=["scale"], inplace=True)
+        notes = []
+        for note in df.note:
+            note_str = note.split('_')
+            notes.append(note_str[0] + '$_{' + note_str[1] + '}$')
+        df.replace(df.note.tolist(), notes, inplace=True)
+
         df.rename(columns={"string" : "String", "note" : "Note", "radius" : "Radius (mm)",
                            "density" : "Density (mg/mm)", "tension" : "Tension (N)"},
                   inplace=True)
@@ -908,8 +914,7 @@ class Guitar(object):
         return 1200 * np.log2( self._l0(ds, dn, x0, c) / (self._gamma(n) * self._l(ds, x0, b, c, n)) )
     
     def _mde(self, ds, dn, x0, b, c, d, n):
-        return ( 600 * np.log2( 1 + self._q(ds, dn, x0, b, c, d, n) )
-                - (1200/np.log(2)) * ( self._gamma(n)**2 * (b + c)**2 - c**2 ) / (2 * x0**2) )
+        return 600 * np.log2( 1 + self._q(ds, dn, x0, b, c, d, n) )
     
     def _tse(self, ds, dn, x0, b, c, d, kappa, n):
         return 600 * np.log2( 1 + kappa * self._q(ds, dn, x0, b, c, d, n) )
@@ -1024,7 +1029,7 @@ class Guitar(object):
         ds = np.zeros(n.shape)
         dn = np.zeros(n.shape)
         
-        mde = self._mde(ds, dn, x0, b, c, d, n)
+        mde = self._mde(ds, dn, x0, b, c, d, n) - (1200/np.log(2)) * ( self._gamma(n)**2 * (b + c)**2 - c**2 ) / (2 * x0**2)
         tse = self._tse(ds, dn, x0, b, c, d, kappa, n)
         bse = self._bse(b_0, n)
         
