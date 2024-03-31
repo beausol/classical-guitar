@@ -568,12 +568,12 @@ class GuitarStrings(object):
             notes.append(note_str[0] + '$_{' + note_str[1] + '}$')
         df.replace(df.note.tolist(), notes, inplace=True)
 
-        df.rename(columns={"string" : "String", "note" : "Note", "radius" : "Radius (mm)",
-                           "density" : "Density (mg/mm)", "tension" : "Tension (N)"},
+        df.rename(columns={"string" : "String", "note" : "Note", "radius" : "$\\rho$ (mm)",
+                           "density" : "$\mu$ (mg/mm)", "tension" : "$T_0$ (N)"},
                   inplace=True)
-        formatter = {'Radius (mm)': '{:.3f}',
-                     'Density (mg/mm)': '{:.3f}',
-                     'Tension (N)': '{:.1f}'}
+        formatter = {'$\\rho$ (mm)': '{:.3f}',
+                     '$\mu$ (mg/mm)': '{:.3f}',
+                     '$T_0$ (N)': '{:.1f}'}
 
         styler = df.style.format(formatter=formatter).hide()
         table_str = styler.to_latex(column_format='cccccc', hrules=True)
