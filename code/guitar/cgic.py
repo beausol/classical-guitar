@@ -138,34 +138,8 @@ class GuitarString(object):
         self._specs = specs
         self._props = props
         
-        # if units == 'IPS':
-        #     in_to_mm = 25.4
-        #     lb_to_mg = 453592.37
-        #     lb_to_nt = 4.4482216153 # 9.81 / 2.204
-            
-        #     self._params.scale *= in_to_mm
-        #     self._params.diameter *= in_to_mm
-        #     self._params.density *= (lb_to_mg/in_to_mm)
-        #     self._params.tension *= lb_to_nt
-
         self._freq = self._frequency(self._specs.note)
         self.set_scale_length(scale_length)
-
-    # def __str__(self):
-    #     '''Return a string displaying the attributes of a GuitarString object.
-
-    #     Example
-    #     -------
-    #     string = GuitarString(name, note, scale_length, diameter, linear_mass_density, tension)
-        
-    #     print(string)
-    #     '''
-    #     retstr = self._name + " (" + self._note + " = {:5.1f} Hz) -- ".format(self._freq)
-    #     retstr += 'Scale Length: ' + '{} mm; '.format(round(self._scale_length))
-    #     retstr += 'Radius: ' + '{:.3f} mm; '.format(self._radius)
-    #     retstr += 'Density: ' + '{:.3f} mg/mm; '.format(self._density_lin)
-    #     retstr += 'Tension: ' + '{:.1f} N'.format(self._tension)
-    #     return retstr
 
     def _set_props(self, r, dr):
         kappa = 2 * r + 1
@@ -187,15 +161,6 @@ class GuitarString(object):
         mu = self._specs.density / 1000       # Convert mg/mm to kg/m
         x0 = self._specs.scale / 1000      # Convert mm to m
         self._specs.tension = mu * (2 * x0 * self._freq)**2
-
-    # def _comp_kappa(self):
-    #     self._kappa = 2 * self._r + 1
-
-    # def _comp_stiffness(self):
-    #     self._stiffness = np.sqrt(self._kappa) * (self._radius / 1000) / ( 2 * self._scale_length / 1000)
-
-    # def _comp_modulus(self):
-    #     self._modulus = 1.0e-09 * (self._tension / (np.pi * (self._radius/1000)**2)) * self._kappa
 
     def set_scale_length(self, scale_length):
         if np.abs(scale_length - self._specs.scale) > 10 * np.finfo(float).eps:
@@ -219,48 +184,11 @@ class GuitarString(object):
 
         return fit
 
-    # def set_r(self, r, dr):
-    #     self._r = r
-    #     self._dr = dr
-    #     self._comp_kappa()
-    #     self._comp_stiffness()
-    #     self._comp_modulus()
-    
     def get_specs(self):
         return self._specs
 
     def get_props(self):
         return self._props
-
-    # def get_radius(self):
-    #     return self._radius
-    
-    # def get_tension(self):
-    #     return self._tension
-    
-    # def get_density(self):
-    #     return self._density_lin
-    
-    # def get_density_vol(self):
-    #     return self._density_vol
-    
-    # def get_name(self):
-    #     return self._name
-    
-    # def get_note(self):
-    #     return self._note
-    
-    # def get_r(self):
-    #     return (self._r, self._dr)
-    
-    # def get_kappa(self):
-    #     return self._kappa
-    
-    # def get_modulus(self):
-    #     return self._modulus
-    
-    # def get_stiffness(self):
-    #     return self._stiffness
 
 
 class GuitarStrings(object):
@@ -340,15 +268,13 @@ class GuitarStrings(object):
 
             str_props = df.to_string(index=False, justify='center', formatters=formatters)
             return str_specs + '\n' + str_props
+
+    def _check_string_names(self, data):
+        specs_names = sorted(self._specs.copy()['string'].to_list())
+        data_names = sorted(list(data.columns)[1:])
+        assert len(specs_names) == len(data_names), 'This string set has {} strings, not {}.'.format(len(specs_names), len(data_names))
+        assert specs_names == data_names, 'The input string names should be {}, not {}.'.format(specs_names, data_names)
             
-        
-#        return params_frame.to_string()
-    
-    #     retstr = self._name + "\n"
-    #     for string in self._strings:
-    #         retstr += string.__str__() + "\n"
-    #     return retstr
-    
     def _build_specs_frame(self):
         series_specs = []
         for string in self._strings:
@@ -368,19 +294,14 @@ class GuitarStrings(object):
         for string in self._strings:
             string.set_scale_length(scale_length)
 
-    # def fit_r_old(self, data_path, sheet_name=0, scale=1.0, show=True, save_path=None, file_name=None, markersize=12.5):
-    #     data = pd.read_excel(data_path, sheet_name=sheet_name)
-    #     column_names = list(data.columns)
-    #     dx = np.array(data[[column_names[0]]].values.T[0])
-    #     self.compare_string_names(column_names[1:])
-        
-    #     fit_dict = {}
-    #     for string in self._strings:
-    #         name = string.get_name()
-    #         fit = string.fit_r(dx, data[name].values -  data[name].values[0], scale)
-    #         fit_dict[name] = fit
-        
-    #     self.plot_fit(fit_dict, data, show, save_path, file_name, markersize)
+    def get_count(self):
+        return len(self._strings)
+    
+    def get_specs(self):
+        return self._specs
+    
+    def get_props(self):
+        return self._props
 
     def fit_r(self, data_path, sheet_name=0, rescale=1.0, show=True, save_path=None, file_name=None, markersize=12.5):
         data = pd.read_excel(data_path, sheet_name=sheet_name)
@@ -395,12 +316,6 @@ class GuitarStrings(object):
         self._build_props_frame()
         
         self.plot_fit(fit_dict, data, show, save_path, file_name, markersize)
-
-    def _check_string_names(self, data):
-        specs_names = sorted(self._specs.copy()['string'].to_list())
-        data_names = sorted(list(data.columns)[1:])
-        assert len(specs_names) == len(data_names), 'This string set has {} strings, not {}.'.format(len(specs_names), len(data_names))
-        assert specs_names == data_names, 'The input string names should be {}, not {}.'.format(specs_names, data_names)
     
     def plot_fit(self, fit_dict, data, show, savepath, filename, markersize):
         dx = np.array(data[[list(data.columns)[0]]].values.T[0])
@@ -431,133 +346,6 @@ class GuitarStrings(object):
             plt.show()
         else:
             plt.close()
-
-    def get_count(self):
-        return len(self._strings)
-    
-    def get_specs(self):
-        return self._specs
-    
-    def get_props(self):
-        return self._props
-    
-    # def get_string_names(self):
-    #     names = []
-    #     for string in self._strings:
-    #         names.append(string.get_name())
-    #     return names
-
-    # def get_notes(self):
-    #     notes = []
-    #     for string in self._strings:
-    #         note_str = string.get_note()
-    #         note = note_str.split('_')
-    #         notes.append(note[0] + '$_{' + note[1] + '}$')
-    #     return notes
-
-    # def get_radii(self):
-    #     radii = []
-    #     for string in self._strings:
-    #         radii.append(string.get_radius())
-    #     return np.array(radii)
-
-    # def get_densities(self):
-    #     densities = []
-    #     for string in self._strings:
-    #         densities.append(string.get_density())
-    #     return np.array(densities)
-    
-    # def get_tensions(self):
-    #     tensions = []
-    #     for string in self._strings:
-    #         tensions.append(string.get_tension())
-    #     return np.array(tensions)
-
-    # def get_r(self):
-    #     r = []
-    #     dr = []
-    #     for string in self._strings:
-    #         r.append(string.get_r()[0])
-    #         dr.append(string.get_r()[1])
-    #     return np.array(r), np.array(dr)
-
-    # def get_kappa(self):
-    #     kappa = []
-    #     for string in self._strings:
-    #         kappa.append(string.get_kappa())
-    #     return np.array(kappa)
-    
-    # def get_modulus(self):
-    #     modulus = []
-    #     for string in self._strings:
-    #         modulus.append(string.get_modulus())
-    #     return np.array(modulus)
-    
-    # def get_stiffness(self):
-    #     stiffness = []
-    #     for string in self._strings:
-    #         stiffness.append(string.get_stiffness())
-    #     return np.array(stiffness)
-
-#     def compensate(self, g_n, q_n, s):
-#         def sigma_n(g_n, k):
-#             return np.sum((g_n - 1)**k)
-
-#         sigma_0 = sigma_n(g_n, 0)
-#         sigma_1 = sigma_n(g_n, 1)
-#         sigma_2 = sigma_n(g_n, 2)
-#         sigma_3 = sigma_n(g_n, 3)
-        
-#         sigma = np.array([[sigma_2, -sigma_1], [sigma_1, -sigma_0]])
-#         sum_qn = 0.5 * np.sum(q_n)
-#         sum_gq = 0.5 * np.sum((g_n - 1) * q_n)
-
-#         idx_list = np.arange(0, self.get_count())
-#         kappa = self.get_kappa()
-#         b0 = self.get_stiffness() * s
-#         ds = np.zeros(self.get_count())
-#         dn = np.zeros(self.get_count())
-# #        for string, idx in zip(self._strings, idx_list):
-#         for idx in idx_list:
-#             b_1 = sigma_1 * b0[idx] + 0.5 * (1 + np.pi**2) * (sigma_2 + 2.0 * sigma_1) * b0[idx]**2
-#             b_2 = sigma_2 * b0[idx] + 0.5 * (1 + np.pi**2) * (sigma_3 + 2.0 * sigma_2) * b0[idx]**2
-#             rhs = np.array([[b_2 + sum_gq * kappa[idx]], [b_1 + sum_qn * kappa[idx]]])
-#             lhs = np.dot(np.linalg.inv(sigma), rhs)
-#             ds[idx] = lhs[0]
-#             dn[idx] = lhs[1]
-        
-#         return ds, dn
-
-    # def save_specs_table_old(self, show=True, savepath=None, filename=None):
-    #     #names = self.get_string_names()
-    #     #notes = self.get_notes()
-    #     #radii = self.get_radii()
-    #     #densities = self.get_densities()
-    #     #tensions = self.get_tensions()
-
-    #     df = pd.DataFrame({'String': names,
-    #                        'Note': notes,
-    #                        'Radius (mm)': radii.tolist(),
-    #                        'Density (mg/mm)': densities.tolist(),
-    #                        'Tension (N)': tensions.tolist()})
-        
-    #     formatter = {'Radius (mm)': '{:.3f}',
-    #                  'Density (mg/mm)': '{:.3f}',
-    #                  'Tension (N)': '{:.1f}'}
-
-    #     styler = df.style.format(formatter=formatter).hide()
-    #     table_str = styler.to_latex(column_format='cccccc', hrules=True)
-
-    #     filepath = file_path(savepath, filename)
-    #     if filepath is None:
-    #         pass
-    #     else:
-    #         print(table_str,  file=open(filepath, 'w'))        
-    #         print("Saved {0}\n".format(filepath))
-
-    #     if show:
-    #         styler.set_properties(**{'text-align': 'center'})
-    #         display(styler)
  
     def save_specs_table(self, show=True, savepath=None, filename=None):
         df = self._specs.copy()
@@ -589,40 +377,6 @@ class GuitarStrings(object):
             styler.set_properties(**{'text-align': 'center'})
             display(styler)
  
-    # def save_props_table_old(self, show=True, savepath=None, filename=None):
-    #     names = self.get_string_names()
-    #     r, dr = self.get_r()
-    #     kappa = self.get_kappa()
-    #     modulus = self.get_modulus()
-    #     stiffness = self.get_stiffness()
-
-    #     df = pd.DataFrame({'String': names,
-    #                        '$R$': r.tolist(),
-    #                        '$\sigma$': dr.tolist(),
-    #                        '$\kappa$': kappa.tolist(),
-    #                        '$B_0$': stiffness.tolist(),
-    #                        '$E$ (GPa)': modulus.tolist()})
-
-    #     formatter = {'$R$': '{:.1f}',
-    #                  '$\sigma$': '{:.1f}',
-    #                  '$\kappa$': '{:.1f}',
-    #                  '$B_0$': '{:.5f}',
-    #                  '$E$ (GPa)': '{:.2f}'}
- 
-    #     styler = df.style.format(formatter=formatter).hide()
-    #     table_str = styler.to_latex(column_format='cccccc', hrules=True)
-
-    #     filepath = file_path(savepath, filename)
-    #     if filepath is None:
-    #         pass
-    #     else:
-    #         print(table_str,  file=open(filepath, 'w'))        
-    #         print("Saved {0}\n".format(filepath))
-
-    #     if show:
-    #         styler.set_properties(**{'text-align': 'center'})
-    #         display(styler)
- 
     def save_props_table(self, show=True, savepath=None, filename=None):
         df = self._props.copy()
         df.rename(columns={"string" : "String", "r" : "$R$", "sigma" : "$\sigma$",
@@ -648,28 +402,7 @@ class GuitarStrings(object):
         if show:
             styler.set_properties(**{'text-align': 'center'})
             display(styler)
- 
-    # def save_props_excel_old(self, filepath, sheet_name):
-    #     names = self.get_string_names()
-    #     r, dr = self.get_r()
-    #     kappa = self.get_kappa()
-    #     modulus = self.get_modulus()
-    #     stiffness = self.get_stiffness()
 
-    #     df = pd.DataFrame({'String': names,
-    #                        'R': r.tolist(),
-    #                        'sigma': dr.tolist(),
-    #                        'kappa': kappa.tolist(),
-    #                        'B_0': stiffness.tolist(),
-    #                        'E': modulus.tolist()})
-
-    #     if os.path.isfile(filepath):
-    #         with pd.ExcelWriter(filepath,  mode='a', if_sheet_exists='replace') as writer:
-    #             df.to_excel(writer, sheet_name=sheet_name, float_format="%.{}f".format(sys.float_info.dig), index=False)
-    #     else:
-    #         df.to_excel(filepath, sheet_name=sheet_name, float_format="%.{}f".format(sys.float_info.dig), index=False)
-    #     print("\nSaved {} : {}\n".format(filepath, sheet_name))
-        
     def save_props_excel(self, filepath, sheet_name):
         df = self._props.copy()
 
@@ -906,7 +639,6 @@ class Guitar(object):
 #         return (self.lmc(fret_list) - l0) / l0
     
     def _q(self, ds, dn, x0, b, c, d, n):
-#        l0 = np.tile(self.l0().reshape(-1, 1), (1, fret_list.size))
         l0 = self._l0(ds, dn, x0, c)
         return (self._lmc(ds, dn, x0, b, c, d, n) - l0) / l0
     
