@@ -27,10 +27,10 @@ Note that this expression is valid only when $B \ll 1$. We'll see that a typical
  \begin{figure}
   \centering
   \includegraphics[width=7.0in]{figures/fretting_schematic}
-  \caption{\label{fig:guitar_schematic} A simple (side-view) schematic of the classical guitar used in this model. The scale length of the guitar is $X_0$, but we allow the edges of both the saddle and the nut to be set back an additional distance $\Delta S$ and $\Delta N$, respectively. The location on the $x$-axis of the center of the $n^\textrm{th}$ fret is $X_n$. (Note that the $x$-axis is directed toward the left in this figure.) In the $y$ direction, $y = 0$ is taken as the surface of the fingerboard; therefore the height of each fret above the fingerboard is $a$, the height of the nut is $a + b$, and the height of the saddle is $a + b + c$. $L_n$ is the \emph{resonant length} of the string from the saddle to the center of fret $n$, and $L^\prime_n$ is the length of the string from the fret to the nut. We have included a line-segment intersection at a distance $d$ behind fret $n$ to represent the slight increase in the distance $L_n^\prime$ caused by a finger.}
+  \caption{\label{fig:guitar_schematic} A simple (side-view) schematic of the classical guitar used in this model.}
  \end{figure}
 
-Our model is based on the schematic of the guitar shown in \fig{guitar_schematic}. The scale length of the guitar is $X_0$, but we allow the inside edges of both the saddle and the nut to be set back an additional distance $\Delta S$ and $\Delta N$, respectively. The location on the $x$-axis of the center of the $n^\textrm{th}$ fret is $X_n$. In the $y$ direction, $y = 0$ is taken as the surface of the fingerboard; the height of each fret is $a$, the height of the nut is $a + b$, and the height of the saddle is $a + b + c$. (For the moment, we are neglecting the art of \emph{relief} practiced by expert luthiers that adjusts the value of $b$ up the fretboard and strings. We discuss this effect below in \sct{model_tension}.) $L_n$ is the \emph{resonant length} of the string from the saddle to the center of fret $n$, and $L^\prime_n$ is the length of the string from the fret to the nut. The total length of the string is defined as $\mathcal{L}_n \equiv L_n + L^\prime_n$. As discussed in more detail in \app{fret}, we have chosen to include a line-segment intersection at a distance $d$ behind fret $n$ to represent the slight increase in the distance $L_n^\prime$ caused by a finger. This differs from previous studies of guitar intonation and compensation~\cite{ref:byers1996cgi,ref:varieschi2010icf}, but our approach is consistent with empirical observations for nylon strings.
+Our model is based on the schematic of the guitar shown in \fig{guitar_schematic}. The scale length of the guitar is $X_0$, but we allow the inside edges of both the saddle and the nut to be set back an additional distance $\Delta S$ and $\Delta N$, respectively. The location on the $x$-axis of the center of the $n^\textrm{th}$ fret is $X_n$. In the $y$ direction, $y = 0$ is taken as the surface of the fingerboard; the height of each fret is $a$, the height of the nut (i.e., the distance between the fingerboard and the bottom of the string) is $a + b$, and the height of the saddle is $a + b + c$. (For the moment, we are neglecting the art of \emph{relief} practiced by expert luthiers that adjusts the value of $b$ up the fretboard and strings. We discuss this effect below in \sct{model_tension}.) $L_n$ is the \emph{resonant length} of the string from the saddle to the center of fret $n$, and $L^\prime_n$ is the length of the string from the fret to the nut. The total length of the string is defined as $\mathcal{L}_n \equiv L_n + L^\prime_n$. As discussed in more detail in \app{fret}, we have chosen to include a line-segment intersection at a distance $d$ behind fret $n$ to represent the slight increase in the distance $L_n^\prime$ caused by a finger. This differs from previous studies of guitar intonation and compensation~\cite{ref:byers1996cgi,ref:varieschi2010icf}, but our approach is consistent with empirical observations for nylon strings.
 
 We start with the form of the fundamental frequency of a fretted string given by \eqn{f_m_stiff} with $q = 1$, and apply it to the frequency of a string pressed just behind the $n^\mathrm{th}$ fret:
  \begin{equation} \label{eqn:f_n_def}
@@ -357,21 +357,17 @@ In this case, we estimate $R$ to be
 \end{equation}
 giving $\kappa \approx 51$, which are the values listed in \tbl{string_specs}. 
 
-
-It's impractical to assume that the modulus of elasticity of a particular string can be derived from published values of bulk nylon (particularly in the case of a wound string). Instead, let's assume that we know the value of $\kappa$, and then estimate the bending stiffness coefficient by comparing \eqn{b_def} and \eqn{kappa_def}, and writing $B_0$ as
+It's impractical to assume that the effective (differential) modulus of elasticity of a particular string can be derived from published values of bulk nylon (particularly in the case of a wound string). Instead, let's assume that we know the value of $\kappa$, and then estimate the bending stiffness coefficient by comparing \eqn{b_def} and \eqn{kappa_def}, and writing $B_0$ as
+\begin{equation}
+  B_0 = \sqrt{\kappa}\, \frac{s}{L_0}\, ,
+\end{equation}
+As discussed in \app{freq}, for a uniform cylindrical string/wire with radius $\rho$, $s = \rho/2$. This choice is valid for monofilament nylon strings~\cite{ref:woodland2004pgt}; if we provisionally accept it for wound nylon strings as well, then we have
 \begin{equation} \label{eqn:b_0_kappa}
   B_0 = \sqrt{\kappa}\, \frac{\rho}{2\, L_0} \approx \sqrt{\kappa}\, \frac{\rho}{2\, X_0}\, .
 \end{equation}
+We'll test this phenomenological ansatz in \sct{exp}. We note that in the case of wound steel strings (often wrapped in metals like nickel or phosphor bronze), the bending stiffness depends on the radius of the nonuniform core alone~\cite{ref:fletcher1964nvf,ref:kemp2020ibg}. But the bass strings on a classical guitar are twisted and/or braided multifilament nylon strands wrapped in silver-plated copper, so a first-principles calculation of $s$ is a nontrivial undertaking.
 
-\red{
- Steel strings: nickel (electric or bass) or phosphor bronze.
- 
- silver-coated copper
- }
-
-
-
-The corresponding open-string bending stiffness is computed using \eqn{b_0_kappa} with the scale length given in \tbl{mcg_specs}. In \fig{uncomp}, we compare the total frequency shifts predicted by \eqn{error_def} and \eqn{error_tot} for this string on the Classical Guitar with $\Delta S = \Delta N = 0$~mm at two different values of $d$. Note that the string is sharp at every fret, but even a large nonzero value of $d$ is only important at the first fret. The bending stiffness is negligible at the first fret, but accounts for 65\% of the shift at the 12$^\textrm{th}$ fret. The close agreement between the exact and approximate expressions for the frequency shifts gives us confidence that the equations we derive for the setbacks in \sct{comp} will be useful.
+In \fig{uncomp}, we compare the total frequency shifts predicted by \eqn{error_def} and \eqn{error_tot} for the Classical Guitar specified by \tbl{mcg_specs} with $\Delta S = \Delta N = 0$~mm, and a string with the parameters listed in \tbl{string_specs} at two different values of $d$. Note that the string is sharp at every fret, but even a large nonzero value of $d$ is only important at the first fret. The bending stiffness is negligible at the first fret, but accounts for 65\% of the shift at the 12$^\textrm{th}$ fret. The close agreement between the exact and approximate expressions for the frequency shifts gives us confidence that the equations we derive for the setbacks in \sct{comp} will be useful.
 
 \begin{figure}
   \centering
