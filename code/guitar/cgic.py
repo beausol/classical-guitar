@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.offsetbox as offsetbox
 from IPython.display import display
 from scipy.optimize import curve_fit, minimize
 import sys
@@ -15,7 +16,6 @@ font = {'family' : 'serif',
         'weight' : 'normal',
         'size'   : fontsize,
         }
-bbox = dict(boxstyle='round', edgecolor='#D7D7D7', facecolor='white', alpha=0.75)
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif')
 plt.rc('text.latex', preamble=r'\usepackage{amsmath,amssymb,amsfonts}')
@@ -422,16 +422,6 @@ class Guitar(object):
         self._string_list = np.arange(1, string_count + 1)
         self._strings = strings
     
-        # self._x0 = x0
-
-        # self.setbacks(ds, dn)
-
-        # self._b = self._setarr(b)
-        # self._c = self._setarr(c)
-        # self._d = d
-        
-        # self._rgx = self._setarr(rgx)
-        
         self.set_vars(
             x0 = x0,
             ds = ds,
@@ -457,26 +447,14 @@ class Guitar(object):
             retstr += 'Saddle Setback: ' + '{:.2f} mm\n'.format(self._ds[0])
         else:
             retstr += 'Saddle Setback: ' + np.array2string(self._ds[0], precision=2, floatmode='fixed', separator=', ') + ' mm\n'
-            # setback_str = 'Saddle Setback: ['
-            # template = '{:.{prec}}, '
-            # for m in np.arange(self._ds.size):
-            #     setback_str += template.format(self._ds[m], prec = 3)
-            # retstr += setback_str[0:-2] + ']\n'
         if np.all(np.abs(self._dn - self._dn[0]) < 1.0e-06):
             retstr += 'Nut Setback: ' + '{:.2f} mm\n'.format(self._dn[0])
         else:
             retstr += 'Nut Setback: ' + np.array2string(self._dn[0], precision=2, floatmode='fixed', separator=', ') + ' mm\n'
-            # setback_str = 'Nut Setback: ['
-            # template = '{:.{prec}}, '
-            # for m in np.arange(self._dn.size):
-            #     setback_str += template.format(self._dn[m], prec = 2)
-            # retstr += setback_str[0:-2] + ']\n'
         if np.all(np.abs(self._b - self._b[0]) < 1.0e-06):
             retstr += 'b: ' + '{:.2f} mm\n'.format(self._b[0])
         else:
             retstr += 'b: ' + np.array2string(self._b, precision=2, floatmode='fixed', separator=', ') + ' mm\n'
-        # retstr += 'c: ' + '{:.1f} mm\n'.format(self._c)
-        # retstr += 'd: ' + '{:.1f} mm\n'.format(self._d)
         if np.all(np.abs(self._c - self._c[0]) < 1.0e-06):
             retstr += 'c: ' + '{:.2f} mm\n'.format(self._c[0])
         else:
@@ -487,18 +465,9 @@ class Guitar(object):
         else:
             retstr += 's: ' + np.array2string(self._rgx, precision=2, floatmode='fixed', separator=', ') + '\n'
         retstr += self._strings.__str__() + "\n"
-        # rmsstr = 'RMS Frequency Errors: ['#+ '{:.2f} cents\n'.format(self._rms())
-        # template = '{:.{prec}}, '
-        # rms = self._rms()
-        # for m in np.arange(rms.size):
-        #     rmsstr += template.format(rms[m], prec = 2)
-        # retstr += rmsstr[0:-2] + ']\n'
 
         return retstr
     
-    # def _bn(self, n):
-    #     g_n = self.gamma(n)
-    #     return self._b - ((g_n - 1)/g_n) * self._dbdx * self._x0
     def _setarr(self, x):
         string_count = self._strings.get_count()
         if isinstance(x, np.ndarray):
@@ -523,69 +492,12 @@ class Guitar(object):
         rms = np.sqrt(np.mean(dnu**2))
         return rms
 
-    def set_vars(self, **kwargs):
-        x0 = kwargs.get('x0')
-        if x0 is None:
-            pass
-        else:
-            self._x0 = x0
-        
-        ds = kwargs.get('ds')
-        if ds is None:
-            pass
-        else:
-            self._ds = self._setarr(ds)
-
-        dn = kwargs.get('dn')
-        if dn is None:
-            pass
-        else:
-            self._dn = self._setarr(dn)
-
-        b = kwargs.get('b')
-        if b is None:
-            pass
-        else:
-            self._b = self._setarr(b)
-
-        c = kwargs.get('c')
-        if c is None:
-            pass
-        else:
-            self._c = self._setarr(c)
-
-        d = kwargs.get('d')
-        if d is None:
-            pass
-        else:
-            self._d = d
-
-        rgx = kwargs.get('rgx')
-        if rgx is None:
-            pass
-        else:
-            self._rgx = self._setarr(rgx)
-
     def _gamma(self, n):
         return 2.0**(n/12.0)
-
-    # def l0(self):
-    #     length = np.sqrt( (self._x0 + self._ds + self._dn)**2 + self._c**2 )
-    #     return length
 
     def _l0(self, ds, dn, x0, c):
         length = np.sqrt( (x0 + ds + dn)**2 + c**2 )
         return length
-
-#     def l(self, fret_list):
-# #        ds, n = np.meshgrid(self._ds, fret_list, sparse=False, indexing='ij')
-#         ds = self._tile_frets(self._ds, fret_list)
-#         b = self._tile_frets(self._b, fret_list)
-#         c = self._tile_frets(self._c, fret_list)
-#         n = self._tile_strings(fret_list)
-# #        length = np.sqrt( (self._x0/self.gamma(n) + ds)**2 + (self._b + self._c)**2 )
-#         length = np.sqrt( (self._x0/self._gamma(n) + ds)**2 + (b + c)**2 )
-#         return length
 
     def _l(self, ds, x0, b, c, n):
         length = np.sqrt( (x0/self._gamma(n) + ds)**2 + (b + c)**2 )
@@ -598,45 +510,9 @@ class Guitar(object):
         length += ( ln / (xn + ds)  ) * d
         return length
 
-    # def lp(self, fret_list):
-    #     x0 = self._x0
-    #     ds = self._tile_frets(self._ds, fret_list)
-    #     dn = self._tile_frets(self._dn, fret_list)
-    #     b = self._tile_frets(self._b, fret_list)
-    #     c = self._tile_frets(self._c, fret_list)
-    #     d = self._d
-    #     n = self._tile_strings(fret_list)
-    #     xn = x0 / self._gamma(n)
-    #     #length = np.sqrt( (dn + self._x0 - self._x0/self.gamma(n))**2 + self._bn(n)**2 )
-    #     length = np.sqrt( (x0 - xn + dn - d)**2 + (b + (b + c) * d / (xn + ds))**2 )
-    #     length += ( self.l(fret_list) / (xn + ds)  ) * d
-    #     return length
-
-    # def lp_old(self, fret_list):
-    #     dn, n = np.meshgrid(self._dn, fret_list, sparse=False, indexing='ij')
-    #     ds, n = np.meshgrid(self._ds, fret_list, sparse=False, indexing='ij')
-    #     x0 = self._x0
-    #     xn = x0 / self._gamma(n)
-    #     b = self._b
-    #     c = self._c
-    #     d = self._d
-    #     #length = np.sqrt( (dn + self._x0 - self._x0/self.gamma(n))**2 + self._bn(n)**2 )
-    #     length = np.sqrt( (x0 - xn + dn - d)**2 + (b + (b + c) * d / (xn + ds))**2 )
-    #     length += ( self.l(fret_list) / (xn + ds)  ) * d
-    #     return length
-
-    # def lmc(self, fret_list):
-    #     length = self.l(fret_list) + self.lp(fret_list)
-    #     return length
-    
     def _lmc(self, ds, dn, x0, b, c, d, n):
         length = self._l(ds, x0, b, c, n) + self._lp(ds, dn, x0, b, c, d, n)
         return length
-    
-#     def qn(self, fret_list):
-# #        l0 = np.tile(self.l0().reshape(-1, 1), (1, fret_list.size))
-#         l0 = self._tile_frets(self.l0(), fret_list)
-#         return (self.lmc(fret_list) - l0) / l0
     
     def _q(self, ds, dn, x0, b, c, d, n):
         l0 = self._l0(ds, dn, x0, c)
@@ -680,53 +556,48 @@ class Guitar(object):
         
         return np.hstack((open_strings, shifts))
     
-    # def freq_shifts_old(self, fret_list):
-    #     l_0 = self._tile_frets(self.l0(), fret_list)
-    #     kappa = self._tile_frets(self._strings.get_kappa(), fret_list)
-    #     b_0 = self._tile_frets(self._strings.get_stiffness() * self._rgx , fret_list)
-    #     n = self._tile_strings(fret_list)
+    def set_vars(self, **kwargs):
+        x0 = kwargs.get('x0')
+        if x0 is None:
+            pass
+        else:
+            self._x0 = x0
         
-    #     # l_0 = np.tile(self.l0().reshape(-1, 1), (1, fret_list.size))
-    #     # kappa, n_2d = np.meshgrid(self._strings.get_kappa(), fret_list, sparse=False, indexing='ij')
-    #     # b_0, n_2d = np.meshgrid(self._strings.get_stiffness(), fret_list, sparse=False, indexing='ij')
-        
-    #     # rle = 1200 * np.log2( l_0 / (self.gamma(n_2d) * self.l(fret_list)) )
-    #     # mde =  600 * np.log2( 1 + self.qn(fret_list) )
-    #     # tse =  600 * np.log2( 1 + kappa * self.qn(fret_list) )
-    #     # #bse = 1200 * np.log2( (1 + self.gamma(n_2d) * b_0) / (1 + b_0) )
-    #     # bse = 1200 * np.log2( (1 + self.gamma(n_2d) * b_0 + (1.0 + 0.5 * np.pi**2) * (self.gamma(n_2d) * b_0)**2)
-    #     #                       / (1 + b_0 + (1.0 + 0.5 * np.pi**2) * b_0**2) )
-    #     rle = 1200 * np.log2( l_0 / (self._gamma(n) * self.l(fret_list)) )
-    #     mde =  600 * np.log2( 1 + self.qn(fret_list) )
-    #     tse =  600 * np.log2( 1 + kappa * self.qn(fret_list) )
-    #     bse = 1200 * np.log2( (1 + self._gamma(n) * b_0 + (1.0 + 0.5 * np.pi**2) * (self._gamma(n) * b_0)**2)
-    #                         / (1 + b_0 + (1.0 + 0.5 * np.pi**2) * b_0**2) )
-        
-    #     shifts = rle + mde + tse + bse
-        
-    #     open_strings = np.array([np.zeros(self._string_list[-1])]).T
-        
-    #     return np.hstack((open_strings, shifts))
-    
-    # def estimate_r(self, delta_nu:list, fret:int):
-    #     g = self.gamma(fret)
-    #     q = self.qn(np.array([fret]))[0,0]
-    #     r = self._strings.estimate_r(delta_nu, g, q, self._ds, self._dn, self._x0)
-    #     return r
-    
-    # def compensate_older(self, max_fret:int):
-    #     self._ds = np.array([0.0] * self._strings.get_count())
-    #     self._dn = np.array([0.0] * self._strings.get_count())
-        
-    #     fret_list = np.arange(1, max_fret + 1)
-    #     g_n = self._gamma(fret_list)
-    #     q_n = self.qn(fret_list)[0]
+        ds = kwargs.get('ds')
+        if ds is None:
+            pass
+        else:
+            self._ds = self._setarr(ds)
 
-    #     ds, dn = self._strings.compensate(g_n, q_n, self._rgx)
-    #     self._ds = self._x0 * ds
-    #     self._dn = self._x0 * dn
-        
-    #     return self._ds, self._dn
+        dn = kwargs.get('dn')
+        if dn is None:
+            pass
+        else:
+            self._dn = self._setarr(dn)
+
+        b = kwargs.get('b')
+        if b is None:
+            pass
+        else:
+            self._b = self._setarr(b)
+
+        c = kwargs.get('c')
+        if c is None:
+            pass
+        else:
+            self._c = self._setarr(c)
+
+        d = kwargs.get('d')
+        if d is None:
+            pass
+        else:
+            self._d = d
+
+        rgx = kwargs.get('rgx')
+        if rgx is None:
+            pass
+        else:
+            self._rgx = self._setarr(rgx)
 
     def approximate(self):
         x_0 = self._x0
@@ -827,103 +698,6 @@ class Guitar(object):
     
         return ds, dn
 
-    # def compensate_old(self, max_fret:int):
-    #     def sigma_k(fret_list, k):
-    #         return np.sum((self._gamma(fret_list) - 1)**k)
-
-    #     fret_list = np.arange(1, max_fret + 1)
-
-    #     n = self._tile_strings(fret_list)
-
-    #     self._ds = np.zeros(n.shape)
-    #     self._dn = np.zeros(n.shape)
-
-    #     kappa = self._tile_frets(self._strings.get_kappa(), fret_list)
-    #     b_0 = self._tile_frets(self._strings.get_stiffness() * self._rgx , fret_list)
-
-    #     mde =  600 * np.log2( 1 + self.qn(fret_list) )
-    #     tse =  600 * np.log2( 1 + kappa * self.qn(fret_list) )
-    #     bse = 1200 * np.log2( (1 + self._gamma(n) * b_0 + (1.0 + 0.5 * np.pi**2) * (self._gamma(n) * b_0)**2)
-    #                         / (1 + b_0 + (1.0 + 0.5 * np.pi**2) * b_0**2) )
-        
-    #     z_n = mde + tse + bse
-        
-    #     sigma_0 = max_fret
-    #     sigma_1 = sigma_k(fret_list, 1)
-    #     sigma_2 = sigma_k(fret_list, 2)
-        
-    #     zbar_0 = np.sum(z_n, axis=1)
-    #     zbar_1 = np.sum((self._gamma(fret_list) - 1) * z_n, axis=1)
-        
-    #     det = sigma_0 * sigma_2 - sigma_1**2
-    #     ds =  ( sigma_0 * zbar_1 - sigma_1 * zbar_0 ) * self._x0 / det
-    #     dn = -( sigma_2 * zbar_0 - sigma_1 * zbar_1 ) * self._x0 / det
-
-    #     self._ds = ds
-    #     self._dn = dn
-        
-    #     return ds, dn
-
-    # def setbacks(self, ds, dn):
-    #     string_count = self._strings.get_count()
-    #     if len(ds) == 1:
-    #         self._ds = np.array(ds * string_count)
-    #     else:
-    #         self._ds = np.array(ds)
-    #     if len(dn) == 1:
-    #         self._dn = np.array(dn * string_count)
-    #     else:
-    #         self._dn = np.array(dn)
-
-    # def plot_shifts_older(self, max_fret=12, savepath=None, filename=None):
-    #     fret_list = np.arange(0, max_fret + 1)
-    #     shifts = self.freq_shifts(fret_list[1:])
-    #     rms = np.sqrt(np.mean(shifts**2))
-    #     names = self._strings.get_string_names()
-
-    #     # labelsize = 18
-    #     # fontsize = 24
-    #     # font = {'family' : 'serif',
-    #     #         'color'  : 'black',
-    #     #         'weight' : 'normal',
-    #     #         'size'   : fontsize,
-    #     #         }
-    #     # plt.rc('text', usetex=True)
-    #     # plt.rc('font', family='serif')
-        
-    #     plt.figure(figsize=(8.0,6.0))
-    #     for string in self._string_list:
-    #         plt.plot(fret_list, shifts[string-1], label='{}'.format(names[string-1]))
-    #     plt.xlabel('FRET', fontdict=font)
-    #     plt.ylabel('SHIFT (cents)', fontdict=font)
-    #     plt.tick_params(axis='x', labelsize=labelsize)
-    #     plt.tick_params(axis='y', labelsize=labelsize)
-    #     plt.xlim(fret_list[0],fret_list[-1])
-    #     plt.ylim(-4,10)
-    #     plt.legend(loc='upper right', fontsize=labelsize)
-        
-    #     if np.all(np.abs(self._ds - self._ds[0]) < 1.0e-06):
-    #         ds = self._ds[0]
-    #         template_ds = '$\Delta S = {}~\mathrm{{mm}}$'
-    #     else:
-    #         ds = np.round(np.mean(self._ds), 2)
-    #         template_ds = '$\Delta S = {}~\mathrm{{mm~(mean)}}$'
-    #     if np.all(np.abs(self._dn - self._dn[0]) < 1.0e-06):
-    #         dn = self._dn[0]
-    #         template_dn = '$\Delta N = {}~\mathrm{{mm}}$'
-    #     else:
-    #         dn = np.round(np.mean(self._dn), 2)
-    #         template_dn = '$\Delta N = {}~\mathrm{{mm~(mean)}}$'
-    #     template = '{}\n' + template_ds + '\n' + template_dn + '\n' + 'Shift~(rms):~{}~cents'
-    #     plt.text(0.35, 5.3, template.format(self._name, ds, dn, np.round(rms, 2)),
-    #              fontdict=font, bbox=bbox)
-    #     plt.grid(True)
-        
-    #     filepath = file_path(savepath, filename)
-    #     if filepath is not None:
-    #         plt.savefig(filepath, bbox_inches='tight')
-    #     plt.show()
-
     def plot_shifts(self, max_fret=12, show=True, harm=[], savepath=None, filename=None):
         fret_list = np.arange(0, max_fret + 1)
         shifts = self._freq_shifts(fret_list[1:])
@@ -935,7 +709,8 @@ class Guitar(object):
         rms = np.sqrt(np.mean(shifts**2))
         names = self._strings.get_specs().string.tolist()
 
-        plt.figure(figsize=(8.0,6.0))
+        fig = plt.figure(figsize=(8.0,6.0))
+        ax = fig.add_subplot(111)
         for string in self._string_list:
             plt.plot(fret_list, shifts[string-1], label='{}'.format(names[string-1]))
         plt.xlabel('FRET', fontdict=font)
@@ -943,7 +718,7 @@ class Guitar(object):
         plt.tick_params(axis='x', labelsize=labelsize)
         plt.tick_params(axis='y', labelsize=labelsize)
         plt.xlim(fret_list[0],fret_list[-1])
-        plt.ylim(-4,10)
+        plt.ylim(-2,8)
         plt.legend(loc='upper right', fontsize=labelsize)
         
         if np.all(np.abs(self._ds - self._ds[0]) < 1.0e-06):
@@ -959,8 +734,10 @@ class Guitar(object):
             dn = np.round(np.mean(self._dn), 2)
             template_dn = '$\Delta N = {}~\mathrm{{mm~(mean)}}$'
         template = '{}\n' + template_ds + '\n' + template_dn + '\n' + 'Shift~(rms):~{}~cents'
-        plt.text(0.35, 5.3, template.format(self._name, ds, dn, np.round(rms, 2)),
-                 fontdict=font, bbox=bbox)
+        annotation = template.format(self._name, ds, dn, np.round(rms, 2))
+        ob = offsetbox.AnchoredText(annotation, loc='upper left', pad=0, borderpad=0.65, prop=dict(size=fontsize))
+        ob.patch.set(boxstyle='round', edgecolor='#D7D7D7', facecolor='white', alpha=0.75)
+        ax.add_artist(ob)
         plt.grid(True)
         
         filepath = file_path(savepath, filename)
@@ -975,125 +752,6 @@ class Guitar(object):
             plt.close()
 
         return rms
-
-    # def plot_shifts_old(self, max_fret=12, show=True, harm=[], savepath=None, filename=None):
-    #     fret_list = np.arange(0, max_fret + 1)
-    #     shifts = self.freq_shifts(fret_list[1:])
-    #     if harm:
-    #         zero_strings = harm[0]
-    #         zero_frets = harm[1]
-    #         for s, n in zip(zero_strings, zero_frets):
-    #             shifts[s-1] -= shifts[s-1][n]
-    #     rms = np.sqrt(np.mean(shifts**2))
-    #     names = self._strings.get_string_names()
-
-    #     # labelsize = 18
-    #     # fontsize = 24
-    #     # font = {'family' : 'serif',
-    #     #         'color'  : 'black',
-    #     #         'weight' : 'normal',
-    #     #         'size'   : fontsize,
-    #     #         }
-    #     # plt.rc('text', usetex=True)
-    #     # plt.rc('font', family='serif')
-        
-    #     plt.figure(figsize=(8.0,6.0))
-    #     for string in self._string_list:
-    #         plt.plot(fret_list, shifts[string-1], label='{}'.format(names[string-1]))
-    #     plt.xlabel('FRET', fontdict=font)
-    #     plt.ylabel('SHIFT (cents)', fontdict=font)
-    #     plt.tick_params(axis='x', labelsize=labelsize)
-    #     plt.tick_params(axis='y', labelsize=labelsize)
-    #     plt.xlim(fret_list[0],fret_list[-1])
-    #     plt.ylim(-4,10)
-    #     plt.legend(loc='upper right', fontsize=labelsize)
-        
-    #     if np.all(np.abs(self._ds - self._ds[0]) < 1.0e-06):
-    #         ds = self._ds[0]
-    #         template_ds = '$\Delta S = {}~\mathrm{{mm}}$'
-    #     else:
-    #         ds = np.round(np.mean(self._ds), 2)
-    #         template_ds = '$\Delta S = {}~\mathrm{{mm~(mean)}}$'
-    #     if np.all(np.abs(self._dn - self._dn[0]) < 1.0e-06):
-    #         dn = self._dn[0]
-    #         template_dn = '$\Delta N = {}~\mathrm{{mm}}$'
-    #     else:
-    #         dn = np.round(np.mean(self._dn), 2)
-    #         template_dn = '$\Delta N = {}~\mathrm{{mm~(mean)}}$'
-    #     template = '{}\n' + template_ds + '\n' + template_dn + '\n' + 'Shift~(rms):~{}~cents'
-    #     plt.text(0.35, 5.3, template.format(self._name, ds, dn, np.round(rms, 2)),
-    #              fontdict=font, bbox=bbox)
-    #     plt.grid(True)
-        
-    #     filepath = file_path(savepath, filename)
-    #     if filepath is None:
-    #         pass
-    #     else:
-    #         plt.savefig(filepath, bbox_inches='tight')
-    #         print("Saved {0}\n".format(filepath))
-    #     if show:
-    #         plt.show()
-    #     else:
-    #         plt.close()
-
-    # def plot_harm(self, zero_strings, zero_frets, savepath=None, filename=None):
-    #     fret_list = np.arange(0, 13)
-    #     shifts = self.freq_shifts(fret_list[1:])
-    #     for s, n in zip(zero_strings, zero_frets):
-    #         shifts[s-1] -= shifts[s-1][n]
-    #     rms = np.sqrt(np.mean(shifts**2))
-    #     names = self._strings.get_string_names()
-
-    #     # rms = np.sqrt(np.mean(shifts[:,1:]**2, axis=1))
-    #     # rmsstr = 'RMS Frequency Errors (Harmonic Tuning): ['
-    #     # template = '{:.{prec}}, '
-    #     # for m in np.arange(rms.size):
-    #     #     rmsstr += template.format(rms[m], prec = 2)
-    #     # print(rmsstr[0:-2] + ']\n')
-
-    #     # labelsize = 18
-    #     # fontsize = 24
-    #     # font = {'family' : 'serif',
-    #     #         'color'  : 'black',
-    #     #         'weight' : 'normal',
-    #     #         'size'   : fontsize,
-    #     #         }
-    #     # plt.rc('text', usetex=True)
-    #     # plt.rc('font', family='serif')
-        
-    #     plt.figure(figsize=(8.0,6.0))
-        
-    #     for string in self._string_list:
-    #         plt.plot(fret_list, shifts[string-1], label='{}'.format(names[string-1]))
-    #     plt.xlabel('FRET', fontdict=font)
-    #     plt.ylabel('SHIFT (cents)', fontdict=font)
-    #     plt.tick_params(axis='x', labelsize=labelsize)
-    #     plt.tick_params(axis='y', labelsize=labelsize)
-    #     plt.xlim(fret_list[0],fret_list[-1])
-    #     plt.ylim(-4,10)
-    #     plt.legend(loc='upper right', fontsize=labelsize)
-        
-    #     if np.all(np.abs(self._ds - self._ds[0]) < 1.0e-06):
-    #         ds = self._ds[0]
-    #         template_ds = '$\Delta S = {}~\mathrm{{mm}}$'
-    #     else:
-    #         ds = np.round(np.mean(self._ds), 2)
-    #         template_ds = '$\Delta S = {}~\mathrm{{mm~(mean)}}$'
-    #     if np.all(np.abs(self._dn - self._dn[0]) < 1.0e-06):
-    #         dn = self._dn[0]
-    #         template_dn = '$\Delta N = {}~\mathrm{{mm}}$'
-    #     else:
-    #         dn = np.round(np.mean(self._dn), 2)
-    #         template_dn = '$\Delta N = {}~\mathrm{{mm~(mean)}}$'
-    #     template = '{}\n' + template_ds + '\n' + template_dn + '\n' + 'Shift~(rms):~{}~cents'
-    #     plt.text(0.35, 5.3, template.format(self._name, ds, dn, np.round(rms, 2)),
-    #              fontdict=font, bbox=bbox)
-    #     plt.grid(True)
-        
-    #     filepath = file_path(savepath, filename)
-    #     if filepath is not None:
-    #         plt.savefig(filepath, bbox_inches='tight')
-    #     plt.show()
     
     def save_setbacks_table(self, max_fret:int=12, show:bool=True, savepath=None, filename=None):
         fret_list = np.arange(1, max_fret)
