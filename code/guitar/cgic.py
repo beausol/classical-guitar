@@ -167,11 +167,11 @@ class GuitarString(object):
             self._specs.scale = scale_length
             self._comp_tension()
         
-    def fit_r(self, dx, df, rescale):
+    def fit_r(self, rescale, dx, df, ddf):
         def func(x, intercept, slope):
             return intercept + slope * x
 
-        param, param_cov = curve_fit(func, rescale*dx, df)
+        param, param_cov = curve_fit(func, rescale*dx, df, sigma=ddf)
         fit = func(rescale*dx, *param)
         
         dfdx = param[1]
@@ -303,29 +303,44 @@ class GuitarStrings(object):
     def get_props(self):
         return self._props
 
-    def fit_r(self, data_path, sheet_name=0, rescale=1.0, show=True, save_path=None, file_name=None, markersize=12.5):
+    def fit_r(self, data_path, sheet_name=0, eb_name=None, rescale=1.0, show=True, save_path=None, file_name=None, markersize=12.5):
         data = pd.read_excel(data_path, sheet_name=sheet_name)
         self._check_string_names(data)
+        if eb_name is None:
+            data_eb = None
+        else:
+            data_eb = pd.read_excel(data_path, sheet_name=eb_name)
 
         dx = data['dx'].to_numpy()
         fit_dict = {}
         for string in self._strings:
             name = string.get_specs()['string']
-            fit = string.fit_r(dx, data[name].to_numpy() -  data[name].to_numpy()[0], rescale)
+            if data_eb is None:
+                ddf = None
+            else:
+                ddf = data_eb[name].to_numpy()
+            fit = string.fit_r(rescale, dx, data[name].to_numpy() -  data[name].to_numpy()[0], ddf=ddf)
             fit_dict[name] = fit
         self._build_props_frame()
         
-        self.plot_fit(fit_dict, data, show, save_path, file_name, markersize)
+        self.plot_fit(fit_dict, data, data_eb, show, save_path, file_name, markersize)
     
-    def plot_fit(self, fit_dict, data, show, savepath, filename, markersize):
+    def plot_fit(self, fit_dict, data, data_eb, show, savepath, filename, markersize):
         dx = np.array(data[[list(data.columns)[0]]].values.T[0])
         
-        plt.figure(figsize=(8.0,6.0))
-
-        for string in self._strings:
-            name = string.get_specs()['string']
-            plt.plot(dx, data[name].values -  data[name].values[0], '.', markersize=markersize)
-            plt.plot(dx, fit_dict[name], color=plt.gca().lines[-1].get_color(), label='{}'.format(name))
+        fig = plt.figure(figsize=(8.0,6.0))
+        ax = fig.add_subplot(111)
+        if data_eb is None:
+            for string in self._strings:
+                name = string.get_specs()['string']
+                plt.plot(dx, data[name].values -  data[name].values[0], '.', markersize=markersize)
+                plt.plot(dx, fit_dict[name], color=plt.gca().lines[-1].get_color(), label='{}'.format(name))
+        else:
+            for string in self._strings:
+                name = string.get_specs()['string']
+                plt.errorbar(dx, data[name].values -  data[name].values[0], fmt='.', markersize=markersize,
+                             yerr=data_eb[name], capsize=5, capthick=1)
+                plt.plot(dx, fit_dict[name], color=plt.gca().lines[-1].get_color(), label='{}'.format(name))
 
         plt.xlabel(r'$\Delta x$~(mm)', fontdict=font)
         plt.ylabel(r'$\Delta f$~(Hz)', fontdict=font)
