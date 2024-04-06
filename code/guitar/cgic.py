@@ -303,34 +303,34 @@ class GuitarStrings(object):
     def get_props(self):
         return self._props
 
-    def fit_r(self, data_path, sheet_name=0, eb_name=None, rescale=1.0, show=True, save_path=None, file_name=None, markersize=12.5):
+    def fit_r(self, data_path, sheet_name=0, sigma_name=None, rescale=1.0, show=True, save_path=None, file_name=None, markersize=12.5):
         data = pd.read_excel(data_path, sheet_name=sheet_name)
         self._check_string_names(data)
-        if eb_name is None:
-            data_eb = None
+        if sigma_name is None:
+            sigma = None
         else:
-            data_eb = pd.read_excel(data_path, sheet_name=eb_name)
+            sigma = pd.read_excel(data_path, sheet_name=sigma_name)
 
         dx = data['dx'].to_numpy()
         fit_dict = {}
         for string in self._strings:
             name = string.get_specs()['string']
-            if data_eb is None:
+            if sigma is None:
                 ddf = None
             else:
-                ddf = data_eb[name].to_numpy()
+                ddf = sigma[name].to_numpy()
             fit = string.fit_r(rescale, dx, data[name].to_numpy() -  data[name].to_numpy()[0], ddf=ddf)
             fit_dict[name] = fit
         self._build_props_frame()
         
-        self.plot_fit(fit_dict, data, data_eb, show, save_path, file_name, markersize)
+        self.plot_fit(fit_dict, data, sigma, show, save_path, file_name, markersize)
     
-    def plot_fit(self, fit_dict, data, data_eb, show, savepath, filename, markersize):
+    def plot_fit(self, fit_dict, data, sigma, show, savepath, filename, markersize):
         dx = np.array(data[[list(data.columns)[0]]].values.T[0])
         
         fig = plt.figure(figsize=(8.0,6.0))
         ax = fig.add_subplot(111)
-        if data_eb is None:
+        if sigma is None:
             for string in self._strings:
                 name = string.get_specs()['string']
                 plt.plot(dx, data[name].values -  data[name].values[0], '.', markersize=markersize)
@@ -339,7 +339,7 @@ class GuitarStrings(object):
             for string in self._strings:
                 name = string.get_specs()['string']
                 plt.errorbar(dx, data[name].values -  data[name].values[0], fmt='.', markersize=markersize,
-                             yerr=data_eb[name], capsize=5, capthick=1)
+                             yerr=sigma[name], capsize=5, capthick=1)
                 plt.plot(dx, fit_dict[name], color=plt.gca().lines[-1].get_color(), label='{}'.format(name))
 
         plt.xlabel(r'$\Delta x$~(mm)', fontdict=font)
@@ -434,7 +434,6 @@ class Guitar(object):
         self._name = name
 
         assert string_count == strings.get_count(), "Guitar '{}'".format(self._name) + " requires {} strings, but {} were provided.".format(string_count, strings.get_count())
-        self._string_list = np.arange(1, string_count + 1)
         self._strings = strings
     
         self.set_vars(
@@ -476,9 +475,9 @@ class Guitar(object):
             retstr += 'c: ' + np.array2string(self._c, precision=2, floatmode='fixed', separator=', ') + ' mm\n'
         retstr += 'd: ' + '{:.1f} mm\n'.format(self._d)
         if np.all(np.abs(self._rgx - self._rgx[0]) < 1.0e-06):
-            retstr += 's: ' + '{:.2f}\n'.format(self._rgx[0])
+            retstr += 'Radius of Gyration Factor: ' + '{:.2f}\n'.format(self._rgx[0])
         else:
-            retstr += 's: ' + np.array2string(self._rgx, precision=2, floatmode='fixed', separator=', ') + '\n'
+            retstr += 'Radius of Gyration Factor: ' + np.array2string(self._rgx, precision=2, floatmode='fixed', separator=', ') + '\n'
         retstr += self._strings.__str__() + "\n"
 
         return retstr
@@ -567,7 +566,7 @@ class Guitar(object):
         
         shifts = self._tfe(ds, dn, x0, b, c, d, kappa, b_0, n)
         
-        open_strings = np.array([np.zeros(self._string_list[-1])]).T
+        open_strings = np.array(self._strings.get_count() * [0]).reshape(-1,1)                       
         
         return np.hstack((open_strings, shifts))
     
@@ -726,8 +725,9 @@ class Guitar(object):
 
         fig = plt.figure(figsize=(8.0,6.0))
         ax = fig.add_subplot(111)
-        for string in self._string_list:
-            plt.plot(fret_list, shifts[string-1], label='{}'.format(names[string-1]))
+        for index in np.arange(self._strings.get_count()):
+            plt.plot(fret_list, shifts[index], label='{}'.format(names[index]))
+            
         plt.xlabel('FRET', fontdict=font)
         plt.ylabel('SHIFT (cents)', fontdict=font)
         plt.tick_params(axis='x', labelsize=labelsize)
