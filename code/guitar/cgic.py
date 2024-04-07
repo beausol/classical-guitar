@@ -475,9 +475,9 @@ class Guitar(object):
             retstr += 'c: ' + np.array2string(self._c, precision=2, floatmode='fixed', separator=', ') + ' mm\n'
         retstr += 'd: ' + '{:.1f} mm\n'.format(self._d)
         if np.all(np.abs(self._rgx - self._rgx[0]) < 1.0e-06):
-            retstr += 'Radius of Gyration Factor: ' + '{:.2f}\n'.format(self._rgx[0])
+            retstr += 'Radius of Gyration Correction: ' + '{:.2f}\n'.format(self._rgx[0])
         else:
-            retstr += 'Radius of Gyration Factor: ' + np.array2string(self._rgx, precision=2, floatmode='fixed', separator=', ') + '\n'
+            retstr += 'Radius of Gyration Correction: ' + np.array2string(self._rgx, precision=2, floatmode='fixed', separator=', ') + '\n'
         retstr += self._strings.__str__() + "\n"
 
         return retstr
