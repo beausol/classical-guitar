@@ -785,8 +785,8 @@ class Guitar(object):
         if filepath is None:
             pass
         else:
-            print("Saved {0}\n".format(filepath))
             print(table_str,  file=open(filepath, 'w'))        
+            print("Saved {0}\n".format(filepath))
 
         if show:
             styler.set_properties(**{'text-align': 'center'})
