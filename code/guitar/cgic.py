@@ -158,7 +158,7 @@ class GuitarString(object):
         return 440.0 * 2**( int(note[1], 10) - notes[note[0]]/12.0 )
 
     def _comp_tension(self):
-        mu = self._specs.density / 1000       # Convert mg/mm to kg/m
+        mu = self._specs.density / 1000    # Convert mg/mm to kg/m
         x0 = self._specs.scale / 1000      # Convert mm to m
         self._specs.tension = mu * (2 * x0 * self._freq)**2
 
@@ -215,9 +215,9 @@ class GuitarStrings(object):
         if path_props is None:
             rows_props = (None,) * 6
         else:
-            df_props = pd.read_excel(path_props, sheet_name=sheet_name, #index_col=0,
-                                          dtype={'string' : str, 'R': np.float64, 'sigma' : np.float64, 'kappa': np.float64,
-                                                 'B_0': np.float64, 'E': np.float64})
+            df_props = pd.read_excel(path_props, sheet_name=sheet_name,
+                                     dtype={'string' : str, 'R': np.float64, 'sigma' : np.float64, 'kappa': np.float64,
+                                            'B_0': np.float64, 'E': np.float64})
             assert df_specs['string'].equals(df_props['string']), 'Parameter string names and Property string names do not match.'
             indices, rows_props = zip(*df_props.iterrows())
         
@@ -328,8 +328,7 @@ class GuitarStrings(object):
     def plot_fit(self, fit_dict, data, sigma, show, savepath, filename, markersize):
         dx = np.array(data[[list(data.columns)[0]]].values.T[0])
         
-        fig = plt.figure(figsize=(8.0,6.0))
-        ax = fig.add_subplot(111)
+        plt.figure(figsize=(8.0,6.0))
         if sigma is None:
             for string in self._strings:
                 name = string.get_specs()['string']
