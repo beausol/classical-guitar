@@ -54,10 +54,9 @@ Therefore, the error interval --- the difference between the fundamental frequen
 \Delta \nu_n &= 1200\, \log_2\left( \frac{f_n}{\gamma_n\, f_0} \right) \\
 %&= 1200\, \log_2 \left( \frac{L_0}{\gamma_n\, L_n}\, \sqrt{\frac{\mu_0}{\mu_n}\, \frac{T_n}{T_0}}\, \frac{1 + B_n}{1 + B_0} \right) \\
 &= 1200\, \log_2 \left( \frac{L_0}{\gamma_n\, L_n} \right) + 600\, \log_2 \left(  \frac{\mu_0}{\mu_n} \right) + 600\, \log_2 \left( \frac{T_n}{T_0} \right) \\
-&\qquad + 1200\, \log_2 \left[ \frac{1 + B_n + (1 + \pi^2/2)\, B_n^2}{1 + B_0 + (1 + \pi^2/2)\, B_0^2} \right]\, ,
+&\qquad + 1200\, \log_2 \left[ \frac{1 + B_n + (1 + \pi^2/2)\, B_n^2}{1 + B_0 + (1 + \pi^2/2)\, B_0^2} \right]\, .
  \end{split}
  \end{equation}
-where $\log_2$ is the (binary) logarithm function calculated with base $2$.
 
 The final form of \eqn{error_def} makes it clear that --- for nylon guitar strings --- there are four contributions to intonation:
  \begin{enumerate}
@@ -72,7 +71,7 @@ The final form of \eqn{error_def} makes it clear that --- for nylon guitar strin
  \end{enumerate}
 Note that the properties of the logarithm function have \emph{decoupled} these physical effects by converting multiplication into addition. We will discuss each of these sources of error in turn below.
 
-In the discussion that follows, we'll test our approximations for a prototypical Classical Guitar with the specifications listed in \tbl{mcg_specs}. Refer to \fig{guitar_schematic} for a graphical representation of these parameters. In addition, as we develop models of the physical effects discussed above, we'll assume that the guitar string has the properties listed in \tbl{string_specs}. The string constant $\kappa$ and the open-string bending stiffness $B_0$ are introduced in \sct{model_tension} and \sct{model_stiffness} respectively. The linear frequency shift parameter $R$ is discussed in \sct{tot_freq_shift}, and a method for determining both $\kappa$ and $B_0$ in terms of $R$ is discussed.
+In the discussion that follows, we'll test our approximations for a prototypical instrument (hereafter referred to as the ``Classical Guitar'') with the specifications listed in \tbl{mcg_specs}. Refer to \fig{guitar_schematic} for a graphical representation of these parameters. In addition, as we develop models of the physical effects discussed above, we'll assume that the guitar string has the properties listed in \tbl{string_specs}. The string constant $\kappa$ and the open-string bending stiffness $B_0$ are introduced in \sct{model_tension} and \sct{model_stiffness} respectively. The linear frequency shift parameter $R$ is discussed in \sct{tot_freq_shift}, and a method for determining both $\kappa$ and $B_0$ in terms of $R$ is discussed.
 
 \begin{table}%[htbp]
   \centering
@@ -121,7 +120,8 @@ Then --- if the guitar has been manufactured such that $X_n = X_0 / \gamma_n$ --
 %  \end{equation}
 \begin{equation} \label{eqn:rle_taylor}
   \begin{split}
-    1200\, \log_2 \left( \frac{L_0}{\gamma_n\, L_n} \right) &\approx \frac{1200}{\ln(2)} \left[ \frac{\Delta N - \left(\gamma_n - 1\right) \Delta S}{X_0} - \frac{(\Delta N + \Delta S)^2 - \gamma_n^2\, \Delta S^2}{2\, X_0^2}\right. \\ &\qquad\qquad - \left. \frac{\gamma_n^2 (b + c)^2 - c^2}{2\, X_0^2}\right]\, .
+    1200\, \log_2& \left( \frac{L_0}{\gamma_n\, L_n} \right) \\
+    & \approx \frac{1200}{\ln(2)} \left[ \frac{\Delta N - \left(\gamma_n - 1\right) \Delta S}{X_0} - \frac{(\Delta N + \Delta S)^2 - \gamma_n^2\, \Delta S^2}{2\, X_0^2} - \frac{\gamma_n^2 (b + c)^2 - c^2}{2\, X_0^2}\right]\, .
   \end{split}
 \end{equation}
 If the guitar is uncompensated, so that $\Delta S = \Delta N = 0$, the magnitude of this error on our Classical Guitar can be neglected in approximate treatments. However, we'll see that choosing $\Delta S > 0$ and $\Delta N < 0$ will allow us to substantially compensate for frequency shift contributions from other effects. In this case, we note that the three terms inside the bracket on the \rhs of \eqn{rle_taylor} are $\{-3.5 \times 10^{-3}, 1.4 \times 10^{-5}, -1.0 \times 10^{-4}\}$, respectively, for the parameter values given by \tbl{mcg_specs}, corresponding to frequency shifts of $\{-6.05, 0.02, -0.17\}$~cents. Therefore, the second two terms are negligible compared to the first, and we can approximate the resonant length error --- for the purposes of estimating setbacks in \sct{comp} --- as

@@ -9,13 +9,13 @@
 
  \section{Vibration Frequencies of a Stiff String\label{app:freq}}
 
-Here we outline the calculation of the normal mode frequencies of a vibrating stiff string with non-symmetric boundary conditions. We begin with the wave equation~\cite{ref:fletcher1964nvf}
+Here we outline the calculation of the normal mode frequencies of a vibrating stiff string with non-symmetric boundary conditions. We begin with the transverse wave equation (including an Euler-Bernoulli term representing the restoring force due to the stiffness of the string)~\cite{ref:fletcher1964nvf}
  \begin{equation}
 \mu\, \frac{\partial^2}{\partial t^2}\, y(x) = T\, \frac{\partial^2}{\partial x^2}\, y(x) - E\, \mathcal{A}\, s^2\, \frac{\partial^4}{\partial x^4}\, y (x)\, ,
  \end{equation}
 where $\mu$ and $T$ are respectively the linear mass density and the tension of the string, $E$ is its Young's modulus (or the modulus of elasticity), $\mathcal{A}$ is the cross-sectional area, and $s$ is the radius of gyration of the string. (For a uniform cylindrical string/wire with radius $\rho$, $\mathcal{A} = \pi \rho^2$ and $s = \rho/2$.) If we scale $x$ by the length $L$ of the string, and $t$ by $1/\omega_0 \equiv  (L/\pi) \sqrt{\mu/T}$, then we obtain the dimensionless wave equation
  \begin{equation} \label{eqn:wave_eqn_dim}
-\pi^2\, \frac{\partial^2}{\partial t^2}\, y(x) = \frac{\partial^2}{\partial x^2}\, y(x) - B^2\, \frac{\partial^4}{\partial x^2}\, y (x)\, ,
+\pi^2\, \frac{\partial^2}{\partial t^2}\, y(x) = \frac{\partial^2}{\partial x^2}\, y(x) - B^2\, \frac{\partial^4}{\partial x^4}\, y (x)\, ,
  \end{equation}
 where $B$ is the ``bending stiffness parameter'' given by
  \begin{equation}
