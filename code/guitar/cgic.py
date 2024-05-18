@@ -711,7 +711,8 @@ class Guitar(object):
     
         return ds, dn
 
-    def plot_shifts(self, max_fret=12, show=True, harm=[], savepath=None, filename=None):
+#    def plot_shifts(self, max_fret=12, show=True, harm=[], savepath=None, filename=None):
+    def plot_shifts(self, max_fret=12, show=True, harm=[], savepath=None, filename=None, markersize=6.0, alpha=1.0):
         fret_list = np.arange(0, max_fret + 1)
         shifts = self._freq_shifts(fret_list[1:])
         if harm:
@@ -725,8 +726,10 @@ class Guitar(object):
         fig = plt.figure(figsize=(8.0,6.0))
         ax = fig.add_subplot(111)
         for index in np.arange(self._strings.get_count()):
-            plt.plot(fret_list, shifts[index], label='{}'.format(names[index]))
-            
+#            plt.plot(fret_list, shifts[index], label='{}'.format(names[index]))
+            plt.plot(fret_list, shifts[index], '.', markersize=markersize)
+            plt.plot(fret_list, shifts[index], color=plt.gca().lines[-1].get_color(), alpha=alpha, label='{}'.format(names[index]))
+
         plt.xlabel('FRET', fontdict=font)
         plt.ylabel('SHIFT (cents)', fontdict=font)
         plt.tick_params(axis='x', labelsize=labelsize)
