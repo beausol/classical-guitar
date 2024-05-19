@@ -6,3 +6,4 @@ Addario
 Pro-Arte
 nonideal
 multiphysics
+eigenmodes
