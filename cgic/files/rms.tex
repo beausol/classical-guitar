@@ -43,13 +43,13 @@ but for completeness we'll add the term in \eqn{rle_taylor} that is quadratic in
 Setting each of these expressions to zero and solving them for $\Delta S$ and $\Delta N$, we obtain
 \begin{subequations} \label{eqn:rms_sol}
   \begin{align}
-    \label{eqn:rms_sol_ds} \Delta S &= \frac{\sigma_0\, \overline{\mathcal{Z}}_1 - \sigma_1\, \overline{\mathcal{Z}}_0}{\sigma_0\, \sigma_2 - \sigma_1^2}\, X_0\, , \nd \\
-    \label{eqn:rms_sol_dn} \Delta N &= -\frac{\sigma_2\, \overline{\mathcal{Z}}_0 - \sigma_1\, \overline{\mathcal{Z}}_1}{\sigma_0\, \sigma_2 - \sigma_1^2}\, X_0\, ,
+    \label{eqn:rms_sol_ds} \Delta S &= \frac{g_0\, \overline{\mathcal{Z}}_1 - g_1\, \overline{\mathcal{Z}}_0}{g_0\, g_2 - g_1^2}\, X_0\, , \nd \\
+    \label{eqn:rms_sol_dn} \Delta N &= -\frac{g_2\, \overline{\mathcal{Z}}_0 - g_1\, \overline{\mathcal{Z}}_1}{g_0\, g_2 - g_1^2}\, X_0\, ,
   \end{align}
 \end{subequations}
 where
 \begin{align}
-  \sigma_k &\equiv \sum_{n = 1}^{n_\text{max}} \left(\gamma_n - 1\right)^k\, , \nd \\
+  g_k &\equiv \sum_{n = 1}^{n_\text{max}} \left(\gamma_n - 1\right)^k\, , \nd \\
   \overline{\mathcal{Z}}_k &\equiv \sum_{n = 1}^{n_\text{max}} \left(\gamma_n - 1\right)^k\, Z_n\, .
 \end{align}
 
@@ -60,13 +60,13 @@ H = \begin{bmatrix}
       \frac{\partial^2 \chi^2}{\partial \Delta S\, \partial \Delta N} & \frac{\partial^2 \chi^2}{\partial \Delta N^2}
     \end{bmatrix}
   = \frac{2}{X_0^2} \begin{bmatrix}
-      \sigma_2 & -\sigma_1 \\
-      -\sigma_1 & \sigma_0
+      g_2 & -g_1 \\
+      -g_1 & g_0
     \end{bmatrix}\, .
  \end{equation}
-We can apply the second partial derivative test to the Hessian to determine whether we've found an extremum of $\chi^2$. If the determinant of the Hessian is positive, and (in the case of a $2 \times 2$ matrix) one of the diagonal elements is positive, then we have found a minimum. The determinant is greater than zero for $n_\text{max} \ge 2$, and the second condition is satisfied by $\sigma_0 = n_\text{max} > 0$ when $n_\text{max} \ge 1$. Therefore, we can be confident that the solution for $\Delta S$ and $\Delta N$ given by \eqn{rms_sol} minimizes $\chi^2$ accurately to first order in $\Delta S$ and $\Delta N$ provided that we are averaging over at least the first two frets. Note that the diagonal elements of the Hessian also allows to estimate the increase in the residual RMS frequency error caused by small changes $\delta s$ and $\delta n$ in the saddle and nut setbacks respectively; we obtain
+We can apply the second partial derivative test to the Hessian to determine whether we've found an extremum of $\chi^2$. If the determinant of the Hessian is positive, and (in the case of a $2 \times 2$ matrix) one of the diagonal elements is positive, then we have found a minimum. The determinant is greater than zero for $n_\text{max} \ge 2$, and the second condition is satisfied by $g_0 = n_\text{max} > 0$ when $n_\text{max} \ge 1$. Therefore, we can be confident that the solution for $\Delta S$ and $\Delta N$ given by \eqn{rms_sol} minimizes $\chi^2$ accurately to first order in $\Delta S$ and $\Delta N$ provided that we are averaging over at least the first two frets. Note that the diagonal elements of the Hessian also allows to estimate the increase in the residual RMS frequency error caused by small changes $\delta s$ and $\delta n$ in the saddle and nut setbacks respectively; we obtain
 \begin{equation}
-  \overline{\delta \nu}_\text{rms} = \frac{1}{n_\text{max}\, \overline{\Delta \nu}_\text{rms}} \left[ \frac{1200}{\ln(2)} \right]^2 \left[ \sigma_2 \left(\frac{\delta s}{X_0}\right)^2 + \sigma_0 \left(\frac{\delta n}{X_0}\right)^2\right]
+  \overline{\delta \nu}_\text{rms} = \frac{1}{n_\text{max}\, \overline{\Delta \nu}_\text{rms}} \left[ \frac{1200}{\ln(2)} \right]^2 \left[ g_2 \left(\frac{\delta s}{X_0}\right)^2 + g_0 \left(\frac{\delta n}{X_0}\right)^2\right]
 \end{equation}
 
 We can further refine the predicted values of these setbacks to accommodate the small second-order terms in $\Delta S$ and $\Delta N$ neglected in the resonant length error approximation used in \eqn{w_n_approx}. Relying on \eqn{error_def} as the exact expression for the frequency error $\Delta \nu_n$, we can use \eqn{rms_sol} to provide initial values for a nonlinear minimization of $\sum_n\, \Delta \nu_n^2$ over the first 12 frets. We adopt the quasi-Newton algorithm of Broyden, Fletcher, Goldfarb, and Shanno~\cite{ref:nocedal2006no}, a second-order algorithm for numerical optimization. Typically, this additional step changes the setback values by only a fraction of a percent. We'll refer to this approach as the ``RMS Minimize'' method, and we use it throughout this work to compute the setbacks for each string under study. Note that the approximate equations given by \eqn{comp_approx} also can be used to compute initial values for this final nonlinear minimization.
@@ -78,30 +78,30 @@ We can further refine the predicted values of these setbacks to accommodate the 
 % Then our estimates for the setbacks become
 % \begin{subequations}
 %   \begin{align}
-%     \Delta S &= \left(B_0 + \frac{\kappa}{2}\, \frac{\sigma_0\, \overline{\mathcal{Q}}_1 - \sigma_1\, \overline{\mathcal{Q}}_0}{\sigma_0\, \sigma_2 - \sigma_1^2} \right) X_0\, , \nd \\
-%     \Delta N &= -\frac{\kappa}{2}\, \frac{\sigma_2\, \overline{\mathcal{Q}}_0 - \sigma_1\, \overline{\mathcal{Q}}_1}{\sigma_0\, \sigma_2 - \sigma_1^2}\, X_0\, ,
+%     \Delta S &= \left(B_0 + \frac{\kappa}{2}\, \frac{g_0\, \overline{\mathcal{Q}}_1 - g_1\, \overline{\mathcal{Q}}_0}{g_0\, g_2 - g_1^2} \right) X_0\, , \nd \\
+%     \Delta N &= -\frac{\kappa}{2}\, \frac{g_2\, \overline{\mathcal{Q}}_0 - g_1\, \overline{\mathcal{Q}}_1}{g_0\, g_2 - g_1^2}\, X_0\, ,
 %   \end{align}
 % \end{subequations}
 % where
 % \begin{equation}
 %   \overline{\mathcal{Q}}_k \equiv \sum_{n = 1}^{n_\text{max}} \left(\gamma_n - 1\right)^k\, Q_n\, .
 % \end{equation}
-% If we approximate $\overline{\mathcal{Q}}_k \approx \sigma_k\, \overline{Q}$, where $\overline{Q}$ is the relative displacement averaged over a particular set of frets, we obtain the estimates discussed in \sct{tot_freq_shift}: $\Delta S \approx B_0\, X_0$, and $\Delta N \approx -\kappa\, \overline{Q}\, X_0 / 2$. The corresponding solution when the quadratic stiffness term is included is given in matrix form by
+% If we approximate $\overline{\mathcal{Q}}_k \approx g_k\, \overline{Q}$, where $\overline{Q}$ is the relative displacement averaged over a particular set of frets, we obtain the estimates discussed in \sct{tot_freq_shift}: $\Delta S \approx B_0\, X_0$, and $\Delta N \approx -\kappa\, \overline{Q}\, X_0 / 2$. The corresponding solution when the quadratic stiffness term is included is given in matrix form by
 % \begin{equation}\label{eqn:rms_sol_quad}
 % \begin{bmatrix}
 %   \Delta S \\
 %   \Delta N
-% \end{bmatrix} = \frac{X_0}{\sigma_0\, \sigma_2 - \sigma_1^2}\,
+% \end{bmatrix} = \frac{X_0}{g_0\, g_2 - g_1^2}\,
 % \begin{bmatrix}
-%   \sigma_0 & -\sigma_1 \\
-%   \sigma_1 & -\sigma_2
+%   g_0 & -g_1 \\
+%   g_1 & -g_2
 % \end{bmatrix}\,
 % \begin{bmatrix}
-%   \sigma_2\, B_0 + \half \left(1 + \pi^2\right) \left(2 \sigma_2 + \sigma_3\right) B_0^2 + \half\, \kappa\, \overline{Q}_1 \\
-%   \sigma_1\, B_0 + \half \left(1 + \pi^2\right) \left(2 \sigma_1 + \sigma_2\right) B_0^2 + \half\, \kappa\, \overline{Q}_0
+%   g_2\, B_0 + \half \left(1 + \pi^2\right) \left(2 g_2 + g_3\right) B_0^2 + \half\, \kappa\, \overline{Q}_1 \\
+%   g_1\, B_0 + \half \left(1 + \pi^2\right) \left(2 g_1 + g_2\right) B_0^2 + \half\, \kappa\, \overline{Q}_0
 % \end{bmatrix}\, .
 %  \end{equation}
-% If we choose $n_\text{max} = 12$, then when $d = 0$ we can compute $\sigma_k$ and $\overline{Q}_k$ in terms of powers of $b$ and $c$ to find
+% If we choose $n_\text{max} = 12$, then when $d = 0$ we can compute $g_k$ and $\overline{Q}_k$ in terms of powers of $b$ and $c$ to find
 % \begin{align} \label{eqn:rms_sol_comp}
 %   \Delta S &= \left[ B_0 + \frac{3}{2} \left(1 + \pi^2\right) B_0^2 \right] X_0 + \frac{\kappa}{4\, X_0} \left( -9.848\, b^2 + 2\, b\, c + c^2 \right)\, , \nd \\
 %   \Delta N &= B_0^2\, X_0 - \frac{\kappa}{2\, X_0} \left( 5.633\, b^2 + b\, c \right)\, .
@@ -117,21 +117,21 @@ We can further refine the predicted values of these setbacks to accommodate the 
 % Setting both of these expressions to zero, we can rewrite them as the matrix equation
 %  \begin{equation}% \label{eqn:rms_mat}
 % \begin{bmatrix}
-%   \sigma_2 & -\sigma_1 \\
-%   \sigma_1 & -\sigma_0
+%   g_2 & -g_1 \\
+%   g_1 & -g_0
 % \end{bmatrix}\,
 % \begin{bmatrix}
 %   \Delta S \\
 %   \Delta N
 % \end{bmatrix} = X_0
 % \begin{bmatrix}
-%   \sigma_2\, B_0 +  \half\, \kappa\, \overline{Q}_1 \\
-%   \sigma_1\, B_0 +  \half\, \kappa\, \overline{Q}_0
+%   g_2\, B_0 +  \half\, \kappa\, \overline{Q}_1 \\
+%   g_1\, B_0 +  \half\, \kappa\, \overline{Q}_0
 % \end{bmatrix}\, ,
 %  \end{equation}
 % where
 %  \begin{align}
-% \sigma_k &\equiv \sum_{n = 1}^{n_\text{max}} \left(\gamma_n - 1\right)^k\, , \nd \\
+% g_k &\equiv \sum_{n = 1}^{n_\text{max}} \left(\gamma_n - 1\right)^k\, , \nd \\
 % \overline{Q}_k &\equiv \sum_{n = 1}^{n_\text{max}} \left(\gamma_n - 1\right)^k\, Q_n\, .
 %  \end{align}
 % We note that
@@ -141,9 +141,9 @@ We can further refine the predicted values of these setbacks to accommodate the 
 % and therefore
 % \begin{subequations}
 %   \begin{align}
-%     \sigma_0 &= n_\text{max}\, ,\\
-%     \sigma_1 &= g_1 - n_\text{max}\, , \nd \\
-%     \sigma_2 &= g_2 - 2 g_1 + n_\text{max}\, .
+%     g_0 &= n_\text{max}\, ,\\
+%     g_1 &= g_1 - n_\text{max}\, , \nd \\
+%     g_2 &= g_2 - 2 g_1 + n_\text{max}\, .
 %   \end{align}
 % \end{subequations}
 
@@ -152,24 +152,24 @@ We can further refine the predicted values of these setbacks to accommodate the 
 %   \begin{bmatrix}
 %     \Delta S \\
 %     \Delta N
-%   \end{bmatrix} = \frac{X_0}{\sigma_0\, \sigma_2 - \sigma_1^2}\,
+%   \end{bmatrix} = \frac{X_0}{g_0\, g_2 - g_1^2}\,
 %   \begin{bmatrix}
-%     \sigma_0 & -\sigma_1 \\
-%     \sigma_1 & -\sigma_2
+%     g_0 & -g_1 \\
+%     g_1 & -g_2
 %   \end{bmatrix}\,
 %   \begin{bmatrix}
-%     \sigma_2\, B_0 + \half\, \kappa\, \overline{Q}_1 \\
-%     \sigma_1\, B_0 + \half\, \kappa\, \overline{Q}_0
+%     g_2\, B_0 + \half\, \kappa\, \overline{Q}_1 \\
+%     g_1\, B_0 + \half\, \kappa\, \overline{Q}_0
 %   \end{bmatrix}\, ,
 % \end{equation}
 % or
 % \begin{subequations}
 %   \begin{align}
-%     \Delta S &= \left(B_0 + \frac{\kappa}{2}\, \frac{\sigma_0\, \overline{Q}_1 - \sigma_1\, \overline{Q}_0}{\sigma_0\, \sigma_2 - \sigma_1^2} \right) X_0\, , \nd \\
-%     \Delta N &= -\frac{\kappa}{2}\, \frac{\sigma_2\, \overline{Q}_0 - \sigma_1\, \overline{Q}_1}{\sigma_0\, \sigma_2 - \sigma_1^2}\, X_0\, .
+%     \Delta S &= \left(B_0 + \frac{\kappa}{2}\, \frac{g_0\, \overline{Q}_1 - g_1\, \overline{Q}_0}{g_0\, g_2 - g_1^2} \right) X_0\, , \nd \\
+%     \Delta N &= -\frac{\kappa}{2}\, \frac{g_2\, \overline{Q}_0 - g_1\, \overline{Q}_1}{g_0\, g_2 - g_1^2}\, X_0\, .
 %   \end{align}
 % \end{subequations}
-% If we approximate $\overline{Q}_k \approx \sigma_k\, \overline{Q}$, where $\overline{Q}$ is the relative displacement averaged over a particular set of frets, we obtain the estimates discussed in \sct{tot_freq_shift}.
+% If we approximate $\overline{Q}_k \approx g_k\, \overline{Q}$, where $\overline{Q}$ is the relative displacement averaged over a particular set of frets, we obtain the estimates discussed in \sct{tot_freq_shift}.
 
 The setback solution given by \eqn{rms_sol} is valid for a single string, and results like those shown in \tbl{ej45_setbacks} and \fig{shift_classicalguitar_ej45_full} assume that the guitar is built such that each string --- from a particular set of strings --- has a unique saddle and nut setback. Suppose that we'd prefer to engineer a guitar with single, uniform values of both $\Delta S$ and $\Delta N$ that provide reasonable compensation across an entire string set (or an ensemble of strings from a variety of manufacturers). In this case, \eqn{rms_def} becomes
  \begin{equation}\label{eqn:rms_def_m}
@@ -202,22 +202,22 @@ If we rigorously follow the same approach that we used to arrive at \eqn{rms_sol
 where
 \begin{subequations}% \label{eqn:rms_sol}
   \begin{align}
-    \Delta S^{(m)} &= \frac{\sigma_0\, \overline{\mathcal{Z}}^{(m)}_1 - \sigma_1\, \overline{\mathcal{Z}}^{(m)}_0}{\sigma_0\, \sigma_2 - \sigma_1^2}\, X_0\, , \nd \\
-    \Delta N^{(m)} &= -\frac{\sigma_2\, \overline{\mathcal{Z}}^{(m)}_0 - \sigma_1\, \overline{\mathcal{Z}}^{(m)}_1}{\sigma_0\, \sigma_2 - \sigma_1^2}\, X_0\, ,
+    \Delta S^{(m)} &= \frac{g_0\, \overline{\mathcal{Z}}^{(m)}_1 - g_1\, \overline{\mathcal{Z}}^{(m)}_0}{g_0\, g_2 - g_1^2}\, X_0\, , \nd \\
+    \Delta N^{(m)} &= -\frac{g_2\, \overline{\mathcal{Z}}^{(m)}_0 - g_1\, \overline{\mathcal{Z}}^{(m)}_1}{g_0\, g_2 - g_1^2}\, X_0\, ,
   \end{align}
 \end{subequations}
 % \begin{equation}\label{eqn:rms_sol_uni}
 % \begin{bmatrix}
 %   \Delta S^{(m)} \\
 %   \Delta N^{(m)}
-% \end{bmatrix} = \frac{X_0}{\sigma_1^2 - \sigma_0\, \sigma_2}\,
+% \end{bmatrix} = \frac{X_0}{g_1^2 - g_0\, g_2}\,
 % \begin{bmatrix}
-%   -\sigma_0 & \sigma_1 \\
-%   -\sigma_1 & \sigma_2
+%   -g_0 & g_1 \\
+%   -g_1 & g_2
 % \end{bmatrix}\,
 % \begin{bmatrix}
-%   \sigma_2\, B_0^{(m)} + \half\, \kappa^{(m)}\, \overline{Q}_1 \\
-%   \sigma_1\, B_0^{(m)} + \half\, \kappa^{(m)}\, \overline{Q}_0
+%   g_2\, B_0^{(m)} + \half\, \kappa^{(m)}\, \overline{Q}_1 \\
+%   g_1\, B_0^{(m)} + \half\, \kappa^{(m)}\, \overline{Q}_0
 % \end{bmatrix}\, .
 %  \end{equation}
 reflecting the unique values of $\kappa^{(m)}$ and $B_0^{(m)}$ for each string in each set. In other words, we can find the optimum values for both $\Delta S$ and $\Delta N$ simply by averaging the corresponding setbacks over a commercially interesting collection of string sets. 
