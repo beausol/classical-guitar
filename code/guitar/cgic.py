@@ -9,6 +9,7 @@ import os
 
 # Define a reasonable set of matplotlib parameters compatible
 #  with Jupyter notebooks
+linewidth = 2.0
 labelsize = 18
 fontsize = 24
 font = {'family' : 'serif',
@@ -333,13 +334,13 @@ class GuitarStrings(object):
             for string in self._strings:
                 name = string.get_specs()['string']
                 plt.plot(dx, data[name].values -  data[name].values[0], '.', markersize=markersize)
-                plt.plot(dx, fit_dict[name], color=plt.gca().lines[-1].get_color(), label='{}'.format(name))
+                plt.plot(dx, fit_dict[name], color=plt.gca().lines[-1].get_color(), linewidth=linewidth, label='{}'.format(name))
         else:
             for string in self._strings:
                 name = string.get_specs()['string']
                 plt.errorbar(dx, data[name].values -  data[name].values[0], fmt='.', markersize=markersize,
                              yerr=sigma[name], capsize=5, capthick=1)
-                plt.plot(dx, fit_dict[name], color=plt.gca().lines[-1].get_color(), label='{}'.format(name))
+                plt.plot(dx, fit_dict[name], color=plt.gca().lines[-1].get_color(), linewidth=linewidth, label='{}'.format(name))
 
         plt.xlabel(r'$\Delta x$~(mm)', fontdict=font)
         plt.ylabel(r'$\Delta f$~(Hz)', fontdict=font)
@@ -712,7 +713,7 @@ class Guitar(object):
         return ds, dn
 
 #    def plot_shifts(self, max_fret=12, show=True, harm=[], savepath=None, filename=None):
-    def plot_shifts(self, max_fret=12, show=True, harm=[], savepath=None, filename=None, markersize=6.0, alpha=1.0):
+    def plot_shifts(self, max_fret=12, show=True, harm=[], savepath=None, filename=None, markersize=9.0, alpha=1.0):
         fret_list = np.arange(0, max_fret + 1)
         shifts = self._freq_shifts(fret_list[1:])
         if harm:
@@ -728,7 +729,7 @@ class Guitar(object):
         for index in np.arange(self._strings.get_count()):
 #            plt.plot(fret_list, shifts[index], label='{}'.format(names[index]))
             plt.plot(fret_list, shifts[index], '.', markersize=markersize)
-            plt.plot(fret_list, shifts[index], color=plt.gca().lines[-1].get_color(), alpha=alpha, label='{}'.format(names[index]))
+            plt.plot(fret_list, shifts[index], color=plt.gca().lines[-1].get_color(), alpha=alpha, linewidth=linewidth, label='{}'.format(names[index]))
 
         plt.xlabel('FRET', fontdict=font)
         plt.ylabel('SHIFT (cents)', fontdict=font)
