@@ -651,16 +651,16 @@ class Guitar(object):
         
         z_n = (np.log(2.0) / 1200.0) * ( mde + tse + bse )
         
-        sigma_0 = max_fret
-        sigma_1 = sigma_k(fret_list, 1)
-        sigma_2 = sigma_k(fret_list, 2)
+        g_0 = max_fret
+        g_1 = sigma_k(fret_list, 1)
+        g_2 = sigma_k(fret_list, 2)
         
         zbar_0 = np.sum(z_n, axis=1)
         zbar_1 = np.sum((self._gamma(fret_list) - 1) * z_n, axis=1)
         
-        det = sigma_0 * sigma_2 - sigma_1**2
-        ds =  ( sigma_0 * zbar_1 - sigma_1 * zbar_0 ) * self._x0 / det
-        dn = -( sigma_2 * zbar_0 - sigma_1 * zbar_1 ) * self._x0 / det
+        det = g_0 * g_2 - g_1**2
+        ds =  ( g_0 * zbar_1 - g_1 * zbar_0 ) * self._x0 / det
+        dn = -( g_2 * zbar_0 - g_1 * zbar_1 ) * self._x0 / det
 
         self._ds = ds
         self._dn = dn
