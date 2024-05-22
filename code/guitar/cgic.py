@@ -88,8 +88,8 @@ class GuitarString(object):
     --------------
     set_scale_length : 
         Set the scale length of the string
-    set_r :
-        Set the response of the string's frequency to a change of its length
+    fit_r :
+        Fit data on frequency change with length to determine R
     get_d_omega : numpy.ndarray.float64
         Frequency shift of each mode q relative to 2 * q * pi
     get_delta_omega : numpy.ndarray.float64
@@ -214,12 +214,12 @@ class GuitarStrings(object):
         indices, rows_specs = zip(*df_specs.iterrows())
 
         if path_props is None:
-            rows_props = (None,) * 6
+            rows_props = (None,) * df_specs.shape[0]
         else:
             df_props = pd.read_excel(path_props, sheet_name=sheet_name,
                                      dtype={'string' : str, 'R': np.float64, 'sigma' : np.float64, 'kappa': np.float64,
                                             'B_0': np.float64, 'E': np.float64})
-            assert df_specs['string'].equals(df_props['string']), 'Parameter string names and Property string names do not match.'
+            assert df_specs['string'].equals(df_props['string']), 'Specification string names and Property string names do not match.'
             indices, rows_props = zip(*df_props.iterrows())
         
         self._strings = []
