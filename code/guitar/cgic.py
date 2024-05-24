@@ -90,19 +90,6 @@ class GuitarString(object):
         Set the scale length of the string
     fit_r :
         Fit data on frequency change with length to determine R
-    get_d_omega : numpy.ndarray.float64
-        Frequency shift of each mode q relative to 2 * q * pi
-    get_delta_omega : numpy.ndarray.float64
-        Frequency of each mode q (relative to q = 0)
-    get_omega : numpy.ndarray.float64
-        Normalized frequency detuning for each mode q
-    get_gamma : numpy.ndarray.complex128
-        Complex ODE decay constant of each mode q
-    get_delay : numpy.ndarray.float64
-        Time delay prefactor for each mode q
-    get_keywords : string
-        String containing the attributes of a
-        FrequencyShifts object
     '''
 
     def __init__(self, specs, props, scale_length):
@@ -110,31 +97,24 @@ class GuitarString(object):
 
         Parameters
         ----------
-        name : str
-            A python string containing the name of the guitar string
-        note : str
-            A python string labeling the fundamental frequency of the
-            open string using scientific notation, such as 'A_4', 'Ab_4',
-            or 'A#_4'
-        scale_length : numpy.float64
-            The scale length of the guitar string (2x the distance measured
-            from the inside edge of the nut to the center of the twelfth
-            fret) in inches if units='IPS' or millimeters otherwise
-        diameter : numpy.float64
-            The diameter of the guitar string in inches if units='IPS'
-            or millimeters otherwise
-        linear_mass_density : numpy.float64
-            The linear_mass_density of the guitar string in pounds per inch
-            if units='IPS' or milligrams per millimeter otherwise
-        tension : numpy.float64
-            The nominal tension of the guitar string in pounds if units='IPS'
-            or newtons otherwise
-        units : str
-            If units='IPS' (default), then the unit system of the input variables is
-            assumed to use inches, pounds (for both mass and weight), and
-            seconds; for any other value, the unit system of the input
-            variables is assumed to use millimeters, milligrams, newtons, and
-            seconds
+        specs : pandas Series
+            A pandas Series with the following elements:
+                'string' : str
+                    A python string containing the name of the guitar string
+                'note': str
+                    A python string labeling the fundamental frequency of the
+                    open string using scientific notation, such as 'A_4', 'Ab_4',
+                    or 'A#_4'
+                'radius' : np.float64
+                    The radius of the string in mm
+                'density': np.float64
+                    The linear mass density of the string in mg/mm
+                'tension': np.float64
+                    The nominal tension of the guitar string in newtons
+                'scale': np.float64
+                    The scale length of the guitar (2x the distance measured
+                    from the inside edge of the nut to the center of the twelfth
+                    fret) in mm
         '''
         self._specs = specs
         self._props = props
