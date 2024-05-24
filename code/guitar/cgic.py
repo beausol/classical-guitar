@@ -87,7 +87,7 @@ class GuitarString(object):
     Public Methods
     --------------
     set_scale_length : 
-        Set the scale length of the string
+        Set the scale length of the guitar (which rescales the open string tension)
     fit_r :
         Fit data on frequency change with length to determine R
     '''
@@ -114,7 +114,24 @@ class GuitarString(object):
                 'scale': np.float64
                     The scale length of the guitar (2x the distance measured
                     from the inside edge of the nut to the center of the twelfth
-                    fret) in mm
+                    fret) in mm; this is needed as a reference for the tension
+        props : pandas Series
+            If not 'None', a pandas Series with the following elements:
+                'string' : str
+                    A python string containing the name of the guitar string
+                'r' : np.float64
+                    The (dimensionless) R parameter of the string
+                'sigma' : np.float64
+                    The (dimensionless) covariant standard deviation of R
+                'kappa' : np.float64
+                    The (dimensionless) string constant (2 * R + 1)
+                'b_0' : np.float64
+                    The (dimensionless) bending stiffness of the open string
+                'e_eff' : np.float64
+                    The effective elastic modulus of the string material in GPa
+        scale_length : np.float64
+            The scale length of the guitar in mm, which determines the open-string
+            tension
         '''
         self._specs = specs
         self._props = props
@@ -122,9 +139,9 @@ class GuitarString(object):
         self._freq = self._frequency(self._specs.note)
         self.set_scale_length(scale_length)
 
-    def _set_props(self, r, dr):
+    def _set_props(self, r, dr, scale_length):
         kappa = 2 * r + 1
-        b_0 = np.sqrt(kappa) * (self._specs.radius) / ( 2 * self._specs.scale)
+        b_0 = np.sqrt(kappa) * self._specs.radius / ( 2 * scale_length )
         e_eff = 1.0e-09 * (self._specs.tension / (np.pi * (self._specs.radius/1000)**2)) * kappa
         d =  {'string' : self._specs.string, 'r' : r, 'sigma' : dr, 'kappa' : kappa, 'b_0' : b_0, 'e_eff' : e_eff}
         
@@ -138,30 +155,30 @@ class GuitarString(object):
         note = note_str.split('_')
         return 440.0 * 2**( int(note[1], 10) - notes[note[0]]/12.0 )
 
-    def _comp_tension(self):
-        mu = self._specs.density / 1000    # Convert mg/mm to kg/m
-        x0 = self._specs.scale / 1000      # Convert mm to m
-        self._specs.tension = mu * (2 * x0 * self._freq)**2
+    # def rescale_tension(self, scale_length):
+    #     mu = self._specs.density / 1000    # Convert mg/mm to kg/m
+    #     x0 = scale_length / 1000      # Convert mm to m
+    #     self._specs.tension = mu * (2 * x0 * self._freq)**2
 
     def set_scale_length(self, scale_length):
-        if np.abs(scale_length - self._specs.scale) > 10 * np.finfo(float).eps:
-            self._specs.scale = scale_length
-            self._comp_tension()
+        mu = self._specs.density / 1000    # Convert mg/mm to kg/m
+        x0 = scale_length / 1000      # Convert mm to m
+        self._specs.tension = mu * (2 * x0 * self._freq)**2
         
-    def fit_r(self, rescale, dx, df, ddf):
+    def fit_r(self, scale_length, scale_dx, dx, df, ddf):
         def func(x, intercept, slope):
             return intercept + slope * x
 
-        param, param_cov = curve_fit(func, rescale*dx, df, sigma=ddf)
-        fit = func(rescale*dx, *param)
+        param, param_cov = curve_fit(func, scale_dx*dx, df, sigma=ddf)
+        fit = func(scale_dx*dx, *param)
         
         dfdx = param[1]
         ddfdx = np.sqrt(param_cov[1][1])
         
-        r = (self._specs.scale / self._freq) * dfdx
-        dr = (self._specs.scale / self._freq) * ddfdx
+        r = (scale_length / self._freq) * dfdx
+        dr = (scale_length / self._freq) * ddfdx
         
-        self._set_props(r, dr)
+        self._set_props(r, dr, scale_length)
 
         return fit
 
@@ -271,7 +288,6 @@ class GuitarStrings(object):
         self._props = pd.DataFrame(series_props)
         
     def set_scale_length(self, scale_length):
-        self._scale_length = scale_length
         for string in self._strings:
             string.set_scale_length(scale_length)
 
@@ -284,7 +300,7 @@ class GuitarStrings(object):
     def get_props(self):
         return self._props
 
-    def fit_r(self, data_path, sheet_name=0, sigma_name=None, rescale=1.0, show=True, save_path=None, file_name=None, markersize=12.5):
+    def fit_r(self, data_path, sheet_name=0, sigma_name=None, scale_length=650.0, scale_dx=2**(1/12), show=True, save_path=None, file_name=None, markersize=12.5):
         data = pd.read_excel(data_path, sheet_name=sheet_name)
         self._check_string_names(data)
         if sigma_name is None:
@@ -300,7 +316,7 @@ class GuitarStrings(object):
                 ddf = None
             else:
                 ddf = sigma[name].to_numpy()
-            fit = string.fit_r(rescale, dx, data[name].to_numpy() -  data[name].to_numpy()[0], ddf=ddf)
+            fit = string.fit_r(scale_length, scale_dx, dx, data[name].to_numpy() -  data[name].to_numpy()[0], ddf=ddf)
             fit_dict[name] = fit
         self._build_props_frame()
         
