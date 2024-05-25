@@ -90,6 +90,10 @@ class GuitarString(object):
         Set the scale length of the guitar (which rescales the open string tension)
     fit_r :
         Fit data on frequency change with length to determine R
+    get_specs : pandas Series
+        Return a pandas Series with the string's specifications in MKS units
+    get_props : pandas Series
+        Return a pandas Series with the string's properties in MKS units
     '''
 
     def __init__(self, specs, props, scale_length):
@@ -139,6 +143,27 @@ class GuitarString(object):
         self._freq = self._frequency(self._specs.note)
         self.set_scale_length(scale_length)
 
+    def _frequency(self, note_str):
+        ''' Compute the frequency of a musical note
+        
+        Parameters
+        ----------
+        note_str : str
+            A python string labeling a musical note using scientific notation,
+            such as 'A_4', 'Ab_4',  or 'A#_4'
+        
+        Returns
+        --------
+        float
+            The frequency in Hertz of the musical note
+        '''
+        notes = dict([('Ab', 49), ('A', 48), ('A#', 47), ('Bb', 47), ('B', 46), ('B#', 57), ('Cb', 46), ('C', 57), ('C#', 56),
+                  ('Db', 56), ('D', 55), ('D#', 54), ('Eb', 54), ('E', 53), ('E#', 52), ('Fb', 53), ('F', 52), ('F#', 51),
+                  ('Gb', 51), ('G', 50), ('G#', 49)])
+
+        note = note_str.split('_')
+        return 440.0 * 2**( int(note[1], 10) - notes[note[0]]/12.0 )
+
     def _set_props(self, r, dr, scale_length):
         kappa = 2 * r + 1
         b_0 = np.sqrt(kappa) * self._specs.radius / ( 2 * scale_length )
@@ -147,22 +172,18 @@ class GuitarString(object):
         
         self._props = pd.Series(data=d, name=self._specs.name)
     
-    def _frequency(self, note_str):
-        notes = dict([('Ab', 49), ('A', 48), ('A#', 47), ('Bb', 47), ('B', 46), ('B#', 57), ('Cb', 46), ('C', 57), ('C#', 56),
-                  ('Db', 56), ('D', 55), ('D#', 54), ('Eb', 54), ('E', 53), ('E#', 52), ('Fb', 53), ('F', 52), ('F#', 51),
-                  ('Gb', 51), ('G', 50), ('G#', 49)])
-
-        note = note_str.split('_')
-        return 440.0 * 2**( int(note[1], 10) - notes[note[0]]/12.0 )
-
-    # def rescale_tension(self, scale_length):
-    #     mu = self._specs.density / 1000    # Convert mg/mm to kg/m
-    #     x0 = scale_length / 1000      # Convert mm to m
-    #     self._specs.tension = mu * (2 * x0 * self._freq)**2
-
     def set_scale_length(self, scale_length):
+        ''' Compute the tension of an open string for a guitar with a
+            particular scale length
+            
+        Parameters
+        ----------
+        scale_length : float
+            The scale length of the guitar in mm
+        '''
         mu = self._specs.density / 1000    # Convert mg/mm to kg/m
         x0 = scale_length / 1000      # Convert mm to m
+        self._specs.scale = scale_length
         self._specs.tension = mu * (2 * x0 * self._freq)**2
         
     def fit_r(self, scale_length, scale_dx, dx, df, ddf):
@@ -183,16 +204,23 @@ class GuitarString(object):
         return fit
 
     def get_specs(self):
+        ''' Return a pandas Series with the string's specifications in MKS units
+        
+            See __init()__ for a description of the elements of this Series
+        '''
         return self._specs
 
     def get_props(self):
+        ''' Return a pandas Series with the string's specifications in MKS units
+        
+            See __init()__ for a description of the elements of this Series
+        '''
         return self._props
 
 
 class GuitarStrings(object):
-    def __init__(self, name, scale_length, path_specs, path_props, sheet_name=0, units='IPS'):
+    def __init__(self, name, path_specs, path_props, sheet_name=0, scale_length=650.0, units='IPS'):
         self._name = name
-        self._scale_length = scale_length
 
         df_specs = pd.read_excel(path_specs, sheet_name=sheet_name,
                                  dtype={'string' : str, 'note': str, 'diameter' : np.float64,
@@ -204,10 +232,10 @@ class GuitarStrings(object):
             lb_to_mg = 453592.37
             lb_to_nt = 4.4482216153 # 9.81 / 2.204
 
-            df_specs.scale *= in_to_mm
             df_specs.radius *= in_to_mm
             df_specs.density *= (lb_to_mg/in_to_mm)
             df_specs.tension *= lb_to_nt
+            df_specs.scale *= in_to_mm
         indices, rows_specs = zip(*df_specs.iterrows())
 
         if path_props is None:
@@ -235,7 +263,7 @@ class GuitarStrings(object):
     
         Example
         -------
-        strings = GuitarStrings(name, file_name, sheet_name, scale_length)
+        strings = GuitarStrings(name, path_specs, path_props)
         
         print(strings)
         '''
