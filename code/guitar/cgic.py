@@ -46,6 +46,43 @@ def file_path(pathname, filename):
         return pathname + filename
 
 
+def figdisp(fig, show, savepath, filename): # dispatch
+        filepath = file_path(savepath, filename)
+        if filepath is None:
+            pass
+        else:
+            fig.savefig(filepath, bbox_inches='tight')
+            print("Saved {0}\n".format(filepath))
+
+        if show:
+            plt.show()
+        else:
+            plt.close()
+
+
+def tabdisp(df, formatter, show, savepath, filename):
+    styler = df.style.format(formatter=formatter).hide()
+    table_str = styler.to_latex(column_format=df.shape[1]*'c', hrules=True)
+
+    filepath = file_path(savepath, filename)
+    if filepath is None:
+        pass
+    else:
+        print(table_str,  file=open(filepath, 'w'))        
+        print("Saved {0}\n".format(filepath))
+
+    if show:
+        styler.set_properties(**{'text-align': 'center'})
+        display(styler)
+
+
+def classmro(myself):
+    class_str = myself.__class__.__name__
+    for classname in myself.__class__.__mro__[1:-1]:
+        class_str += " : {}".format(classname.__name__)
+    return class_str
+
+
 def get_xlim():
     '''
     Return the "nice" values of the min and max of the x-axis of the current plot
@@ -78,6 +115,113 @@ def get_ylim():
 
     return retval
 
+class BaseClass(object):
+    '''A general-purpose virtual base class for functions of time (or space).
+
+    Required Private Methods
+    ------------------------
+    _set_key_list :
+        List of keys that will be present in a parameter dictionary
+        that will be required by a derived class; default = []
+    '''
+
+    def __init__(self, params:dict):
+        '''Define the list of dictionary keys of parameters required by the
+        derived class, and then set those parameters
+        `'''
+        self._set_key_list()
+        self.set_params(params)
+        
+    def _set_key_list(self):
+        '''Define the names (strings) of keyword parameters that must be supplied
+        through __init__() and from them create a private list variable _param_list.
+        For example, if the required parameters are "a" and "b", then in the
+        derived class:
+            def _set_param_list(self):
+                self._param_list = ['a', 'b']
+        Example of use by a derived class:
+            obj = DerivedClass(a=1.0, b=2.0)
+        '''
+        self._key_list = []
+        
+    def _check_params_missing(self, params:dict):
+        '''Walk through the list of keyword parameter names and check that all
+        have been supplied
+        '''
+        missing = [key for key in self._key_list if key not in set(params.keys())]
+        assert not missing, 'Missing keys in input param dict: {}'.format(missing)
+
+    def _check_params_extra(self, params:dict):
+        '''Walk through the list of keyword parameter names and check that there
+        aren't any parameters included that aren't in the list
+        '''
+        extra = [key for key in params.keys() if key not in set(self._key_list)]
+        assert not extra, 'Extra keys in input param dict: {}'.format(extra)
+
+    def __str__(self):
+        ''' Return a string containing the attributes of an object derived from
+        the base class. Example:
+                obj = DerivedClass(...)
+                print(obj)
+        '''
+        param_str = classmro(self) + '\n'
+        for key, value in self.__dict__.items():
+            if key == '_key_list':
+                continue
+            if not isinstance(value, BaseClass):
+                param_str += "\t{} : {}\n".format(key[1:], value)
+            else:
+                param_str += "\n\t{} : {}".format(key[1:], value)
+
+        return param_str
+
+    def __rich__(self):
+        ''' Return a string containing the attributes of an object derived from
+        the base class using rich text. Example:
+                from rich import print
+                obj = DerivedClass(...)
+                print(obj)
+        '''
+        param_str = "[bold blue]{}\n".format(classmro(self))
+        for key, value in self.__dict__.items():
+            if key == '_key_list':
+                continue
+            if isinstance(value, float):
+                param_str += "\t[green]{} : {}\n".format(key[1:], value)
+            elif isinstance(value, int):
+                param_str += "\t[red]{} : {}\n".format(key[1:], value)
+            elif not isinstance(value, BaseClass):
+                param_str += "\t{} : {}\n".format(key[1:], value)
+            else:
+                param_str += "\n\t[cyan]{} : {}".format(key[1:], value.__rich__())
+
+        return param_str
+
+    def set_params(self, params:dict):
+        '''Walk through the list of keyword parameters, and for each one
+        create a private variable with a name that is the input parameter name
+        preceded by an underscore (i.e., 'varname' becomes '_varname')
+        '''
+        self._check_params_extra(params)
+        if not self.__dict__:
+            self._check_params_missing(params)
+        for key, value in params.items():
+            self.__dict__['_' + key] = value
+
+
+def setarr(x, count):
+    if isinstance(x, np.ndarray):
+        assert x.shape == (count,), 'Input array has shape {}, not {}.'.format(x.shape, (count,))
+        return x.astype(np.float)
+    elif isinstance(x, list):
+        if len(x) == 1:
+            return np.array(count * x, dtype=np.float64)
+        else:
+            assert len(x) == count, 'Input list has length {}, not {}.'.format(len(x), count)
+            return np.array(x, dtype=np.float64)
+    else:
+        return np.array(count * [x], dtype=np.float64)
+
 
 class GuitarString(object):
     '''Collect parameters and compute properties of guitar strings
@@ -109,13 +253,13 @@ class GuitarString(object):
                     A python string labeling the fundamental frequency of the
                     open string using scientific notation, such as 'A_4', 'Ab_4',
                     or 'A#_4'
-                'radius' : np.float64
+                'radius' : float
                     The radius of the string in mm
-                'density': np.float64
+                'density': float
                     The linear mass density of the string in mg/mm
-                'tension': np.float64
+                'tension': float
                     The nominal tension of the guitar string in newtons
-                'scale': np.float64
+                'scale': float
                     The scale length of the guitar (2x the distance measured
                     from the inside edge of the nut to the center of the twelfth
                     fret) in mm; this is needed as a reference for the tension
@@ -123,17 +267,17 @@ class GuitarString(object):
             If not 'None', a pandas Series with the following elements:
                 'string' : str
                     A python string containing the name of the guitar string
-                'r' : np.float64
+                'r' : float
                     The (dimensionless) R parameter of the string
-                'sigma' : np.float64
+                'sigma' : float
                     The (dimensionless) covariant standard deviation of R
-                'kappa' : np.float64
+                'kappa' : float
                     The (dimensionless) string constant (2 * R + 1)
-                'b_0' : np.float64
+                'b_0' : float
                     The (dimensionless) bending stiffness of the open string
-                'e_eff' : np.float64
+                'e_eff' : float
                     The effective elastic modulus of the string material in GPa
-        scale_length : np.float64
+        scale_length : float
             The scale length of the guitar in mm, which determines the open-string
             tension
         '''
@@ -287,10 +431,10 @@ class GuitarStrings(object):
                             "kappa" : "kappa ", "b_0" : "B_0", "e_eff" : "E_eff (GPa)"},
                     inplace=True)
             formatters = {'R': '{:.1f}'.format,
-                        'R std': '{:.1f}'.format,
-                        'kappa ': '{:.1f}'.format,
-                        'B_0': '{:.5f}'.format,
-                        'E_eff (GPa)': '{:.2f}'.format}
+                          'R std': '{:.1f}'.format,
+                          'kappa ': '{:.1f}'.format,
+                          'B_0': '{:.5f}'.format,
+                          'E_eff (GPa)': '{:.2f}'.format}
 
             str_props = df.to_string(index=False, justify='center', formatters=formatters)
             return str_specs + '\n' + str_props
@@ -350,7 +494,7 @@ class GuitarStrings(object):
         
         self.plot_fit(fit_dict, data, sigma, show, save_path, file_name, markersize)
     
-    def plot_fit(self, fit_dict, data, sigma, show, savepath, filename, markersize):
+    def plot_fit_old(self, fit_dict, data, sigma, show, savepath, filename, markersize):
         dx = np.array(data[[list(data.columns)[0]]].values.T[0])
         
         plt.figure(figsize=(8.0,6.0))
@@ -375,16 +519,33 @@ class GuitarStrings(object):
         plt.legend(loc='upper left', fontsize=labelsize)
         plt.grid(True)
 
-        filepath = file_path(savepath, filename)
-        if filepath is None:
-            pass
+        figdisp(show, savepath, filename)
+
+    def plot_fit(self, fit_dict, data, sigma, show, savepath, filename, markersize):
+        dx = np.array(data[[list(data.columns)[0]]].values.T[0])
+        
+        fig, ax = plt.subplots(figsize=(8.0,6.0))
+        if sigma is None:
+            for string in self._strings:
+                name = string.get_specs()['string']
+                ax.plot(dx, data[name].values -  data[name].values[0], '.', markersize=markersize)
+                ax.plot(dx, fit_dict[name], color=plt.gca().lines[-1].get_color(), linewidth=linewidth, label='{}'.format(name))
         else:
-            plt.savefig(filepath, bbox_inches='tight')
-            print("Saved {0}\n".format(filepath))
-        if show:
-            plt.show()
-        else:
-            plt.close()
+            for string in self._strings:
+                name = string.get_specs()['string']
+                ax.errorbar(dx, data[name].values -  data[name].values[0], fmt='.', markersize=markersize,
+                             yerr=sigma[name], capsize=5, capthick=1)
+                ax.plot(dx, fit_dict[name], color=plt.gca().lines[-1].get_color(), linewidth=linewidth, label='{}'.format(name))
+
+        ax.set_xlabel(r'$\Delta x$~(mm)', fontdict=font)
+        ax.set_ylabel(r'$\Delta f$~(Hz)', fontdict=font)
+        ax.set_xlim(dx[0], dx[-1])
+        ax.set_ylim(0, get_ylim()[1])
+        ax.tick_params(axis='both', labelsize=labelsize)
+        ax.legend(loc='upper left', fontsize=labelsize)
+        ax.grid(visible=True)
+
+        figdisp(fig, show, savepath, filename)
  
     def save_specs_table(self, show=True, savepath=None, filename=None):
         df = self._specs.copy()
@@ -398,23 +559,26 @@ class GuitarStrings(object):
         df.rename(columns={"string" : "String", "note" : "Note", "radius" : "$\\rho$ (mm)",
                            "density" : "$\mu$ (mg/mm)", "tension" : "$T_0$ (N)"},
                   inplace=True)
+
         formatter = {'$\\rho$ (mm)': '{:.3f}',
                      '$\mu$ (mg/mm)': '{:.3f}',
                      '$T_0$ (N)': '{:.1f}'}
 
-        styler = df.style.format(formatter=formatter).hide()
-        table_str = styler.to_latex(column_format='cccccc', hrules=True)
-        
-        filepath = file_path(savepath, filename)
-        if filepath is None:
-            pass
-        else:
-            print(table_str,  file=open(filepath, 'w'))        
-            print("Saved {0}\n".format(filepath))
+        tabdisp(df, formatter, show, savepath, filename)      
 
-        if show:
-            styler.set_properties(**{'text-align': 'center'})
-            display(styler)
+        # styler = df.style.format(formatter=formatter).hide()
+        # table_str = styler.to_latex(column_format='cccccc', hrules=True)
+        
+        # filepath = file_path(savepath, filename)
+        # if filepath is None:
+        #     pass
+        # else:
+        #     print(table_str,  file=open(filepath, 'w'))        
+        #     print("Saved {0}\n".format(filepath))
+
+        # if show:
+        #     styler.set_properties(**{'text-align': 'center'})
+        #     display(styler)
  
     def save_props_table(self, show=True, savepath=None, filename=None):
         df = self._props.copy()
@@ -428,19 +592,20 @@ class GuitarStrings(object):
                      '$B_0$': '{:.5f}',
                      '$E_\mathrm{eff}$ (GPa)': '{:.2f}'}
  
-        styler = df.style.format(formatter=formatter).hide()
-        table_str = styler.to_latex(column_format='cccccc', hrules=True)
+        tabdisp(df, formatter, show, savepath, filename)      
+        # styler = df.style.format(formatter=formatter).hide()
+        # table_str = styler.to_latex(column_format='cccccc', hrules=True)
 
-        filepath = file_path(savepath, filename)
-        if filepath is None:
-            pass
-        else:
-            print(table_str,  file=open(filepath, 'w'))        
-            print("Saved {0}\n".format(filepath))
+        # filepath = file_path(savepath, filename)
+        # if filepath is None:
+        #     pass
+        # else:
+        #     print(table_str,  file=open(filepath, 'w'))        
+        #     print("Saved {0}\n".format(filepath))
 
-        if show:
-            styler.set_properties(**{'text-align': 'center'})
-            display(styler)
+        # if show:
+        #     styler.set_properties(**{'text-align': 'center'})
+        #     display(styler)
 
     def save_props_excel(self, filepath, sheet_name):
         df = self._props.copy()
@@ -506,19 +671,19 @@ class Guitar(object):
 
         return retstr
     
-    def _setarr(self, x):
-        string_count = self._strings.get_count()
-        if isinstance(x, np.ndarray):
-            assert x.shape == (string_count,), 'Input array has shape {}, not {}.'.format(x.shape, (string_count,))
-            return x
-        elif isinstance(x, list):
-            if len(x) == 1:
-                return np.array(string_count * x)
-            else:
-                assert len(x) == string_count, 'Input list has length {}, not {}.'.format(len(x), string_count)
-                return np.array(x)
-        else:
-            return np.array(string_count * [x])
+    # def _setarr(self, x):
+    #     string_count = self._strings.get_count()
+    #     if isinstance(x, np.ndarray):
+    #         assert x.shape == (string_count,), 'Input array has shape {}, not {}.'.format(x.shape, (string_count,))
+    #         return x
+    #     elif isinstance(x, list):
+    #         if len(x) == 1:
+    #             return np.array(string_count * x)
+    #         else:
+    #             assert len(x) == string_count, 'Input list has length {}, not {}.'.format(len(x), string_count)
+    #             return np.array(x)
+    #     else:
+    #         return np.array(string_count * [x])
 
     def _tile_strings(self, x):
         return np.tile(x, (self._strings.get_count(), 1))
@@ -595,6 +760,8 @@ class Guitar(object):
         return np.hstack((open_strings, shifts))
     
     def set_vars(self, **kwargs):
+        count = self._strings.get_count()
+        
         x0 = kwargs.get('x0')
         if x0 is None:
             pass
@@ -605,25 +772,25 @@ class Guitar(object):
         if ds is None:
             pass
         else:
-            self._ds = self._setarr(ds)
+            self._ds = setarr(ds, count)
 
         dn = kwargs.get('dn')
         if dn is None:
             pass
         else:
-            self._dn = self._setarr(dn)
+            self._dn = setarr(dn, count)
 
         b = kwargs.get('b')
         if b is None:
             pass
         else:
-            self._b = self._setarr(b)
+            self._b = setarr(b, count)
 
         c = kwargs.get('c')
         if c is None:
             pass
         else:
-            self._c = self._setarr(c)
+            self._c = setarr(c, count)
 
         d = kwargs.get('d')
         if d is None:
@@ -635,7 +802,7 @@ class Guitar(object):
         if rgx is None:
             pass
         else:
-            self._rgx = self._setarr(rgx)
+            self._rgx = setarr(rgx, count)
 
     def approximate(self):
         x_0 = self._x0
@@ -665,7 +832,7 @@ class Guitar(object):
         c = self._tile_frets(self._c, fret_list)
         d = self._d
         kappa = self._tile_frets(self._strings.get_props().kappa.to_numpy(), fret_list)
-        b_0 = self._tile_frets(self._strings.get_props().b_0.to_numpy() * self._rgx , fret_list)
+        b_0 = self._tile_frets(self._strings.get_props().b_0.to_numpy() * self._rgx, fret_list)
         n = self._tile_strings(fret_list)
         ds = np.zeros(n.shape)
         dn = np.zeros(n.shape)
@@ -737,7 +904,7 @@ class Guitar(object):
         return ds, dn
 
 #    def plot_shifts(self, max_fret=12, show=True, harm=[], savepath=None, filename=None):
-    def plot_shifts(self, max_fret=12, show=True, harm=[], savepath=None, filename=None, markersize=9.0, alpha=1.0):
+    def plot_shifts_old(self, max_fret=12, show=True, harm=[], savepath=None, filename=None, markersize=9.0, alpha=1.0):
         fret_list = np.arange(0, max_fret + 1)
         shifts = self._freq_shifts(fret_list[1:])
         if harm:
@@ -782,18 +949,63 @@ class Guitar(object):
         ax.add_artist(ob)
         plt.grid(True)
         
-        filepath = file_path(savepath, filename)
-        if filepath is None:
-            pass
-        else:
-            plt.savefig(filepath, bbox_inches='tight')
-            print("Saved {0}\n".format(filepath))
-        if show:
-            plt.show()
-        else:
-            plt.close()
+        figdisp(show, savepath, filename)
+        # filepath = file_path(savepath, filename)
+        # if filepath is None:
+        #     pass
+        # else:
+        #     plt.savefig(filepath, bbox_inches='tight')
+        #     print("Saved {0}\n".format(filepath))
+        # if show:
+        #     plt.show()
+        # else:
+        #     plt.close()
 
-        return rms
+        # return rms
+    def plot_shifts(self, max_fret=12, show=True, harm=[], savepath=None, filename=None, markersize=9.0, alpha=1.0):
+        fret_list = np.arange(0, max_fret + 1)
+        shifts = self._freq_shifts(fret_list[1:])
+        if harm:
+            zero_strings = harm[0]
+            zero_frets = harm[1]
+            for s, n in zip(zero_strings, zero_frets):
+                shifts[s-1] -= shifts[s-1][n]
+        rms = np.sqrt(np.mean(shifts**2))
+        names = self._strings.get_specs().string.tolist()
+
+        fig, ax = plt.subplots(figsize=(8.0,6.0))
+        for index in np.arange(self._strings.get_count()):
+#            plt.plot(fret_list, shifts[index], label='{}'.format(names[index]))
+            ax.plot(fret_list, shifts[index], '.', markersize=markersize)
+            ax.plot(fret_list, shifts[index], color=plt.gca().lines[-1].get_color(), alpha=alpha, linewidth=linewidth, label='{}'.format(names[index]))
+
+        ax.set_xlabel('FRET', fontdict=font)
+        ax.set_ylabel('SHIFT (cents)', fontdict=font)
+        ax.set_xlim(fret_list[0],fret_list[-1])
+        ax.set_ylim(-2,8)
+        ax.tick_params(axis='both', labelsize=labelsize)
+        ax.legend(loc='upper right', fontsize=labelsize)
+        ax.grid(visible=True)
+        
+        if np.all(np.abs(self._ds - self._ds[0]) < 1.0e-06):
+            ds = self._ds[0]
+            template_ds = '$\Delta S = {}~\mathrm{{mm}}$'
+        else:
+            ds = np.round(np.mean(self._ds), 2)
+            template_ds = '$\Delta S = {}~\mathrm{{mm~(mean)}}$'
+        if np.all(np.abs(self._dn - self._dn[0]) < 1.0e-06):
+            dn = self._dn[0]
+            template_dn = '$\Delta N = {}~\mathrm{{mm}}$'
+        else:
+            dn = np.round(np.mean(self._dn), 2)
+            template_dn = '$\Delta N = {}~\mathrm{{mm~(mean)}}$'
+        template = '{}\n' + template_ds + '\n' + template_dn + '\n' + 'Shift~(rms):~{}~cents'
+        annotation = template.format(self._name, ds, dn, np.round(rms, 2))
+        ob = offsetbox.AnchoredText(annotation, loc='upper left', pad=0, borderpad=0.65, prop=dict(size=fontsize))
+        ob.patch.set(boxstyle='round', edgecolor='#D7D7D7', facecolor='white', alpha=0.75)
+        ax.add_artist(ob)
+        
+        figdisp(fig, show, savepath, filename)
     
     def save_setbacks_table(self, max_fret:int=12, show:bool=True, savepath=None, filename=None):
         fret_list = np.arange(1, max_fret)
@@ -805,16 +1017,22 @@ class Guitar(object):
                            '$\Delta N$ (mm)': self._dn.tolist(),
                            '$\overline{\Delta \\nu}_\\text{rms}$ (cents)': rms.tolist()})
 
-        styler = df.style.format(precision=2).hide()
-        table_str = styler.to_latex(column_format='cccccc', hrules=True)
+        formatter = {'$\Delta S$ (mm)': '{:.2f}',
+                     '$\Delta N$ (mm)': '{:.2f}',
+                     '$\overline{\Delta \\nu}_\\text{rms}$ (cents)': '{:.3f}'}
 
-        filepath = file_path(savepath, filename)
-        if filepath is None:
-            pass
-        else:
-            print(table_str,  file=open(filepath, 'w'))        
-            print("Saved {0}\n".format(filepath))
+        tabdisp(df, formatter, show, savepath, filename)      
+# styler = df.style.format(precision=2).hide()
+        # styler = df.style.format(formatter=formatter).hide()
+        # table_str = styler.to_latex(column_format=df.shape[1]*'c', hrules=True)
 
-        if show:
-            styler.set_properties(**{'text-align': 'center'})
-            display(styler)
+        # filepath = file_path(savepath, filename)
+        # if filepath is None:
+        #     pass
+        # else:
+        #     print(table_str,  file=open(filepath, 'w'))        
+        #     print("Saved {0}\n".format(filepath))
+
+        # if show:
+        #     styler.set_properties(**{'text-align': 'center'})
+        #     display(styler)
