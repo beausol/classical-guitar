@@ -146,7 +146,6 @@ def setarr(x, count):
         return np.array(count * [x], dtype=np.float64)
 
 
-
 class BaseClass(object):
     '''A general-purpose virtual base class for functions of time (or space).
 
@@ -176,28 +175,17 @@ class BaseClass(object):
         '''
         self._specs = dict()
         
-    def _check_params(self, params:set):
+    def _check_params(self, params:dict):
         specs_keys = set(self._specs.keys())
+        dict_keys = set(key[1:] for key in self.__dict__.keys())
         params_keys = set(params.keys())
-        missing = sorted(specs_keys - params_keys)
-        extra = sorted(params_keys - specs_keys)
         
-        return (missing, extra)
-
-    # def _check_params_missing(self, params:dict):
-    #     '''Walk through the list of keyword parameter names and check that all
-    #     have been supplied
-    #     '''
-    #     key_list = list(self._keys.keys())
-    #     missing = [key for key in key_list if key not in set(params.keys())]
-    #     assert not missing, 'Missing keys in input param dict: {}'.format(missing)
-
-    # def _check_params_extra(self, params:dict):
-    #     '''Walk through the list of keyword parameter names and check that there
-    #     aren't any parameters included that aren't in the list
-    #     '''
-    #     extra = [key for key in params.keys() if key not in set(self._key_list)]
-    #     assert not extra, 'Extra keys in input param dict: {}'.format(extra)
+        extra = sorted(params_keys - specs_keys)
+        missing = sorted( (specs_keys - params_keys)
+                        & (specs_keys - dict_keys) )
+        
+        assert not bool(extra), 'Extra keys in params dict: {}'.format(extra)
+        assert not bool(missing), 'Missing keys in params dict: {}'.format(missing)
 
     def __str__(self):
         ''' Return a string containing the attributes of an object derived from
@@ -243,10 +231,7 @@ class BaseClass(object):
         create a private variable with a name that is the input parameter name
         preceded by an underscore (i.e., 'varname' becomes '_varname')
         '''
-        missing, extra = self._check_params(params)
-        assert not bool(extra), 'Extra keys in input param dict: {}'.format(extra)
-        if not bool(self.__dict__):
-            assert not bool(missing), 'Missing keys in input param dict: {}'.format(missing)
+        self._check_params(params)
         for key, value in params.items():
             if self._specs[key]:
                 self.__dict__['_' + key] = setarr(value, count)
@@ -597,22 +582,24 @@ class GuitarStrings(object):
         
 
 class Guitar(BaseClass):
-    def __init__(self, name, string_count, strings, x0, ds, dn, b, c, d=0.0, rgx=1.0):
-        self._name = name
-
+    def __init__(self, params, string_count, strings):
         assert string_count == strings.get_count(), "Guitar '{}'".format(self._name) + " requires {} strings, but {} were provided.".format(string_count, strings.get_count())
         self._strings = strings
     
-        self.set_vars(
-            x0 = x0,
-            ds = ds,
-            dn = dn,
-            b = b,
-            c = c,
-            d = d,
-            rgx = rgx
-        )
-        
+        self._set_specs()
+        self.set_params(params, string_count)
+        self._strings = strings
+
+    def _set_specs(self):
+        self._specs = { 'name' : False,
+                        'x0' : False,
+                        'ds' : True,
+                        'dn' : True,
+                        'b' : True,
+                        'c' : True,
+                        'd' : False,
+                        'rgx' : True }
+
     def __str__(self):
         '''Return a string displaying the attributes of a Guitar object.
 
@@ -723,50 +710,50 @@ class Guitar(BaseClass):
         
         return np.hstack((open_strings, shifts))
     
-    def set_vars(self, **kwargs):
-        count = self._strings.get_count()
+    # def set_vars(self, **kwargs):
+    #     count = self._strings.get_count()
         
-        x0 = kwargs.get('x0')
-        if x0 is None:
-            pass
-        else:
-            self._x0 = x0
+    #     x0 = kwargs.get('x0')
+    #     if x0 is None:
+    #         pass
+    #     else:
+    #         self._x0 = x0
         
-        ds = kwargs.get('ds')
-        if ds is None:
-            pass
-        else:
-            self._ds = setarr(ds, count)
+    #     ds = kwargs.get('ds')
+    #     if ds is None:
+    #         pass
+    #     else:
+    #         self._ds = setarr(ds, count)
 
-        dn = kwargs.get('dn')
-        if dn is None:
-            pass
-        else:
-            self._dn = setarr(dn, count)
+    #     dn = kwargs.get('dn')
+    #     if dn is None:
+    #         pass
+    #     else:
+    #         self._dn = setarr(dn, count)
 
-        b = kwargs.get('b')
-        if b is None:
-            pass
-        else:
-            self._b = setarr(b, count)
+    #     b = kwargs.get('b')
+    #     if b is None:
+    #         pass
+    #     else:
+    #         self._b = setarr(b, count)
 
-        c = kwargs.get('c')
-        if c is None:
-            pass
-        else:
-            self._c = setarr(c, count)
+    #     c = kwargs.get('c')
+    #     if c is None:
+    #         pass
+    #     else:
+    #         self._c = setarr(c, count)
 
-        d = kwargs.get('d')
-        if d is None:
-            pass
-        else:
-            self._d = d
+    #     d = kwargs.get('d')
+    #     if d is None:
+    #         pass
+    #     else:
+    #         self._d = d
 
-        rgx = kwargs.get('rgx')
-        if rgx is None:
-            pass
-        else:
-            self._rgx = setarr(rgx, count)
+    #     rgx = kwargs.get('rgx')
+    #     if rgx is None:
+    #         pass
+    #     else:
+    #         self._rgx = setarr(rgx, count)
 
     def approximate(self):
         x_0 = self._x0
