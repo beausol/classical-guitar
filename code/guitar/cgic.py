@@ -132,7 +132,10 @@ def get_ylim():
     return retval
 
 
-def setarr(x, count):
+def setarr(x, count:int):
+    if count == 0 or count is None:
+        return x
+    
     if isinstance(x, np.ndarray):
         assert x.shape == (count,), 'Input array has shape {}, not {}.'.format(x.shape, (count,))
         return x.astype(np.float)
@@ -226,7 +229,7 @@ class BaseClass(object):
 
         return param_str
 
-    def set_params(self, params:dict, count:int):
+    def set_params(self, params:dict, count:int=0):
         '''Walk through the list of keyword parameters, and for each one
         create a private variable with a name that is the input parameter name
         preceded by an underscore (i.e., 'varname' becomes '_varname')
