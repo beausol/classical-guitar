@@ -596,7 +596,7 @@ class GuitarStrings(object):
         print("\nSaved {} : {}\n".format(filepath, sheet_name))
         
 
-class Guitar(object):
+class Guitar(BaseClass):
     def __init__(self, name, string_count, strings, x0, ds, dn, b, c, d=0.0, rgx=1.0):
         self._name = name
 
