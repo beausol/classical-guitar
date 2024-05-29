@@ -663,7 +663,12 @@ class Guitar(BaseClass):
             else:
                 retstr += key + ': {:.2f} mm\n'.format(self.__dict__['_'+key])
                 
-        retstr += self._strings.__str__() + "\n"
+        dict_keys = set(key[1:] for key in self.__dict__.keys())
+        specs_keys = set(self._specs.keys())
+        specs_keys.add('specs')
+
+        for key in (dict_keys - specs_keys):
+            retstr += self.__dict__['_'+key].__str__() + "\n"
 
         return retstr
 
