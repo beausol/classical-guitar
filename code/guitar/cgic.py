@@ -600,8 +600,38 @@ class Guitar(BaseClass):
                         'dn' : True,
                         'b' : True,
                         'c' : True,
-                        'd' : False,
-                        'rgx' : True }
+                        'd' : False }
+
+    def __str_old__(self):
+        '''Return a string displaying the attributes of a Guitar object.
+
+        Example
+        -------
+        guitar = Guitar(name, x0, dn, ds, b, c, string_count, strings)
+        
+        print(guitar)
+        '''
+        def strarr(retstr, name, value):
+            if np.all(np.abs(value - value[0]) < 1.0e-06):
+                retstr += name + ': {:.2f} mm\n'.format(value[0])
+            else:
+                retstr += name + ': ' + np.array2string(value, precision=2, floatmode='fixed', separator=', ') + ' mm\n'
+            
+            return retstr
+            
+        try:
+            retstr = self._name + ' : ' + classmro(self) + '\n'
+        except AttributeError:
+            retstr = classmro(self) + '\n'
+        retstr += 'Scale Length: ' + '{:.1f} mm\n'.format(self._x0)
+        retstr = strarr(retstr, 'Saddle Setback', self._ds)
+        retstr = strarr(retstr, 'Nut Setback', self._dn)
+        retstr = strarr(retstr, 'b', self._b)
+        retstr = strarr(retstr, 'c', self._c)
+        retstr += 'd: ' + '{:.2f} mm\n'.format(self._d)
+        retstr += self._strings.__str__() + "\n"
+
+        return retstr
 
     def __str__(self):
         '''Return a string displaying the attributes of a Guitar object.
@@ -612,29 +642,27 @@ class Guitar(BaseClass):
         
         print(guitar)
         '''
-        retstr = self._name + '\n'
-        retstr += 'Scale Length: ' + '{:.1f} mm\n'.format(self._x0)
-        if np.all(np.abs(self._ds - self._ds[0]) < 1.0e-06):
-            retstr += 'Saddle Setback: ' + '{:.2f} mm\n'.format(self._ds[0])
-        else:
-            retstr += 'Saddle Setback: ' + np.array2string(self._ds[0], precision=2, floatmode='fixed', separator=', ') + ' mm\n'
-        if np.all(np.abs(self._dn - self._dn[0]) < 1.0e-06):
-            retstr += 'Nut Setback: ' + '{:.2f} mm\n'.format(self._dn[0])
-        else:
-            retstr += 'Nut Setback: ' + np.array2string(self._dn[0], precision=2, floatmode='fixed', separator=', ') + ' mm\n'
-        if np.all(np.abs(self._b - self._b[0]) < 1.0e-06):
-            retstr += 'b: ' + '{:.2f} mm\n'.format(self._b[0])
-        else:
-            retstr += 'b: ' + np.array2string(self._b, precision=2, floatmode='fixed', separator=', ') + ' mm\n'
-        if np.all(np.abs(self._c - self._c[0]) < 1.0e-06):
-            retstr += 'c: ' + '{:.2f} mm\n'.format(self._c[0])
-        else:
-            retstr += 'c: ' + np.array2string(self._c, precision=2, floatmode='fixed', separator=', ') + ' mm\n'
-        retstr += 'd: ' + '{:.1f} mm\n'.format(self._d)
-        if np.all(np.abs(self._rgx - self._rgx[0]) < 1.0e-06):
-            retstr += 'Radius of Gyration Correction: ' + '{:.2f}\n'.format(self._rgx[0])
-        else:
-            retstr += 'Radius of Gyration Correction: ' + np.array2string(self._rgx, precision=2, floatmode='fixed', separator=', ') + '\n'
+        def strarr(key, value):
+            if np.all(np.abs(value - value[0]) < 1.0e-06):
+                arrstr = key + ': {:.2f} mm\n'.format(value[0])
+            else:
+                arrstr = key + ': ' + np.array2string(value, precision=2, floatmode='fixed', separator=', ') + ' mm\n'
+            
+            return arrstr
+            
+        try:
+            retstr = self._name + ' : ' + classmro(self) + '\n'
+        except AttributeError:
+            retstr = classmro(self) + '\n'
+        
+        for key, value in self._specs.items():
+            if key == 'name':
+                pass
+            elif value:
+                retstr += strarr(key, self.__dict__['_'+key])
+            else:
+                retstr += key + ': {:.2f} mm\n'.format(self.__dict__['_'+key])
+                
         retstr += self._strings.__str__() + "\n"
 
         return retstr
@@ -704,7 +732,7 @@ class Guitar(BaseClass):
         c = self._tile_frets(self._c, fret_list)
         d = self._d
         kappa = self._tile_frets(self._strings.get_props().kappa.to_numpy(), fret_list)
-        b_0 = self._tile_frets(self._strings.get_props().b_0.to_numpy() * self._rgx , fret_list)
+        b_0 = self._tile_frets(self._strings.get_props().b_0.to_numpy(), fret_list)
         n = self._tile_strings(fret_list)
         
         shifts = self._tfe(ds, dn, x0, b, c, d, kappa, b_0, n)
@@ -712,51 +740,6 @@ class Guitar(BaseClass):
         open_strings = np.array(self._strings.get_count() * [0]).reshape(-1,1)                       
         
         return np.hstack((open_strings, shifts))
-    
-    # def set_vars(self, **kwargs):
-    #     count = self._strings.get_count()
-        
-    #     x0 = kwargs.get('x0')
-    #     if x0 is None:
-    #         pass
-    #     else:
-    #         self._x0 = x0
-        
-    #     ds = kwargs.get('ds')
-    #     if ds is None:
-    #         pass
-    #     else:
-    #         self._ds = setarr(ds, count)
-
-    #     dn = kwargs.get('dn')
-    #     if dn is None:
-    #         pass
-    #     else:
-    #         self._dn = setarr(dn, count)
-
-    #     b = kwargs.get('b')
-    #     if b is None:
-    #         pass
-    #     else:
-    #         self._b = setarr(b, count)
-
-    #     c = kwargs.get('c')
-    #     if c is None:
-    #         pass
-    #     else:
-    #         self._c = setarr(c, count)
-
-    #     d = kwargs.get('d')
-    #     if d is None:
-    #         pass
-    #     else:
-    #         self._d = d
-
-    #     rgx = kwargs.get('rgx')
-    #     if rgx is None:
-    #         pass
-    #     else:
-    #         self._rgx = setarr(rgx, count)
 
     def approximate(self):
         x_0 = self._x0
@@ -764,7 +747,7 @@ class Guitar(BaseClass):
         c = self._c
         d = self._d
         kappa = self._strings.get_props().kappa.to_numpy()
-        b_0 = self._strings.get_props().b_0.to_numpy() * self._rgx
+        b_0 = self._strings.get_props().b_0.to_numpy()
 
         fret_d = kappa * 2 * (2*b + c)**2 * d / x_0**2
         ds = b_0 * x_0 + kappa * ( (b + c)**2 - 7 * b**2 ) / (4 * x_0) - fret_d
@@ -786,7 +769,7 @@ class Guitar(BaseClass):
         c = self._tile_frets(self._c, fret_list)
         d = self._d
         kappa = self._tile_frets(self._strings.get_props().kappa.to_numpy(), fret_list)
-        b_0 = self._tile_frets(self._strings.get_props().b_0.to_numpy() * self._rgx, fret_list)
+        b_0 = self._tile_frets(self._strings.get_props().b_0.to_numpy(), fret_list)
         n = self._tile_strings(fret_list)
         ds = np.zeros(n.shape)
         dn = np.zeros(n.shape)
@@ -840,7 +823,7 @@ class Guitar(BaseClass):
         c = self._c
         d = self._d
         kappa = self._strings.get_props().kappa.to_numpy()
-        b_0 = self._strings.get_props().b_0.to_numpy() * self._rgx
+        b_0 = self._strings.get_props().b_0.to_numpy()
 
         ds = np.zeros_like(ds_0)
         dn = np.zeros_like(dn_0)
