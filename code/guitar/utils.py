@@ -12,7 +12,7 @@ def file_path(pathname, filename):
     pathname : str
         A valid path to a directory / folder, or None.
     filename : str
-        A va;lid file name (including an extension where needed),
+        A valid file name (including an extension where needed),
         or None.
     
     Returns
@@ -27,21 +27,57 @@ def file_path(pathname, filename):
         return pathname + filename
 
 
-def figdisp(fig, show, savepath, filename): # dispatch
-        filepath = file_path(savepath, filename)
-        if filepath is None:
-            pass
-        else:
-            fig.savefig(filepath, bbox_inches='tight')
-            print("Saved {0}\n".format(filepath))
+def figdisp(fig, show, savepath, filename):
+    '''
+    Dispatch a figure: show and/or save
+    
+    Parameters
+    ----------
+    fig : matplotlib.figure.Figure object
+        The figure to be displayed/saved.
+    show : bool
+        If True, show and the close the figure; otherwise,
+        close it.
+    savepath : str
+        A valid path to a directory / folder, or None; if
+        None, the figure is not saved.
+    filename : str
+        A valid file name (including an extension where needed),
+        or None; if None, the figure is not saved.
+    '''
+    filepath = file_path(savepath, filename)
+    if filepath is None:
+        pass
+    else:
+        fig.savefig(filepath, bbox_inches='tight')
+        print("Saved {0}\n".format(filepath))
 
-        if show:
-            plt.show()
-        else:
-            plt.close()
+    if show:
+        plt.show()
+    else:
+        plt.close()
 
 
 def tabdisp(df, formatter, show, savepath, filename):
+    '''
+    Dispatch a table: show and/or save
+    
+    Parameters
+    ----------
+    df : pandas.DataFrame object
+        The DataFrame containing the table to be displayed/saved.
+    formatter : dict
+        A dictionary with keys corresponding to the column names
+        in df and values that are strings containing format info.
+    show : bool
+        If True, show the table using IPython.display.
+    savepath : str
+        A valid path to a directory / folder, or None; if
+        None, the table is not saved.
+    filename : str
+        A valid file name (including an extension where needed),
+        or None; if None, the table is not saved.
+    '''
     styler = df.style.format(formatter=formatter).hide()
     table_str = styler.to_latex(column_format=df.shape[1]*'c', hrules=True)
 
@@ -114,6 +150,21 @@ def get_ylim():
 
 
 def setarr(x, count:int):
+    '''
+    Convert a number or list of numbers to a NumPy array of float64
+    
+    Parameters
+    ----------
+    x : number, list of numbers, or numpy array
+        Convert an input to a numpy array of dtype float64
+    count : int
+        Length of the returned (1D) array; can be generalized to shape
+        in the future
+
+    Returns
+    -------
+    retval : numpy.ndarry with dtype('float64') and size = count.
+    '''
     if count == 0 or count is None:
         return x
     
@@ -135,13 +186,13 @@ class BaseClass(object):
 
     Required Private Methods
     ------------------------
-    _set_key_list :
-        List of keys that will be present in a parameter dictionary
-        that will be required by a derived class; default = []
+    _set_specs :
+        Dict of keys that will be present in the parameter dictionary
+        required by a derived class; default = dict()
     '''
 
     def __init__(self, params:dict, count:int=0):
-        '''Define the list of dictionary keys of parameters required by the
+        '''Define the dictionary keys of parameters required by the
         derived class, and then set those parameters
         `'''
         self._set_specs()
@@ -160,6 +211,17 @@ class BaseClass(object):
         self._specs = dict()
         
     def _check_params(self, params:dict):
+        '''
+        Check whether there are any missing or extra parameters
+            in params
+        
+        Parameters
+        ----------
+        params : dict
+            Dictionary containing a subset of keys specified in
+            _set_specs; if any parameters are missing from __dict__,
+            they must be included.
+        '''
         specs_keys = set(self._specs.keys())
         dict_keys = set(key[1:] for key in self.__dict__.keys())
         params_keys = set(params.keys())
