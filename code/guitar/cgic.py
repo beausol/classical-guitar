@@ -190,44 +190,78 @@ class BaseClass(object):
         assert not bool(extra), 'Extra keys in params dict: {}'.format(extra)
         assert not bool(missing), 'Missing keys in params dict: {}'.format(missing)
 
+    def _arr2str(self, key, value):
+        if np.all(np.abs(value - value[0]) < 1.0e-06):
+            arrstr = key + ': {:.2f}'.format(value[0])
+        else:
+            arrstr = key + ': ' + np.array2string(value, precision=2, floatmode='fixed', separator=', ')
+        
+        return arrstr
+            
     def __str__(self):
         ''' Return a string containing the attributes of an object derived from
-            the base class. Example:
+            BaseClass. Example:
+                class DerivedClass(BaseClass): ...
                 obj = DerivedClass(...)
                 print(obj)
         '''
-        param_str = classmro(self) + '\n'
-        for key, value in self.__dict__.items():
-            if key == '_key_list':
+        try:
+            retstr = self._name + ' : ' + classmro(self) + '\n'
+        except AttributeError:
+            retstr = classmro(self) + '\n'
+        
+        for key, value in self._specs.items():
+            if key == 'name':
                 continue
-            if not isinstance(value, BaseClass):
-                param_str += "\t{} : {}\n".format(key[1:], value)
+            elif value['val2arr']:
+                retstr += self._arr2str(key, self.__dict__['_' + key])
             else:
-                param_str += "\n\t{} : {}".format(key[1:], value)
+                retstr += key + ': {:.2f}'.format(self.__dict__['_' + key])
+            retstr += ' ' + self._specs[key]['units'] + '\n'
+                
+        dict_keys = set(key[1:] for key in self.__dict__.keys())
+        specs_keys = set(self._specs.keys())
+        specs_keys.add('specs')
 
-        return param_str
+        for key in (dict_keys - specs_keys):
+            retstr += self.__dict__['_' + key].__str__() + '\n'
+
+        return retstr
 
     def __rich__(self):
         ''' Return a string containing the attributes of an object derived from
-        the base class using rich text. Example:
+        the BaseClass using rich text. Example:
                 from rich import print
+                class DerivedClass(BaseClass): ...
                 obj = DerivedClass(...)
                 print(obj)
         '''
-        param_str = "[bold blue]{}\n".format(classmro(self))
-        for key, value in self.__dict__.items():
-            if key == '_key_list':
+        try:
+            retstr = ( "[bold blue]{}[/bold blue]".format(self._name)
+                      + "[bold cyan] : {}[/bold cyan]\n".format(classmro(self)) )
+        except AttributeError:
+            retstr = "[bold cyan]{}[/bold cyan]\n".format(classmro(self))
+        
+        retstr += "[green]"
+        for key, value in self._specs.items():
+            if key == 'name':
                 continue
-            if isinstance(value, float):
-                param_str += "\t[green]{} : {}\n".format(key[1:], value)
-            elif isinstance(value, int):
-                param_str += "\t[red]{} : {}\n".format(key[1:], value)
-            elif not isinstance(value, BaseClass):
-                param_str += "\t{} : {}\n".format(key[1:], value)
+            elif value['val2arr']:
+                retstr += self._arr2str(key, self.__dict__['_' + key])
             else:
-                param_str += "\n\t[cyan]{} : {}".format(key[1:], value.__rich__())
+                retstr += key + ': {:.2f}'.format(self.__dict__['_' + key])
+            retstr += ' ' + self._specs[key]['units'] + '\n'
+        retstr += "[/green]"        
+        
+        dict_keys = set(key[1:] for key in self.__dict__.keys())
+        specs_keys = set(self._specs.keys())
+        specs_keys.add('specs')
+        retstr += "[red]"
+        for key in (dict_keys - specs_keys):
+            retstr += self.__dict__['_' + key].__str__() + '\n'
+        retstr += "[/red]"
 
-        return param_str
+        return retstr
 
     def set_params(self, params:dict, count:int=0):
         '''Walk through the list of keyword parameters, and for each one
@@ -236,7 +270,7 @@ class BaseClass(object):
         '''
         self._check_params(params)
         for key, value in params.items():
-            if self._specs[key]:
+            if self._specs[key]['val2arr']:
                 self.__dict__['_' + key] = setarr(value, count)
             else:
                 self.__dict__['_' + key] = value
@@ -594,83 +628,13 @@ class Guitar(BaseClass):
         self._strings = strings
 
     def _set_specs(self):
-        self._specs = { 'name' : False,
-                        'x0' : False,
-                        'ds' : True,
-                        'dn' : True,
-                        'b' : True,
-                        'c' : True,
-                        'd' : False }
-
-    def __str_old__(self):
-        '''Return a string displaying the attributes of a Guitar object.
-
-        Example
-        -------
-        guitar = Guitar(name, x0, dn, ds, b, c, string_count, strings)
-        
-        print(guitar)
-        '''
-        def strarr(retstr, name, value):
-            if np.all(np.abs(value - value[0]) < 1.0e-06):
-                retstr += name + ': {:.2f} mm\n'.format(value[0])
-            else:
-                retstr += name + ': ' + np.array2string(value, precision=2, floatmode='fixed', separator=', ') + ' mm\n'
-            
-            return retstr
-            
-        try:
-            retstr = self._name + ' : ' + classmro(self) + '\n'
-        except AttributeError:
-            retstr = classmro(self) + '\n'
-        retstr += 'Scale Length: ' + '{:.1f} mm\n'.format(self._x0)
-        retstr = strarr(retstr, 'Saddle Setback', self._ds)
-        retstr = strarr(retstr, 'Nut Setback', self._dn)
-        retstr = strarr(retstr, 'b', self._b)
-        retstr = strarr(retstr, 'c', self._c)
-        retstr += 'd: ' + '{:.2f} mm\n'.format(self._d)
-        retstr += self._strings.__str__() + "\n"
-
-        return retstr
-
-    def __str__(self):
-        '''Return a string displaying the attributes of a Guitar object.
-
-        Example
-        -------
-        guitar = Guitar(name, x0, dn, ds, b, c, string_count, strings)
-        
-        print(guitar)
-        '''
-        def strarr(key, value):
-            if np.all(np.abs(value - value[0]) < 1.0e-06):
-                arrstr = key + ': {:.2f} mm\n'.format(value[0])
-            else:
-                arrstr = key + ': ' + np.array2string(value, precision=2, floatmode='fixed', separator=', ') + ' mm\n'
-            
-            return arrstr
-            
-        try:
-            retstr = self._name + ' : ' + classmro(self) + '\n'
-        except AttributeError:
-            retstr = classmro(self) + '\n'
-        
-        for key, value in self._specs.items():
-            if key == 'name':
-                pass
-            elif value:
-                retstr += strarr(key, self.__dict__['_'+key])
-            else:
-                retstr += key + ': {:.2f} mm\n'.format(self.__dict__['_'+key])
-                
-        dict_keys = set(key[1:] for key in self.__dict__.keys())
-        specs_keys = set(self._specs.keys())
-        specs_keys.add('specs')
-
-        for key in (dict_keys - specs_keys):
-            retstr += self.__dict__['_'+key].__str__() + "\n"
-
-        return retstr
+        self._specs = { 'name' : { 'val2arr' : False, 'units' : '' },
+                        'x0' : { 'val2arr' : False, 'units' : 'mm' },
+                        'ds' : { 'val2arr' : True, 'units' : 'mm' },
+                        'dn' : { 'val2arr' : True, 'units' : 'mm' },
+                        'b' : { 'val2arr' : True, 'units' : 'mm' },
+                        'c' : { 'val2arr' : True, 'units' : 'mm' },
+                        'd' : { 'val2arr' : False, 'units' : 'mm' } }
 
     def _tile_strings(self, x):
         return np.tile(x, (self._strings.get_count(), 1))
