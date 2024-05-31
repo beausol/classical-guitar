@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.offsetbox as offsetbox
-#from IPython.display import display
 from scipy.optimize import curve_fit, minimize
 import sys
 import os
@@ -87,8 +86,9 @@ class GuitarString(object):
         self._freq = self._frequency(self._specs.note)
         self.set_scale_length(scale_length)
 
-    def _frequency(self, note_str):
-        ''' Compute the frequency of a musical note
+    def _frequency(self, note_str:str):
+        '''
+        Compute the frequency of a musical note
         
         Parameters
         ----------
@@ -98,7 +98,7 @@ class GuitarString(object):
         
         Returns
         --------
-        float
+        retval : float
             The frequency in Hertz of the musical note
         '''
         notes = dict([('Ab', 49), ('A', 48), ('A#', 47), ('Bb', 47), ('B', 46), ('B#', 57), ('Cb', 46), ('C', 57), ('C#', 56),
@@ -108,17 +108,30 @@ class GuitarString(object):
         note = note_str.split('_')
         return 440.0 * 2**( int(note[1], 10) - notes[note[0]]/12.0 )
 
-    def _set_props(self, r, dr, scale_length):
+    def _set_props(self, r:float, dr:float):
+        '''
+        Create a pandas Series containing the properties of the string
+        
+        Parameters
+        ----------
+        r : float
+            The R parameter of the string determined by a fit to data
+        dr : float
+            The standard deviation of R
+        
+        See __init()__ for a description of the elements of this Series
+        '''
         kappa = 2 * r + 1
-        b_0 = np.sqrt(kappa) * self._specs.radius / ( 2 * scale_length )
+        b_0 = np.sqrt(kappa) * self._specs.radius / ( 2 * self._specs.scale )
         e_eff = 1.0e-09 * (self._specs.tension / (np.pi * (self._specs.radius/1000)**2)) * kappa
         d =  {'string' : self._specs.string, 'r' : r, 'sigma' : dr, 'kappa' : kappa, 'b_0' : b_0, 'e_eff' : e_eff}
         
         self._props = pd.Series(data=d, name=self._specs.name)
     
     def set_scale_length(self, scale_length):
-        ''' Compute the tension of an open string for a guitar with a
-            particular scale length
+        '''
+        Compute the tension of an open string for a guitar with a
+        particular scale length
             
         Parameters
         ----------
@@ -129,21 +142,43 @@ class GuitarString(object):
         x0 = scale_length / 1000      # Convert mm to m
         self._specs.scale = scale_length
         self._specs.tension = mu * (2 * x0 * self._freq)**2
+
+    def fit_r(self, scale_dx:float, dx:float, df:float, sigma:float):
+        '''
+        Find the R parameter of a string by linear least-squares fit
+        of frequency shift data as a function of differential stretch
         
-    def fit_r(self, scale_length, scale_dx, dx, df, ddf):
+        Parameters
+        ----------
+        scale_dx : float
+            Scale the values of dx so that they represent the change in
+            the length of the open string; for example, if the measurements
+            of dx are made near the first fret, scale_dx = 2**(1/12)
+        dx : numpy.ndarray
+            The incremental incease in the open string length
+        df : numpy.ndarray
+            The incremental increase in the open string vibration frequency
+        sigma : numpy.ndarray
+            The uncertainty in df; None if not measured/available
+        
+        Returns
+        -------
+        retval : numpy:ndarray
+            Line of best fit (computed at dx)
+        '''
         def func(x, intercept, slope):
             return intercept + slope * x
 
-        param, param_cov = curve_fit(func, scale_dx*dx, df, sigma=ddf)
+        param, param_cov = curve_fit(func, scale_dx*dx, df, sigma=sigma)
         fit = func(scale_dx*dx, *param)
         
         dfdx = param[1]
         ddfdx = np.sqrt(param_cov[1][1])
         
-        r = (scale_length / self._freq) * dfdx
-        dr = (scale_length / self._freq) * ddfdx
+        r = (self._specs.scale / self._freq) * dfdx
+        dr = (self._specs.scale / self._freq) * ddfdx
         
-        self._set_props(r, dr, scale_length)
+        self._set_props(r, dr)
 
         return fit
 
@@ -272,7 +307,7 @@ class GuitarStrings(object):
     def get_props(self):
         return self._props
 
-    def fit_r(self, data_path, sheet_name=0, sigma_name=None, scale_length=650.0, scale_dx=2**(1/12),
+    def fit_r(self, data_path, sheet_name=0, sigma_name=None, scale_dx=2**(1/12),
               show=True, save_path=None, file_name=None, markersize=12.5):
         data = pd.read_excel(data_path, sheet_name=sheet_name)
         self._check_string_names(data)
@@ -289,7 +324,7 @@ class GuitarStrings(object):
                 ddf = None
             else:
                 ddf = sigma[name].to_numpy()
-            fit = string.fit_r(scale_length, scale_dx, dx, data[name].to_numpy() -  data[name].to_numpy()[0], ddf=ddf)
+            fit = string.fit_r(scale_dx, dx, data[name].to_numpy() -  data[name].to_numpy()[0], ddf)
             fit_dict[name] = fit
         self._build_props_frame()
         

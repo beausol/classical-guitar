@@ -182,7 +182,8 @@ def setarr(x, count:int):
 
 
 class BaseClass(object):
-    '''A general-purpose virtual base class for functions of time (or space).
+    '''
+    A general-purpose virtual base class
 
     Required Private Methods
     ------------------------
@@ -192,21 +193,39 @@ class BaseClass(object):
     '''
 
     def __init__(self, params:dict, count:int=0):
-        '''Define the dictionary keys of parameters required by the
+        '''
+        Specify the dictionary keys of parameters required by the
         derived class, and then set those parameters
+        
+        Parameters
+        ----------
+        params : dict
+            A dictionary containing the keys and values of
+            parameters required by the derived class
+        count : int
+            The length of any values that will be converted
+            to NumPy ndarrays
         `'''
         self._set_specs()
         self.set_params(params, count)
         
     def _set_specs(self):
-        '''Define the names (strings) of keyword parameters that must be supplied
-        through __init__() and from them create a private list variable _param_list.
-        For example, if the required parameters are "a" and "b", then in the
-        derived class:
-            def _set_param_list(self):
-                self._param_list = ['a', 'b']
-        Example of use by a derived class:
-            obj = DerivedClass(a=1.0, b=2.0)
+        '''
+        Specify the names (strings) of dictionary keys that must be supplied
+        through __init__() and from them create a private dictionary _specs.
+        
+        The value of each key will be another dictionary with keys
+        'val2arr' : bool
+            If True, convert the parameter to a NumPy array using setarr.
+        'units' : str
+            The physical units of the parameter.
+        For example, if in the derived class definition:
+        def _set_specs(self):
+            self._specs = { 'a' : { 'val2arr' : True, 'units' : 'mm' },
+                            'b' : { 'val2arr' : False, 'units' : '' } }
+        Then:
+            params = {'a' : 1.0, 'b' : 2.0}
+            obj = DerivedClass(params, 2)
         '''
         self._specs = dict()
         
@@ -234,6 +253,21 @@ class BaseClass(object):
         assert not bool(missing), 'Missing keys in params dict: {}'.format(missing)
 
     def _arr2str(self, key, value):
+        '''
+        Convert an array to a string. If all of the array elements have the same value,
+        then return a string containing only one value.
+        
+        Parameters
+        ----------
+        key : str
+            Dictionary key
+        value : numpy.ndarray
+        
+        Returns
+        -------
+        retval : str
+            String containing the key and the value
+        '''
         if np.all(np.abs(value - value[0]) < 1.0e-06):
             arrstr = key + ': {:.2f}'.format(value[0])
         else:
@@ -242,11 +276,12 @@ class BaseClass(object):
         return arrstr
             
     def __str__(self):
-        ''' Return a string containing the attributes of an object derived from
-            BaseClass. Example:
-                class DerivedClass(BaseClass): ...
-                obj = DerivedClass(...)
-                print(obj)
+        '''
+        Return a string containing the attributes of an object derived from
+        BaseClass. Example:
+            class DerivedClass(BaseClass): ...
+            obj = DerivedClass(...)
+            print(obj)
         '''
         try:
             retstr = self._name + ' : ' + classmro(self) + '\n'
@@ -272,12 +307,13 @@ class BaseClass(object):
         return retstr
 
     def __rich__(self):
-        ''' Return a string containing the attributes of an object derived from
+        '''
+        Return a string containing the attributes of an object derived from
         the BaseClass using rich text. Example:
-                from rich import print
-                class DerivedClass(BaseClass): ...
-                obj = DerivedClass(...)
-                print(obj)
+            from rich import print
+            class DerivedClass(BaseClass): ...
+            obj = DerivedClass(...)
+            print(obj)
         '''
         try:
             retstr = ( "[bold blue]{}[/bold blue]".format(self._name)
@@ -307,9 +343,19 @@ class BaseClass(object):
         return retstr
 
     def set_params(self, params:dict, count:int=0):
-        '''Walk through the list of keyword parameters, and for each one
+        '''
+        Walk through the list of keyword parameters, and for each one
         create a private variable with a name that is the input parameter name
         preceded by an underscore (i.e., 'varname' becomes '_varname')
+
+        Parameters
+        ----------
+        params : dict
+            A dictionary containing the keys and values of
+            parameters required by the derived class
+        count : int
+            The length of any values that will be converted
+            to NumPy ndarrays
         '''
         self._check_params(params)
         for key, value in params.items():
