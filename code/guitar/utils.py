@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from IPython.display import display
-
+#from rich import print
 
 def file_path(pathname, filename):
     '''

@@ -634,6 +634,8 @@ class Guitar(BaseClass):
         ax.add_artist(ob)
         
         figdisp(fig, show, savepath, filename)
+        
+        return rms
     
     def save_setbacks_table(self, max_fret:int=12, show:bool=True, savepath=None, filename=None):
         fret_list = np.arange(1, max_fret)
