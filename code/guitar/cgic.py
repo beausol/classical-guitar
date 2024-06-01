@@ -243,7 +243,6 @@ class GuitarStrings(object):
         Example
         -------
         strings = GuitarStrings(name, path_specs, path_props)
-        
         print(strings)
         '''
         
@@ -275,12 +274,20 @@ class GuitarStrings(object):
             return str_specs + '\n' + str_props
 
     def _check_string_names(self, data):
+        '''
+        Check that the string names in the data file match those
+        in the string set specifications
+        '''
         specs_names = sorted(self._specs.copy()['string'].to_list())
         data_names = sorted(list(data.columns)[1:])
         assert len(specs_names) == len(data_names), 'This string set has {} strings, not {}.'.format(len(specs_names), len(data_names))
         assert specs_names == data_names, 'The input string names should be {}, not {}.'.format(specs_names, data_names)
             
     def _build_specs_frame(self):
+        '''
+        Build a pandas DataFrame containing the string set
+        specifications
+        '''
         series_specs = []
         for string in self._strings:
             series_specs.append(string._specs)
@@ -288,23 +295,64 @@ class GuitarStrings(object):
         self._specs = pd.DataFrame(series_specs)
         
     def _build_props_frame(self):
+        '''
+        Build a pandas DataFrame containing the string set
+        properties
+        '''
         series_props = []
         for string in self._strings:
             series_props.append(string._props)
         
         self._props = pd.DataFrame(series_props)
         
-    def set_scale_length(self, scale_length):
+    def set_scale_length(self, scale_length:float):
+        '''
+        Set the tensions for each string in the set for a
+        particular guitar scale length
+        
+        Parameters
+        ----------
+        scale_length : float
+            The scale length (in mm) of the guitar
+        '''
         for string in self._strings:
             string.set_scale_length(scale_length)
 
     def get_count(self):
+        '''
+        Return the number of strings in the string set
+        
+        Returns
+        -------
+        retval : int
+            The number of strings in the string set
+        '''
         return len(self._strings)
     
     def get_specs(self):
+        '''
+        Return a pandas DataFrame containing the specifications
+        of the strings in the set
+        
+        Returns
+        -------
+        retval : pandas.DataFrame
+            A pandas DataFrame containing the specifications of
+            the strings in the set
+        '''
         return self._specs
     
     def get_props(self):
+        '''
+        Return a pandas DataFrame containing the properties of
+        the strings in the set
+        
+        Returns
+        -------
+        retval : pandas.DataFrame
+            A pandas DataFrame containing the properties of
+            the strings in the set
+        '''
         return self._props
 
     def fit_r(self, data_path, sheet_name=0, sigma_name=None, scale_dx=2**(1/12),
@@ -390,6 +438,18 @@ class GuitarStrings(object):
         tabdisp(df, formatter, show, savepath, filename)      
 
     def save_props_excel(self, filepath, sheet_name):
+        '''
+        Write the properties of the string set to an Excel file
+        
+        Parameters
+        ----------
+        filepath : string
+            A fully qualified path to the Excel file, which will be created
+            if it doesn't exist
+        sheet_name : string
+            The name of the target sheet in the Excel file; it will be created
+            if it doesn't exist, and overwritten if it does
+        '''
         df = self._props.copy()
 
         if os.path.isfile(filepath):
@@ -397,7 +457,7 @@ class GuitarStrings(object):
                 df.to_excel(writer, sheet_name=sheet_name, float_format="%.{}f".format(sys.float_info.dig), index=False)
         else:
             df.to_excel(filepath, sheet_name=sheet_name, float_format="%.{}f".format(sys.float_info.dig), index=False)
-        print("\nSaved {} : {}\n".format(filepath, sheet_name))
+        print("\nSaved {} ({})\n".format(filepath, sheet_name))
         
 
 class Guitar(BaseClass):
@@ -405,11 +465,26 @@ class Guitar(BaseClass):
         assert string_count == strings.get_count(), "Guitar '{}'".format(self._name) + " requires {} strings, but {} were provided.".format(string_count, strings.get_count())
         self._strings = strings
     
-        self._set_specs()
-        self.set_params(params, string_count)
-        self._strings = strings
+        BaseClass.__init__(self, params, string_count)
 
     def _set_specs(self):
+        '''
+        Specify the names (strings) of dictionary keys that must be supplied
+        through __init__() and from them create a private dictionary _specs.
+        
+        The value of each key will be another dictionary with keys
+        'val2arr' : bool
+            If True, convert the parameter to a NumPy array using setarr.
+        'units' : str
+            The physical units of the parameter.
+        For example, if in the derived class definition:
+        def _set_specs(self):
+            self._specs = { 'a' : { 'val2arr' : True, 'units' : 'mm' },
+                            'b' : { 'val2arr' : False, 'units' : '' } }
+        Then:
+            params = {'a' : 1.0, 'b' : 2.0}
+            obj = DerivedClass(params, 2)
+        '''
         self._specs = { 'name' : { 'val2arr' : False, 'units' : '' },
                         'x0' : { 'val2arr' : False, 'units' : 'mm' },
                         'ds' : { 'val2arr' : True, 'units' : 'mm' },

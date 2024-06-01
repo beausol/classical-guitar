@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from IPython.display import display
-#from rich import print
+from rich import print
 
 def file_path(pathname, filename):
     '''
@@ -85,7 +85,8 @@ def tabdisp(df, formatter, show, savepath, filename):
     if filepath is None:
         pass
     else:
-        print(table_str,  file=open(filepath, 'w'))        
+        with open(filepath, 'w') as file:
+            file.write(table_str)
         print("Saved {0}\n".format(filepath))
 
     if show:
