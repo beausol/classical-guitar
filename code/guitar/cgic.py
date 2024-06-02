@@ -357,6 +357,39 @@ class GuitarStrings(object):
 
     def fit_r(self, data_path, sheet_name=0, sigma_name=None, scale_dx=2**(1/12),
               show=True, save_path=None, file_name=None, markersize=12.5):
+        '''
+        Find the R parameter of each string in a set by linear least-squares
+        fit of frequency shift data as a function of differential stretch
+        
+        Parameters
+        ----------
+        data_path : str
+            Full path to the Excel data file containing the strings data
+        sheet_name : str
+            If not zero, the sheet in the data file containing the frequency
+            shift data for each string in a string set; else, if zero (the
+            default) read the first sheet
+        sigma_name : str
+            Sheet name for measurement uncertainties for a string set; if
+            None (the default), the fits are performed without uncertainties
+        scale_dx : float
+            Scale the values of the measured displacements so that they
+            represent the change in the length of the open strings; for
+            example, if the measurements are made near the first fret,
+            scale_dx = 2**(1/12) (the default)
+        show : bool
+            If True (the default), show a plot of the results of the fits
+        savepath : str
+            A valid path to a directory / folder where the figure will be
+            saved, or None (the default); if None, the figure is not saved.
+        filename : str
+            A valid file name (including an extension where needed) that
+            will contain the saved figure, or None (the default); if None,
+            the figure is not saved.
+        markersize : float
+            The size of the markers representing the data points in the plot
+            of the fit results; default = 12.5
+        '''
         data = pd.read_excel(data_path, sheet_name=sheet_name)
         self._check_string_names(data)
         if sigma_name is None:
@@ -379,6 +412,33 @@ class GuitarStrings(object):
         self.plot_fit(fit_dict, data, sigma, show, save_path, file_name, markersize)
     
     def plot_fit(self, fit_dict, data, sigma, show, savepath, filename, markersize):
+        '''
+        Plot the results 
+        
+        Parameters
+        ----------
+        fit_dict : dict
+            A dictionary with keys that are the names of the strings in the set and
+            values that are the lines of best fit
+        data : pandas.DataFrame
+            A pandas dataframe containing the displacement and frequency shift data
+            for each string
+        sigma : pandas.DataFrame
+            A pandas dataframe containing the standard deviations of the frequency
+            data points; if None, then no error bars are included in the plots
+        show : bool
+            If True (the default), show the plot of the results of the fits
+        savepath : str
+            A valid path to a directory / folder where the figure will be
+            saved, or None (the default); if None, the figure is not saved.
+        filename : str
+            A valid file name (including an extension where needed) that
+            will contain the saved figure, or None (the default); if None,
+            the figure is not saved.
+        markersize : float
+            The size of the markers representing the data points in the plot
+            of the fit results
+        '''
         dx = np.array(data[[list(data.columns)[0]]].values.T[0])
         
         fig, ax = plt.subplots(figsize=(8.0,6.0))
@@ -405,6 +465,21 @@ class GuitarStrings(object):
         figdisp(fig, show, savepath, filename)
  
     def save_specs_table(self, show=True, savepath=None, filename=None):
+        '''
+        Show and/or save (in LaTeX format) a table of the specifications of each
+        string in a set
+        
+        Parameters
+        ----------
+        show : bool
+            If True, show the table using IPython.display.
+        savepath : str
+            A valid path to a directory / folder, or None; if
+            None, the table is not saved.
+        filename : str
+            A valid file name (including an appropriate LaTeX extension),
+            or None; if None, the table is not saved.
+        '''
         df = self._specs.copy()
         df.drop(columns=["scale"], inplace=True)
         notes = []
@@ -424,6 +499,21 @@ class GuitarStrings(object):
         tabdisp(df, formatter, show, savepath, filename)      
  
     def save_props_table(self, show=True, savepath=None, filename=None):
+        '''
+        Show and/or save (in LaTeX format) a table of the properties of each
+        string in a set
+        
+        Parameters
+        ----------
+        show : bool
+            If True, show the table using IPython.display.
+        savepath : str
+            A valid path to a directory / folder, or None; if
+            None, the table is not saved.
+        filename : str
+            A valid file name (including an appropriate LaTeX extension),
+            or None; if None, the table is not saved.
+        '''
         df = self._props.copy()
         df.rename(columns={"string" : "String", "r" : "$R$", "sigma" : "$\sigma$",
                            "kappa" : "$\kappa$", "b_0" : "$B_0$", "e_eff" : "$E_\mathrm{eff}$ (GPa)"},
