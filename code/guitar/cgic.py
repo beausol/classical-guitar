@@ -413,7 +413,7 @@ class GuitarStrings(object):
     
     def plot_fit(self, fit_dict, data, sigma, show, savepath, filename, markersize):
         '''
-        Plot the results 
+        Plot the fit results 
         
         Parameters
         ----------
