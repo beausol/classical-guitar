@@ -199,6 +199,30 @@ class GuitarString(object):
 
 class GuitarStrings(object):
     def __init__(self, name, path_specs, path_props, sheet_name=0, scale_length=650.0, units='IPS'):
+        '''
+        Initialize a GuitarStrings object
+        
+        Parameters
+        ----------
+        name : str
+            The name of the string set
+        path_specs : str
+            A full path to the Excel file containing the string set specifications
+        path_props : str
+            A full path to the Excel file containing the string set properties
+        sheet_name : str
+            If not zero, the sheet in the specs and props files containing the
+            specifications and properties for each string in a string set;
+            else, if zero (the default) read the first sheet
+        scale_length : float
+            The scale length of the guitar (in mm); needed to set the tension
+            of each string corresponding to each string's open frequency
+        units : str
+            If 'IPS' (the default), then the units of the parameters listed in
+            the string specifications file follow the British Imperial measurement
+            system, and are converted to metric units (MKS); otherwise, the
+            units must follow the conventions listed in GuitarString.__init__().
+        '''
         self._name = name
 
         df_specs = pd.read_excel(path_specs, sheet_name=sheet_name,
@@ -245,7 +269,6 @@ class GuitarStrings(object):
         strings = GuitarStrings(name, path_specs, path_props)
         print(strings)
         '''
-        
         df = self._specs.copy()
         df.drop(columns=["scale"], inplace=True)
         df.rename(columns={"string" : "String", "note" : "Note", "radius" : "Radius (mm)",
@@ -472,7 +495,7 @@ class GuitarStrings(object):
         Parameters
         ----------
         show : bool
-            If True, show the table using IPython.display.
+            If True (the default), show the table using IPython.display.
         savepath : str
             A valid path to a directory / folder, or None; if
             None, the table is not saved.
@@ -506,7 +529,7 @@ class GuitarStrings(object):
         Parameters
         ----------
         show : bool
-            If True, show the table using IPython.display.
+            If True (the default), show the table using IPython.display.
         savepath : str
             A valid path to a directory / folder, or None; if
             None, the table is not saved.
@@ -803,6 +826,24 @@ class Guitar(BaseClass):
         return rms
     
     def save_setbacks_table(self, max_fret:int=12, show:bool=True, savepath=None, filename=None):
+        '''
+        Show and/or save (in LaTeX format) a table of the guitar setbacks for each string
+        in a particular set
+        
+        Parameters
+        ----------
+        max_fret : int
+            Calculate the RMS frequency error over fret 1 through max_fret;
+            default = 12
+        show : bool
+            If True (the default), show the table using IPython.display.
+        savepath : str
+            A valid path to a directory / folder, or None; if
+            None (the default), the table is not saved.
+        filename : str
+            A valid file name (including an appropriate LaTeX extension),
+            or None; if None (the default), the table is not saved.
+        '''
         fret_list = np.arange(1, max_fret)
         dnu = self._freq_shifts(fret_list)
         rms = np.sqrt(np.mean(dnu[:,1:]**2, axis=1))
