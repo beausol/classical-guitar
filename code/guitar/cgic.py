@@ -40,7 +40,8 @@ class GuitarString(object):
     '''
 
     def __init__(self, specs, props, scale_length):
-        '''Initialize a GuitarString object.
+        '''
+        Initialize a GuitarString object.
 
         Parameters
         ----------
@@ -574,7 +575,49 @@ class GuitarStrings(object):
         
 
 class Guitar(BaseClass):
-    def __init__(self, params, string_count, strings):
+    def __init__(self, params:dict, string_count:int, strings:GuitarStrings):
+        '''
+        Initialize a Guitar object
+
+        Parameters
+        ----------
+        params : dict
+            A dict with the following keys (and values/types):
+                'name' : str
+                    A python string containing the name of the guitar
+                'x0': float
+                    The scale length of the guitar in mm
+                'ds' :
+                    A number, a list, or an ndarray representing the saddle
+                    setbacks for each string in mm; converted to a numpy.array
+                    with dtype = float64.
+                'dn' :
+                    A number, a list, or an ndarray representing the nut
+                    setbacks for each string in mm; converted to a numpy.array
+                    with dtype = float64.
+                'b' : 
+                    A number, a list, or an ndarray representing the height of
+                    the bottom of each string above the fret board minus the
+                    height of the top of the frets (in mm); converted to a
+                    numpy.array with dtype = float64
+                'c' :
+                    A number, a list, or an ndarray representing the height of
+                    the top of the saddle in mm relative to the height b;
+                    converted to a numpy.array with dtype = float64
+                'd': float
+                    The distance in mm representing the size of the fretting finger
+                'tension': float
+                    The nominal tension of the guitar string in newtons
+                'scale': float
+                    The scale length of the guitar (2x the distance measured
+                    from the inside edge of the nut to the center of the twelfth
+                    fret) in mm; this is needed as a reference for the tension
+        string_count : int
+            The number of strings on the guitar
+        strings : GuitarStrings
+            The object containing the specifications and properties of the guitar
+            strings; string_count == strings.get_count() must be True
+        '''
         assert string_count == strings.get_count(), "Guitar '{}'".format(self._name) + " requires {} strings, but {} were provided.".format(string_count, strings.get_count())
         self._strings = strings
     
@@ -607,12 +650,54 @@ class Guitar(BaseClass):
                         'd' : { 'val2arr' : False, 'units' : 'mm' } }
 
     def _tile_strings(self, x):
+        '''
+        Replicate the variable 'x' over the strings
+        
+        Parameters
+        ----------
+        x : numpy.array
+            Assuming that x is a 1D array over a set of frets, use numpy.tile
+            to replicate x over the strings
+            
+        Returns
+        -------
+        retval : numpy.array
+            The 2D tiled array
+        '''
         return np.tile(x, (self._strings.get_count(), 1))
     
     def _tile_frets(self, x, fret_list):
+        '''
+        Replicate the variable 'x' over an array of frets
+        
+        Parameters
+        ----------
+        x : numpy.array
+            Assuming that x is a 1D array over a set of strings, use numpy.tile
+            to replicate x over the frets
+        fret_list : numpy.array with dtype=int32
+            An array containing a list of fret numbers
+            
+        Returns
+        -------
+        retval : numpy.array
+            The 2D tiled array
+        '''
         return np.tile(x, (fret_list.size, 1)).T
     
     def _rms(self, dnu):
+        '''
+        Compute the RMS of an array of frequency shifts/errors
+        
+        Parameters
+        ----------
+        dnu : numpy.array with dtype=int32
+
+        Returns
+        -------
+        retval : float64
+            Output of numpy.sqrt
+        '''
         rms = np.sqrt(np.mean(dnu**2))
         return rms
 
@@ -663,7 +748,13 @@ class Guitar(BaseClass):
         
         return rle + mde + tse + bse
 
-    def _freq_shifts(self, fret_list):
+    def _freq_shifts(self, max_fret:int=12):
+        '''
+        Compute the frequency shifts/errors for each string over the
+        fret_numbers in fret_list
+        '''
+        fret_list = np.arange(1, max_fret + 1)
+        
         x0 = self._x0
         ds = self._tile_frets(self._ds, fret_list)
         dn = self._tile_frets(self._dn, fret_list)
@@ -681,6 +772,17 @@ class Guitar(BaseClass):
         return np.hstack((open_strings, shifts))
 
     def approximate(self):
+        '''
+        Compute the saddle and nut setbacks for each string using
+        the analytic approximation
+        
+        Returns
+        -------
+        ds : numpy.array with dtype=float64
+            The saddle setbacks for each string
+        dn : numpy.array with dtype=float64
+            The nut setbacks for each string
+        '''
         x_0 = self._x0
         b = self._b
         c = self._c
@@ -697,7 +799,24 @@ class Guitar(BaseClass):
         
         return ds, dn
 
-    def compensate(self, max_fret:int):
+    def compensate(self, max_fret:int=12):
+        '''
+        Compute the saddle and nut setbacks for each string using
+        the RMS (Nonlinear Least-Squares) Fit method
+        
+        Parameters
+        ----------
+        max_fret : int
+            Include all fret numbers from 1 to max_fret in the fit;
+            default = 12
+        
+        Returns
+        -------
+        ds : numpy.array with dtype=float64
+            The saddle setbacks for each string
+        dn : numpy.array with dtype=float64
+            The nut setbacks for each string
+        '''
         def sigma_k(fret_list, k):
             return np.sum((self._gamma(fret_list) - 1)**k)
 
@@ -713,11 +832,13 @@ class Guitar(BaseClass):
         ds = np.zeros(n.shape)
         dn = np.zeros(n.shape)
         
-        mde = self._mde(ds, dn, x0, b, c, d, n) - (1200/np.log(2)) * ( self._gamma(n)**2 * (b + c)**2 - c**2 ) / (2 * x0**2)
+        mde = self._mde(ds, dn, x0, b, c, d, n)
         tse = self._tse(ds, dn, x0, b, c, d, kappa, n)
         bse = self._bse(b_0, n)
         
-        z_n = (np.log(2.0) / 1200.0) * ( mde + tse + bse )
+        # Include the residual quadratic error in the RLE
+        z_n = (np.log(2.0) / 1200.0) * ( mde + tse + bse 
+                                       - (1200/np.log(2)) * ( self._gamma(n)**2 * (b + c)**2 - c**2 ) / (2 * x0**2) )
         
         g_0 = max_fret
         g_1 = sigma_k(fret_list, 1)
@@ -735,7 +856,28 @@ class Guitar(BaseClass):
         
         return ds, dn
 
-    def minimize(self, max_fret:int, approx:bool=False):
+    def minimize(self, max_fret:int=12, approx:bool=False):
+        '''
+        Compute the saddle and nut setbacks for each string using
+        the BFGS (Nonlinear RMS) Fit method
+        
+        Parameters
+        ----------
+        max_fret : int
+            Include all fret numbers from 1 to max_fret in the fit;
+            default = 12
+        approx : bool
+            If True, use the approximate method to compute the initial
+            values of ds and dn for each string; if False (the default),
+            then use compensate
+        
+        Returns
+        -------
+        ds : numpy.array with dtype=float64
+            The saddle setbacks for each string
+        dn : numpy.array with dtype=float64
+            The nut setbacks for each string
+        '''
         def minfun(dsdn, *args):
             ds = dsdn[0]
             dn = dsdn[1]
@@ -779,10 +921,37 @@ class Guitar(BaseClass):
     
         return ds, dn
 
-    def plot_shifts(self, max_fret=12, show=True, harm=[], savepath=None, filename=None, markersize=9.0, alpha=1.0):
-        fret_list = np.arange(0, max_fret + 1)
-        shifts = self._freq_shifts(fret_list[1:])
-        if harm:
+    def plot_shifts(self, max_fret:int=12, show:bool=True, harm:list=[],
+                    savepath:str=None, filename:str=None, markersize:float=9.0, alpha:float=1.0):
+        '''
+        Plot the frequency shifts/errors for each string 
+        
+        Parameters
+        ----------
+        max_fret : int
+            Plot the shifts for each string from fret number 0 (the open string) to
+            max_fret; default = 12
+        show : bool
+            If True (the default), show the plot of the results of the fits
+        savepath : str
+            A valid path to a directory / folder where the figure will be
+            saved, or None (the default); if None, the figure is not saved.
+        filename : str
+            A valid file name (including an extension where needed) that
+            will contain the saved figure, or None (the default); if None,
+            the figure is not saved.
+        markersize : float
+            The size of the markers representing the shifts at each fret number;
+            default = 9.0
+        alpha : float
+            The opacity of the lines connecting the points; default = 1.0
+            
+        Returns
+        -------
+        retval : 
+        '''
+        shifts = self._freq_shifts(max_fret)
+        if bool(harm):
             zero_strings = harm[0]
             zero_frets = harm[1]
             for s, n in zip(zero_strings, zero_frets):
@@ -790,6 +959,7 @@ class Guitar(BaseClass):
         rms = np.sqrt(np.mean(shifts**2))
         names = self._strings.get_specs().string.tolist()
 
+        fret_list = np.arange(0, max_fret + 1)
         fig, ax = plt.subplots(figsize=(8.0,6.0))
         for index in np.arange(self._strings.get_count()):
             ax.plot(fret_list, shifts[index], '.', markersize=markersize)
@@ -825,7 +995,7 @@ class Guitar(BaseClass):
         
         return rms
     
-    def save_setbacks_table(self, max_fret:int=12, show:bool=True, savepath=None, filename=None):
+    def save_setbacks_table(self, max_fret:int=12, show:bool=True, savepath:str=None, filename:str=None):
         '''
         Show and/or save (in LaTeX format) a table of the guitar setbacks for each string
         in a particular set
@@ -833,8 +1003,8 @@ class Guitar(BaseClass):
         Parameters
         ----------
         max_fret : int
-            Calculate the RMS frequency error over fret 1 through max_fret;
-            default = 12
+            Calculate the RMS frequency error over fret 0 (the open string)
+            through max_fret; default = 12
         show : bool
             If True (the default), show the table using IPython.display.
         savepath : str
@@ -844,9 +1014,8 @@ class Guitar(BaseClass):
             A valid file name (including an appropriate LaTeX extension),
             or None; if None (the default), the table is not saved.
         '''
-        fret_list = np.arange(1, max_fret)
-        dnu = self._freq_shifts(fret_list)
-        rms = np.sqrt(np.mean(dnu[:,1:]**2, axis=1))
+        dnu = self._freq_shifts(max_fret)
+        rms = np.sqrt(np.mean(dnu**2, axis=1))
 
         df = pd.DataFrame({'String': self._strings.get_specs().string.tolist(),
                            '$\Delta S$ (mm)': self._ds.tolist(),
