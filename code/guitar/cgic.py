@@ -666,7 +666,6 @@ class Guitar(BaseClass):
         '''
         return np.tile(x, (self._strings.get_count(), 1))
     
-#    def _tile_frets(self, x, fret_list):
     def _tile_frets(self, x, max_fret:int):
         '''
         Replicate the variable 'x' over an array of frets
@@ -676,8 +675,8 @@ class Guitar(BaseClass):
         x : numpy.array
             Assuming that x is a 1D array over a set of strings, use numpy.tile
             to replicate x over the frets
-        fret_list : numpy.array with dtype=int32
-            An array containing a list of fret numbers
+        max_fret : int
+            Tile over frets 1 to max_fret
             
         Returns
         -------
@@ -686,34 +685,107 @@ class Guitar(BaseClass):
         '''
         return np.tile(x, (max_fret, 1)).T
     
-    def _rms(self, dnu):
+    def _gamma(self, n):
         '''
-        Compute the RMS of an array of frequency shifts/errors
+        Compute the fretted frequency scale function 2**(n/12)
         
         Parameters
         ----------
-        dnu : numpy.array with dtype=int32
-
+        n : int, list of ints, or numpy.array of ints ...
+        
         Returns
         -------
-        retval : float64
-            Output of numpy.sqrt
+        retval : float, list of floats, or numpy.array of float64 ...
+            2**(n/12)
         '''
-        rms = np.sqrt(np.mean(dnu**2))
-        return rms
-
-    def _gamma(self, n):
         return 2.0**(n/12.0)
 
     def _l0(self, ds, dn, x0, c):
+        '''
+        Compute the length of the open string from saddle to nut
+        
+        Parameters
+        ----------
+        'ds' :
+            A number, a list, or an ndarray representing the saddle
+            setbacks for each string in mm
+        'dn' :
+            A number, a list, or an ndarray representing the nut
+            setbacks for each string in mm
+        'x0': float
+            The scale length of the guitar in mm
+        'c' :
+            A number, a list, or an ndarray representing the height of
+            the top of the saddle in mm relative to the nut height b
+        
+        Returns
+        -------
+        retval : A float, a list of floats, or a numpy.array of float64
+            Open string length in mm
+        '''
         length = np.sqrt( (x0 + ds + dn)**2 + c**2 )
         return length
 
     def _l(self, ds, x0, b, c, n):
+        '''
+        Compute the length of the vibrating string from saddle to fret
+        
+        Parameters
+        ----------
+        'ds' :
+            A number, a list, or an ndarray representing the saddle
+            setbacks for each string in mm
+        'x0': float
+            The scale length of the guitar in mm
+        'b' : 
+            A number, a list, or an ndarray representing the height of
+            the bottom of each string above the fret board minus the
+            height of the top of the frets (in mm)
+        'c' :
+            A number, a list, or an ndarray representing the height of
+            the top of the saddle in mm relative to the nut height b
+        'n': int or numpy.array of ints
+            Fret number(s)
+        
+        Returns
+        -------
+        retval : A float, a list of floats, or a numpy.array of float64
+            Vibrating string length in mm
+        '''
         length = np.sqrt( (x0/self._gamma(n) + ds)**2 + (b + c)**2 )
         return length
 
     def _lp(self, ds, dn, x0, b, c, d, n):
+        '''
+        Compute the length of the non-vibrating string from fret to nut
+        
+        Parameters
+        ----------
+        'ds' :
+            A number, a list, or an ndarray representing the saddle
+            setbacks for each string in mm
+        'dn' :
+            A number, a list, or an ndarray representing the nut
+            setbacks for each string in mm
+        'x0': float
+            The scale length of the guitar in mm
+        'b' : 
+            A number, a list, or an ndarray representing the height of
+            the bottom of each string above the fret board minus the
+            height of the top of the frets (in mm)
+        'c' :
+            A number, a list, or an ndarray representing the height of
+            the top of the saddle in mm relative to the nut height b
+        'd': float
+            The distance in mm representing the size of the fretting finger
+        'n': int or numpy.array of ints
+            Fret number(s)
+        
+        Returns
+        -------
+        retval : A float, a list of floats, or a numpy.array of float64
+            Non-vibrating string length in mm
+        '''
         xn = x0 / self._gamma(n)
         ln = self._l(ds, x0, b, c, n)
         length = np.sqrt( (x0 - xn + dn - d)**2 + (b + (b + c) * d / (xn + ds))**2 )
@@ -721,27 +793,230 @@ class Guitar(BaseClass):
         return length
 
     def _lmc(self, ds, dn, x0, b, c, d, n):
+        '''
+        Compute the length of the fretted string from saddle to nut
+        
+        Parameters
+        ----------
+        'ds' :
+            A number, a list, or an ndarray representing the saddle
+            setbacks for each string in mm
+        'dn' :
+            A number, a list, or an ndarray representing the nut
+            setbacks for each string in mm
+        'x0': float
+            The scale length of the guitar in mm
+        'b' : 
+            A number, a list, or an ndarray representing the height of
+            the bottom of each string above the fret board minus the
+            height of the top of the frets (in mm)
+        'c' :
+            A number, a list, or an ndarray representing the height of
+            the top of the saddle in mm relative to the nut height b
+        'd': float
+            The distance in mm representing the size of the fretting finger
+        'n': int or numpy.array of ints
+            Fret number(s)
+        
+        Returns
+        -------
+        retval : A float, a list of floats, or a numpy.array of float64
+            Fretted string length in mm
+        '''
         length = self._l(ds, x0, b, c, n) + self._lp(ds, dn, x0, b, c, d, n)
         return length
     
     def _q(self, ds, dn, x0, b, c, d, n):
+        '''
+        Compute the differential strain of the fretted string
+        
+        Parameters
+        ----------
+        'ds' :
+            A number, a list, or an ndarray representing the saddle
+            setbacks for each string in mm
+        'dn' :
+            A number, a list, or an ndarray representing the nut
+            setbacks for each string in mm
+        'x0': float
+            The scale length of the guitar in mm
+        'b' : 
+            A number, a list, or an ndarray representing the height of
+            the bottom of each string above the fret board minus the
+            height of the top of the frets (in mm)
+        'c' :
+            A number, a list, or an ndarray representing the height of
+            the top of the saddle in mm relative to the nut height b
+        'd': float
+            The distance in mm representing the size of the fretting finger
+        'n': int or numpy.array of ints
+            Fret number(s)
+        
+        Returns
+        -------
+        retval : A float, a list of floats, or a numpy.array of float64
+            Dimensionless differential strain of the fretted string
+        '''
         l0 = self._l0(ds, dn, x0, c)
         return (self._lmc(ds, dn, x0, b, c, d, n) - l0) / l0
     
     def _rle(self, ds, dn, x0, b, c, n):
+        '''
+        Compute the resonant length error
+        
+        Parameters
+        ----------
+        'ds' :
+            A number, a list, or an ndarray representing the saddle
+            setbacks for each string in mm
+        'dn' :
+            A number, a list, or an ndarray representing the nut
+            setbacks for each string in mm
+        'x0': float
+            The scale length of the guitar in mm
+        'b' : 
+            A number, a list, or an ndarray representing the height of
+            the bottom of each string above the fret board minus the
+            height of the top of the frets (in mm)
+        'c' :
+            A number, a list, or an ndarray representing the height of
+            the top of the saddle in mm relative to the nut height b
+        'n': int or numpy.array of ints
+            Fret number(s)
+        
+        Returns
+        -------
+        retval : A float, a list of floats, or a numpy.array of float64
+            Resonant length error in cents
+        '''
         return 1200 * np.log2( self._l0(ds, dn, x0, c) / (self._gamma(n) * self._l(ds, x0, b, c, n)) )
     
     def _mde(self, ds, dn, x0, b, c, d, n):
+        '''
+        Compute the mass density error
+        
+        Parameters
+        ----------
+        'ds' :
+            A number, a list, or an ndarray representing the saddle
+            setbacks for each string in mm
+        'dn' :
+            A number, a list, or an ndarray representing the nut
+            setbacks for each string in mm
+        'x0': float
+            The scale length of the guitar in mm
+        'b' : 
+            A number, a list, or an ndarray representing the height of
+            the bottom of each string above the fret board minus the
+            height of the top of the frets (in mm)
+        'c' :
+            A number, a list, or an ndarray representing the height of
+            the top of the saddle in mm relative to the nut height b
+        'd': float
+            The distance in mm representing the size of the fretting finger
+        'n': int or numpy.array of ints
+            Fret number(s)
+        
+        Returns
+        -------
+        retval : A float, a list of floats, or a numpy.array of float64
+            Mass density error in cents
+        '''
         return 600 * np.log2( 1 + self._q(ds, dn, x0, b, c, d, n) )
     
     def _tse(self, ds, dn, x0, b, c, d, kappa, n):
+        '''
+        Compute the tension error
+        
+        Parameters
+        ----------
+        'ds' :
+            A number, a list, or an ndarray representing the saddle
+            setbacks for each string in mm
+        'dn' :
+            A number, a list, or an ndarray representing the nut
+            setbacks for each string in mm
+        'x0': float
+            The scale length of the guitar in mm
+        'b' : 
+            A number, a list, or an ndarray representing the height of
+            the bottom of each string above the fret board minus the
+            height of the top of the frets (in mm)
+        'c' :
+            A number, a list, or an ndarray representing the height of
+            the top of the saddle in mm relative to the nut height b
+        'd': float
+            The distance in mm representing the size of the fretting finger
+         'kappa' :
+            A number, a list, or an ndarray representing the (dimensionless)
+            string constant (2 * R + 1)
+        'n': int or numpy.array of ints
+            Fret number(s)
+        
+        Returns
+        -------
+        retval : A float, a list of floats, or a numpy.array of float64
+            Tension error in cents
+        '''
         return 600 * np.log2( 1 + kappa * self._q(ds, dn, x0, b, c, d, n) )
 
     def _bse(self, b_0, n):
+        '''
+        Compute the bending stiffness error
+        
+        Parameters
+        ----------
+        'b_0' :
+            A number, a list, or an ndarray representing the (dimensionless)
+            bending stiffness of the open string
+        'n': int or numpy.array of ints
+            Fret number(s)
+        
+        Returns
+        -------
+        retval : A float, a list of floats, or a numpy.array of float64
+            Bending stiffness error in cents
+        '''
         return 1200 * np.log2( (1 + self._gamma(n) * b_0 + (1.0 + 0.5 * np.pi**2) * (self._gamma(n) * b_0)**2)
                              / (1 + b_0 + (1.0 + 0.5 * np.pi**2) * b_0**2) )
         
     def _tfe(self, ds, dn, x0, b, c, d, kappa, b_0, n):
+        '''
+        Compute the total frequency error
+        
+        Parameters
+        ----------
+        'ds' :
+            A number, a list, or an ndarray representing the saddle
+            setbacks for each string in mm
+        'dn' :
+            A number, a list, or an ndarray representing the nut
+            setbacks for each string in mm
+        'x0': float
+            The scale length of the guitar in mm
+        'b' : 
+            A number, a list, or an ndarray representing the height of
+            the bottom of each string above the fret board minus the
+            height of the top of the frets (in mm)
+        'c' :
+            A number, a list, or an ndarray representing the height of
+            the top of the saddle in mm relative to the nut height b
+        'd': float
+            The distance in mm representing the size of the fretting finger
+         'kappa' :
+            A number, a list, or an ndarray representing the (dimensionless)
+            string constant (2 * R + 1)
+        'b_0' :
+            A number, a list, or an ndarray representing the (dimensionless)
+            bending stiffness of the open string
+        'n': int or numpy.array of ints
+            Fret number(s)
+        
+        Returns
+        -------
+        retval : A float, a list of floats, or a numpy.array of float64
+            Total frequency error in cents
+        '''
         rle = self._rle(ds, dn, x0, b, c, n)
         mde = self._mde(ds, dn, x0, b, c, d, n)
         tse = self._tse(ds, dn, x0, b, c, d, kappa, n)
@@ -749,33 +1024,10 @@ class Guitar(BaseClass):
         
         return rle + mde + tse + bse
 
-    def _freq_shifts_old(self, max_fret:int=12):
-        '''
-        Compute the frequency shifts/errors for each string over the
-        fret_numbers in fret_list
-        '''
-        fret_list = np.arange(1, max_fret + 1)
-        
-        x0 = self._x0
-        ds = self._tile_frets(self._ds, fret_list)
-        dn = self._tile_frets(self._dn, fret_list)
-        b = self._tile_frets(self._b, fret_list)
-        c = self._tile_frets(self._c, fret_list)
-        d = self._d
-        kappa = self._tile_frets(self._strings.get_props().kappa.to_numpy(), fret_list)
-        b_0 = self._tile_frets(self._strings.get_props().b_0.to_numpy(), fret_list)
-        n = self._tile_strings(fret_list)
-        
-        shifts = self._tfe(ds, dn, x0, b, c, d, kappa, b_0, n)
-        
-        open_strings = np.array(self._strings.get_count() * [0]).reshape(-1,1)                       
-        
-        return np.hstack((open_strings, shifts))
-
     def _freq_shifts(self, max_fret:int=12):
         '''
         Compute the frequency shifts/errors for each string over the
-        fret numbers in the range [0 : max_fret]; the error for fret 0
+        fret numbers in the range 0 to max_fret; the error for fret 0
         (the open string) is zero by definition
         '''
         x0 = self._x0
@@ -845,14 +1097,14 @@ class Guitar(BaseClass):
         def sigma_k(fret_list, k):
             return np.sum((self._gamma(fret_list) - 1)**k)
 
-        fret_list = np.arange(1, max_fret + 1)
-
         x0 = self._x0
-        b = self._tile_frets(self._b, fret_list)
-        c = self._tile_frets(self._c, fret_list)
+        b = self._tile_frets(self._b, max_fret)
+        c = self._tile_frets(self._c, max_fret)
         d = self._d
-        kappa = self._tile_frets(self._strings.get_props().kappa.to_numpy(), fret_list)
-        b_0 = self._tile_frets(self._strings.get_props().b_0.to_numpy(), fret_list)
+        kappa = self._tile_frets(self._strings.get_props().kappa.to_numpy(), max_fret)
+        b_0 = self._tile_frets(self._strings.get_props().b_0.to_numpy(), max_fret)
+
+        fret_list = np.arange(1, max_fret + 1)
         n = self._tile_strings(fret_list)
         ds = np.zeros(n.shape)
         dn = np.zeros(n.shape)
@@ -861,7 +1113,7 @@ class Guitar(BaseClass):
         tse = self._tse(ds, dn, x0, b, c, d, kappa, n)
         bse = self._bse(b_0, n)
         
-        # Include the residual quadratic error in the RLE
+        # Include the residual RLE quadratic error in Z_n
         z_n = (np.log(2.0) / 1200.0) * ( mde + tse + bse 
                                        - (1200/np.log(2)) * ( self._gamma(n)**2 * (b + c)**2 - c**2 ) / (2 * x0**2) )
         
@@ -918,8 +1170,6 @@ class Guitar(BaseClass):
             
             return np.sqrt(np.mean(tfe**2))
         
-        fret_list = np.arange(1, max_fret + 1)
-
         if approx:
             ds_0, dn_0 = self.approximate()
         else:
@@ -934,6 +1184,7 @@ class Guitar(BaseClass):
         ds = np.zeros_like(ds_0)
         dn = np.zeros_like(dn_0)
         idx_list = np.arange(0, self._strings.get_count())
+        fret_list = np.arange(1, max_fret + 1)
         for idx in idx_list:
             dsdn0 = np.array([ds_0[idx], dn_0[idx]])
             args = (x0, b[idx], c[idx], d, kappa[idx], b_0[idx], fret_list)
@@ -973,7 +1224,8 @@ class Guitar(BaseClass):
             
         Returns
         -------
-        retval : 
+        retval : float
+            The RMS shift/error averaged over all frets and strings
         '''
         shifts = self._freq_shifts(max_fret)
         if bool(harm):
