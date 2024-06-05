@@ -666,7 +666,8 @@ class Guitar(BaseClass):
         '''
         return np.tile(x, (self._strings.get_count(), 1))
     
-    def _tile_frets(self, x, fret_list):
+#    def _tile_frets(self, x, fret_list):
+    def _tile_frets(self, x, max_fret:int):
         '''
         Replicate the variable 'x' over an array of frets
         
@@ -683,7 +684,7 @@ class Guitar(BaseClass):
         retval : numpy.array
             The 2D tiled array
         '''
-        return np.tile(x, (fret_list.size, 1)).T
+        return np.tile(x, (max_fret, 1)).T
     
     def _rms(self, dnu):
         '''
@@ -748,7 +749,7 @@ class Guitar(BaseClass):
         
         return rle + mde + tse + bse
 
-    def _freq_shifts(self, max_fret:int=12):
+    def _freq_shifts_old(self, max_fret:int=12):
         '''
         Compute the frequency shifts/errors for each string over the
         fret_numbers in fret_list
@@ -763,6 +764,30 @@ class Guitar(BaseClass):
         d = self._d
         kappa = self._tile_frets(self._strings.get_props().kappa.to_numpy(), fret_list)
         b_0 = self._tile_frets(self._strings.get_props().b_0.to_numpy(), fret_list)
+        n = self._tile_strings(fret_list)
+        
+        shifts = self._tfe(ds, dn, x0, b, c, d, kappa, b_0, n)
+        
+        open_strings = np.array(self._strings.get_count() * [0]).reshape(-1,1)                       
+        
+        return np.hstack((open_strings, shifts))
+
+    def _freq_shifts(self, max_fret:int=12):
+        '''
+        Compute the frequency shifts/errors for each string over the
+        fret numbers in the range [0 : max_fret]; the error for fret 0
+        (the open string) is zero by definition
+        '''
+        x0 = self._x0
+        ds = self._tile_frets(self._ds, max_fret)
+        dn = self._tile_frets(self._dn, max_fret)
+        b = self._tile_frets(self._b, max_fret)
+        c = self._tile_frets(self._c, max_fret)
+        d = self._d
+        kappa = self._tile_frets(self._strings.get_props().kappa.to_numpy(), max_fret)
+        b_0 = self._tile_frets(self._strings.get_props().b_0.to_numpy(), max_fret)
+
+        fret_list = np.arange(1, max_fret + 1)
         n = self._tile_strings(fret_list)
         
         shifts = self._tfe(ds, dn, x0, b, c, d, kappa, b_0, n)
